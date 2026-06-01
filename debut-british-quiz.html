@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DÉBUT · Ты понимаешь британцев?</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#282F41;--navy-m:#323A52;--navy-l:#3D4664;
+  --terra:#B46C37;--terra-l:#CC8045;
+  --cream:#F3EEE2;--sand:#E0D8C8;--muted:#8A90A8;
+  --border:rgba(138,144,168,.22);
+  --correct:rgba(100,160,120,.25);--correct-b:#5A9A72;
+  --wrong:rgba(180,80,60,.2);--wrong-b:#B45040;
+  --hint:rgba(180,108,55,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Jost',sans-serif;background:var(--navy);color:var(--cream);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 5rem;
+}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 65% 0%,rgba(61,70,100,.7),transparent 60%);
+  pointer-events:none;z-index:0;}
+.wrap{width:100%;max-width:460px;position:relative;z-index:1;}
+.hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2.25rem;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:.16em;color:var(--terra);}
+.logo-s{font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;}
+.sc{animation:up .5s ease;}
+.off{display:none!important;}
+@keyframes up{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* INTRO */
+.tag{display:inline-block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--terra);border:.5px solid rgba(180,108,55,.3);padding:5px 13px;
+  border-radius:20px;margin-bottom:1.5rem;}
+.ih{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,9vw,46px);
+  font-weight:300;font-style:italic;line-height:1.15;margin-bottom:.85rem;}
+.id{font-size:14px;font-weight:300;color:var(--muted);line-height:1.7;margin-bottom:.5rem;}
+.in{font-size:12px;color:var(--muted);opacity:.6;margin-bottom:2rem;}
+.go{background:var(--terra);color:var(--navy);border:none;border-radius:6px;
+  padding:14px 36px;font-family:'Jost',sans-serif;font-size:14px;letter-spacing:.05em;
+  cursor:pointer;transition:opacity .2s,transform .15s;}
+.go:hover{opacity:.88;transform:translateY(-1px);}
+
+/* QUIZ */
+.qmeta{display:flex;align-items:center;gap:12px;margin-bottom:1.75rem;}
+.qc{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.pt{flex:1;height:2px;background:rgba(138,144,168,.18);border-radius:2px;overflow:hidden;}
+.pf{height:100%;background:var(--terra);border-radius:2px;transition:width .45s ease;}
+
+/* SCENE CARD */
+.scene{
+  background:linear-gradient(150deg,var(--navy-m),var(--navy));
+  border:.5px solid var(--border);border-radius:18px;
+  padding:1.6rem 1.5rem;margin-bottom:.9rem;position:relative;overflow:hidden;
+}
+.scene::after{content:'';position:absolute;top:-40%;right:-20%;width:60%;aspect-ratio:1;
+  border-radius:50%;background:radial-gradient(circle,rgba(180,108,55,.06),transparent 70%);}
+.scene-num{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin-bottom:.9rem;}
+.scene-ctx{font-size:12px;color:var(--muted);margin-bottom:.6rem;font-style:italic;}
+.scene-phrase{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(20px,5.5vw,27px);font-weight:400;
+  color:var(--cream);line-height:1.4;
+  border-left:3px solid var(--terra);padding-left:14px;margin:0;
+}
+.scene-q{font-size:13.5px;font-weight:300;color:var(--sand);margin-top:1rem;line-height:1.5;}
+
+/* OPTIONS */
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem;}
+.opt{
+  background:rgba(50,58,82,.45);border:.5px solid var(--border);border-radius:12px;
+  padding:13px 15px;text-align:left;font-family:'Jost',sans-serif;
+  font-size:13.5px;color:var(--cream);cursor:pointer;line-height:1.5;
+  display:flex;align-items:flex-start;gap:11px;transition:all .17s;
+}
+.opt:hover{background:rgba(61,70,100,.65);border-color:rgba(180,108,55,.45);transform:translateX(3px);}
+.opt.correct{background:var(--correct);border-color:var(--correct-b);}
+.opt.wrong{background:var(--wrong);border-color:var(--wrong-b);}
+.opt.reveal{background:var(--correct);border-color:var(--correct-b);opacity:.6;}
+.opt:disabled{cursor:default;transform:none;}
+.ol{width:22px;height:22px;border-radius:50%;border:.5px solid var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--muted);flex-shrink:0;margin-top:1px;transition:all .17s;}
+.opt.correct .ol,.opt.reveal .ol{background:var(--correct-b);color:#fff;border-color:var(--correct-b);}
+.opt.wrong .ol{background:var(--wrong-b);color:#fff;border-color:var(--wrong-b);}
+
+/* EXPLANATION */
+.exp{
+  background:var(--hint);border:.5px solid rgba(180,108,55,.28);
+  border-left:3px solid var(--terra);border-radius:0 12px 12px 0;
+  padding:1.1rem 1.1rem .9rem;margin-bottom:1rem;
+  animation:up .35s ease;
+}
+.exp-l{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--terra);margin-bottom:.45rem;}
+.exp-t{font-size:13.5px;font-weight:300;color:var(--cream);line-height:1.65;}
+
+.next{width:100%;background:var(--terra);color:var(--navy);border:none;border-radius:8px;
+  padding:13px;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.04em;
+  cursor:pointer;transition:opacity .2s;margin-bottom:.5rem;}
+.next:hover{opacity:.88;}
+
+/* RESULT */
+.rhero{
+  background:linear-gradient(155deg,var(--navy-m),var(--navy-l));
+  border:.5px solid rgba(180,108,55,.28);border-radius:18px;
+  padding:2rem 1.5rem 1.75rem;margin-bottom:1rem;
+  text-align:center;position:relative;overflow:hidden;
+}
+.rhero::before{content:'';position:absolute;top:-35%;left:50%;transform:translateX(-50%);
+  width:130%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(180,108,55,.09),transparent 60%);}
+.rl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);margin-bottom:1.5rem;position:relative;}
+.re{font-size:48px;margin-bottom:.6rem;display:block;position:relative;}
+.rs{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,11vw,64px);
+  font-weight:300;color:var(--terra);line-height:1;margin-bottom:.3rem;position:relative;}
+.rsub{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;position:relative;}
+.rn{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,6vw,32px);
+  font-weight:400;font-style:italic;color:var(--cream);line-height:1.25;
+  margin-bottom:.6rem;position:relative;}
+.rq{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;
+  color:var(--terra);line-height:1.55;position:relative;}
+
+.rcard{background:rgba(50,58,82,.38);border:.5px solid var(--border);
+  border-radius:14px;padding:1.2rem;margin-bottom:.9rem;}
+.rcl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--terra);margin-bottom:.5rem;}
+.rct{font-size:13.5px;font-weight:300;color:var(--cream);line-height:1.68;}
+
+.hack{background:rgba(180,108,55,.1);border:.5px solid rgba(180,108,55,.28);
+  border-left:3px solid var(--terra);border-radius:0 14px 14px 0;
+  padding:1.2rem;margin-bottom:1.25rem;}
+.hackl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--terra);margin-bottom:.5rem;}
+.hackt{font-size:13.5px;font-weight:300;color:var(--cream);line-height:1.68;}
+
+.acts{display:flex;flex-direction:column;gap:8px;}
+.abtn{border:none;border-radius:8px;padding:13px;font-family:'Jost',sans-serif;
+  font-size:13px;letter-spacing:.04em;cursor:pointer;transition:opacity .2s;}
+.abtn.pri{background:var(--terra);color:var(--navy);}
+.abtn.pri:hover{opacity:.88;}
+.abtn.gho{background:transparent;color:var(--muted);border:.5px solid var(--border);}
+.abtn.gho:hover{background:rgba(138,144,168,.1);}
+
+.fcta{text-align:center;margin-top:1.75rem;padding-top:1.5rem;border-top:.5px solid var(--border);}
+.fcta p{font-size:12px;color:var(--muted);margin-bottom:.55rem;}
+.fcta a{font-size:13px;color:var(--terra);text-decoration:none;border-bottom:.5px solid rgba(180,108,55,.28);padding-bottom:1px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd"><span class="logo">DÉBUT</span><span class="logo-s">тест</span></div>
+
+  <!-- INTRO -->
+  <div id="intro" class="sc">
+    <div class="tag">7 фраз · британский english</div>
+    <h1 class="ih">Ты понимаешь<br>британцев?</h1>
+    <p class="id">Британцы — мастера говорить одно, а иметь в виду совсем другое. Это не грубость и не загадка — просто культурный код. Угадай что на самом деле имели в виду.</p>
+    <p class="in">~3 минуты · все фразы из оригинального гида Harper's Magazine 2004</p>
+    <button class="go" onclick="start()">Попробовать →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="sc off">
+    <div class="qmeta">
+      <span class="qc" id="qc">1 / 8</span>
+      <div class="pt"><div class="pf" id="pf" style="width:0%"></div></div>
+    </div>
+    <div class="scene">
+      <div class="scene-num" id="snum">01 / 08</div>
+      <div class="scene-ctx" id="sctx"></div>
+      <blockquote class="scene-phrase" id="sphrase"></blockquote>
+      <div class="scene-q" id="sq"></div>
+    </div>
+    <div class="opts" id="opts"></div>
+    <div class="exp off" id="exp">
+      <div class="exp-l" id="exp-l"></div>
+      <div class="exp-t" id="exp-t"></div>
+    </div>
+    <button class="next off" id="nextBtn" onclick="nextQ()">Следующая →</button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" class="sc off">
+    <div class="rhero">
+      <div class="rl">DÉBUT</div>
+      <span class="re" id="re"></span>
+      <div class="rs" id="rs"></div>
+      <div class="rsub" id="rsub">из 8</div>
+      <div class="rn" id="rn"></div>
+      <div class="rq" id="rq"></div>
+    </div>
+    <div class="rcard">
+      <div class="rcl">что это значит</div>
+      <div class="rct" id="rd"></div>
+    </div>
+    <div class="hack">
+      <div class="hackl">лайфхак от DÉBUT</div>
+      <div class="hackt" id="rh"></div>
+    </div>
+    <div class="acts">
+      <button class="abtn pri" onclick="shareResult()">Поделиться результатом</button>
+      <button class="abtn gho" onclick="restart()">Пройти ещё раз</button>
+    </div>
+    <div class="fcta">
+      <p>Хочешь разбираться в языке глубже — не только учить, а понимать?</p>
+      <a href="https://t.me/debutcommunity" target="_blank">Присоединиться к DÉBUT →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// All phrases verified from: Anglo-EU Translation Guide (Harper's Magazine 2004 / European Court of Justice),
+// KatharineWrites.com, Luke's English Podcast, lexioo.io — all widely documented sources.
+
+// All 7 phrases verified from the original Anglo-EU Translation Guide
+// published in Harper's Magazine, December 2004, found on the wall of
+// the European Court of Justice. Primary source archived at:
+// archive.blogs.harvard.edu/ceerock/2005/01/27/those-double-talking-brits/
+
+const questions = [
+  {
+    ctx: "Коллега из Лондона ответил на твоё предложение. В письме — одна строчка:",
+    phrase: "I'll bear it in mind.",
+    q: "Что он на самом деле имеет в виду?",
+    opts: [
+      {t:"Он запомнит и учтёт это при следующей возможности", c:false},
+      {t:"Он уже не собирается ничего делать с этим", c:true},
+      {t:"Он считает это важным и поставит в приоритет", c:false},
+      {t:"Ему нужно время чтобы обдумать и он вернётся с ответом", c:false},
+    ],
+    ok:"Верно. Оригинальный англо-европейский переводческий гид (Harper's Magazine, 2004) прямо указывает: «I'll bear it in mind» — What they mean: «I will do nothing about it». Звучит обнадёживающе, но на практике это вежливый конец разговора.",
+    fail:"Звучит обнадёживающе, но нет. Согласно оригинальному переводческому гиду из Harper's Magazine 2004: «I'll bear it in mind» означает «I will do nothing about it». Это один из самых часто неправильно понимаемых британских оборотов."
+  },
+  {
+    ctx: "Ты объясняешь коллеге свою позицию. Он внимательно кивает и говорит:",
+    phrase: "I hear what you say.",
+    q: "Что это значит на самом деле?",
+    opts: [
+      {t:"Он внимательно слушал и принимает твою точку зрения", c:false},
+      {t:"Он не согласен и дальше обсуждать это не намерен", c:true},
+      {t:"Ему нужно время чтобы обдумать твои аргументы", c:false},
+      {t:"Он хочет уточнить детали прежде чем согласиться", c:false},
+    ],
+    ok:"Точно. Оригинальный гид Harper's 2004: «I hear what you say» — What they mean: «I disagree and do not want to discuss it any further». Звучит как признание, но это мягкий способ закрыть дискуссию.",
+    fail:"Не совсем. По оригинальному переводческому гиду: «I hear what you say» на деле означает «I disagree and do not want to discuss it any further». Человек всё слышал — но убеждать его дальше бесполезно."
+  },
+  {
+    ctx: "На совещании коллега поднимает руку и говорит:",
+    phrase: "By the way, there's just one small thing I wanted to raise...",
+    q: "Насколько важно то, что он сейчас скажет?",
+    opts: [
+      {t:"Это действительно мелкое замечание, можно не беспокоиться", c:false},
+      {t:"Это, скорее всего, главная причина почему он пришёл на встречу", c:true},
+      {t:"Он просто вспомнил что-то незначительное", c:false},
+      {t:"Он хочет поднять отдельную тему на следующей встрече", c:false},
+    ],
+    ok:"Именно. Гид Harper's 2004: «By the way / Incidentally» — What they mean: «The primary purpose of our discussion is…». «By the way» в британской деловой речи нередко предшествует самому важному сообщению встречи.",
+    fail:"Как раз наоборот. По оригинальному гиду: «By the way» означает «The primary purpose of our discussion is…». Британцы часто используют «кстати» чтобы поднять главный вопрос — без лишнего напряжения и без акцента на его важности."
+  },
+  {
+    ctx: "На переговорах британский партнёр начинает свою реплику так:",
+    phrase: "With the greatest respect...",
+    q: "Что сейчас произойдёт?",
+    opts: [
+      {t:"Он выразит уважение и постарается найти компромисс", c:false},
+      {t:"Он скажет что считает тебя неправым — или того хуже", c:true},
+      {t:"Он попросит повторить аргументы чтобы лучше понять", c:false},
+      {t:"Он вежливо согласится с позицией другой стороны", c:false},
+    ],
+    ok:"Верно. Гид Harper's 2004: «With the greatest respect» — What they mean: «I think you are wrong, or a fool». Чем торжественнее вступление — тем острее то, что последует за ним.",
+    fail:"Нет — вежливое вступление работает как предупреждение. Гид Harper's 2004 прямо: «With the greatest respect» означает «I think you are wrong, or a fool». Длинная формула вежливости предшествует прямой критике."
+  },
+  {
+    ctx: "Ты только что выступил с презентацией. Британский коллега говорит:",
+    phrase: "Quite good.",
+    q: "Как он на самом деле оценивает твою работу?",
+    opts: [
+      {t:"Хорошо — это реальный комплимент", c:false},
+      {t:"Немного разочаровывающе — он ожидал большего", c:true},
+      {t:"Отлично — «quite» усиливает похвалу", c:false},
+      {t:"Нейтрально — он пока не решил что думать", c:false},
+    ],
+    ok:"Точно. Гид Harper's 2004: «Quite good» — What they mean: «A bit disappointing». В British English «quite» перед позитивным словом ослабляет его, а не усиливает — это прямая противоположность American English.",
+    fail:"Именно здесь многие ошибаются. В British English «quite» — смягчитель, а не усилитель. Гид Harper's 2004: «Quite good» означает «A bit disappointing». В American English «quite good» звучит как комплимент — в British нет."
+  },
+  {
+    ctx: "Ты споришь с британским коллегой. Он делает паузу и говорит:",
+    phrase: "Correct me if I'm wrong...",
+    q: "Он действительно хочет чтобы ты его поправил?",
+    opts: [
+      {t:"Да — он открыт к другой точке зрения и хочет услышать её", c:false},
+      {t:"Нет — он уверен что прав и не ждёт возражений", c:true},
+      {t:"Он не уверен в своих словах и ищет поддержки", c:false},
+      {t:"Он вежливо сигнализирует что готов к диалогу", c:false},
+    ],
+    ok:"Верно. Гид Harper's 2004: «Correct me if I'm wrong» — What they mean: «I know I'm right — please don't contradict me». Это риторический приём, а не реальное приглашение к спору.",
+    fail:"К сожалению нет. Гид Harper's 2004 прямо: «Correct me if I'm wrong» означает «I know I'm right — please don't contradict me». Это классический риторический приём — звучит как открытость, но на деле это утверждение позиции."
+  },
+  {
+    ctx: "После деловой встречи британский партнёр тепло улыбается и говорит:",
+    phrase: "You must come over for dinner sometime.",
+    q: "Когда ждать приглашения?",
+    opts: [
+      {t:"Скоро придёт письмо с конкретной датой", c:false},
+      {t:"Никогда — это вежливая формула прощания, не реальное приглашение", c:true},
+      {t:"Через пару недель когда он освободится", c:false},
+      {t:"Как только ты сам напомнишь об этом", c:false},
+    ],
+    ok:"Точно. Гид Harper's 2004: «You must come for dinner sometime» — What they mean: «Not an invitation, just being polite». Реальное британское приглашение всегда содержит конкретную дату. Без неё — это просто тёплое прощание.",
+    fail:"К сожалению нет. По оригинальному гиду: «You must come for dinner sometime» — What they mean: «Not an invitation, just being polite». Реальное приглашение в британской культуре всегда звучит иначе: с конкретным днём и временем."
+  }
+];
+
+const results = [
+  {
+    min:7,
+    e:"🎩",score_label:"7–8",
+    n:"Ты читаешь между строк",
+    q:"«Культурный код — это тоже язык.»",
+    d:"Ты не просто знаешь слова — ты понимаешь контекст. Это редкость даже среди тех кто учит английский годами. Знание того как люди говорят в реальной жизни — это другой уровень. Британский understatement — один из самых сложных кодов в коммуникации, и ты его раскусил.",
+    h:"Твой следующий шаг — смотреть британские сериалы в оригинале с особым вниманием к тому что НЕ говорится. Fleabag, The Crown, Succession — там каждая реплика двухслойная. Английский в деталях."
+  },
+  {
+    min:5,
+    e:"🧐",score_label:"5–6",
+    n:"Чувствуешь подтекст, но не всегда",
+    q:"«Хороший старт. Британцы сложные.»",
+    d:"Ты улавливаешь когда что-то звучит не так как говорится — но не всегда попадаешь в точку. Это нормально: британский indirect speech — это отдельная дисциплина, которую сами британцы осваивают годами. Ты явно уже не новичок в культурных нюансах.",
+    h:"Обрати внимание на слова-смягчители: «quite», «rather», «a bit», «slightly». В British English они часто усиливают негатив, а не ослабляют его. «A bit disappointed» = очень расстроен. «Slightly concerned» = серьёзно обеспокоен."
+  },
+  {
+    min:0,
+    e:"☕",score_label:"до 4",
+    n:"Британский код пока засекречен",
+    q:"«Добро пожаловать в самый вежливый культурный лабиринт.»",
+    d:"Британская непрямая речь сбивает с толку даже носителей других диалектов английского. Американцы, австралийцы, ирландцы — все иногда теряются. Это не про уровень языка, это про культурный слой который нужно отдельно изучать. Теперь ты знаешь что он существует.",
+    h:"Начни с простого правила: если британец сказал что-то звучащее слишком мягко — скорее всего это серьёзно. «A bit of a problem» = большая проблема. «Not ideal» = катастрофа. «Interesting» = полная ерунда. Добро пожаловать в British English."
+  }
+];
+
+let cur=0, score=0, answered=false;
+
+function start(){
+  document.getElementById('intro').classList.add('off');
+  document.getElementById('quiz').classList.remove('off');
+  render();
+}
+
+function render(){
+  answered=false;
+  const q=questions[cur];
+  const total=questions.length;
+  document.getElementById('qc').textContent=`${cur+1} / ${total}`;
+  document.getElementById('snum').textContent=`${String(cur+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+  document.getElementById('pf').style.width=`${(cur/total)*100}%`;
+  document.getElementById('sctx').textContent=q.ctx;
+  document.getElementById('sphrase').textContent=q.phrase;
+  document.getElementById('sq').textContent=q.q;
+  document.getElementById('exp').classList.add('off');
+  document.getElementById('nextBtn').classList.add('off');
+
+  const el=document.getElementById('opts');
+  el.innerHTML='';
+  const ls=['А','Б','В','Г'];
+  // shuffle
+  const sh=[...q.opts].map((o,i)=>({...o,i})).sort(()=>Math.random()-.5);
+  sh.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML=`<span class="ol">${ls[i]}</span><span>${o.t}</span>`;
+    b.onclick=()=>pick(o,b,sh);
+    el.appendChild(b);
+  });
+}
+
+function pick(chosen,btn,allOpts){
+  if(answered) return;
+  answered=true;
+  const q=questions[cur];
+  const allBtns=document.querySelectorAll('.opt');
+
+  allBtns.forEach(b=>b.disabled=true);
+  if(chosen.c){
+    btn.classList.add('correct');
+    score++;
+  } else {
+    btn.classList.add('wrong');
+    // reveal correct
+    const allData=allOpts;
+    allBtns.forEach((b,i)=>{
+      if(allData[i].c) b.classList.add('reveal');
+    });
+  }
+
+  const expEl=document.getElementById('exp');
+  const expL=document.getElementById('exp-l');
+  const expT=document.getElementById('exp-t');
+  expEl.classList.remove('off');
+  if(chosen.c){
+    expL.textContent='✓ Правильно';
+    expT.textContent=q.ok;
+  } else {
+    expL.textContent='✗ Не совсем';
+    expT.textContent=q.fail;
+  }
+
+  const nb=document.getElementById('nextBtn');
+  nb.classList.remove('off');
+  nb.textContent=cur===questions.length-1 ? 'Посмотреть результат →' : 'Следующая →';
+  setTimeout(()=>expEl.scrollIntoView({behavior:'smooth',block:'nearest'}),120);
+}
+
+function nextQ(){
+  cur++;
+  if(cur<questions.length){
+    render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  document.getElementById('quiz').classList.add('off');
+  document.getElementById('result').classList.remove('off');
+  const r=results.find(x=>score>=x.min);
+  document.getElementById('re').textContent=r.e;
+  document.getElementById('rs').textContent=`${score} / ${questions.length}`;
+  document.getElementById('rsub').textContent=`правильных из ${questions.length}`;
+  document.getElementById('rn').textContent=r.n;
+  document.getElementById('rq').textContent=r.q;
+  document.getElementById('rd').textContent=r.d;
+  document.getElementById('rh').textContent=r.h;
+  window._score=score;
+  window._rn=r.n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function shareResult(){
+  const txt=`Прошла тест DÉBUT «Ты понимаешь британцев?»\n\n${window._score} из 8 правильных — ${window._rn}\n\nПопробуй сам: t.me/debutcommunity`;
+  if(navigator.share){navigator.share({text:txt});}
+  else{navigator.clipboard.writeText(txt).then(()=>{
+    const b=event.target;const o=b.textContent;
+    b.textContent='Скопировано ✓';setTimeout(()=>b.textContent=o,2000);
+  });}
+}
+
+function restart(){
+  cur=0;score=0;answered=false;
+  document.getElementById('result').classList.add('off');
+  document.getElementById('intro').classList.remove('off');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
