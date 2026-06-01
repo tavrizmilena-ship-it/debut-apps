@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>23 · Милена</title>
+<meta property="og:title" content="23 · День рождения Милены"/>
+<meta property="og:description" content="Оставь пожелание — она сохранит это навсегда ✦"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+
+<!-- 🔧 НАСТРОЙКА: вставь свой MASTER KEY и BIN ID из jsonbin.io (инструкция внизу страницы) -->
+<script>
+  const JSONBIN_KEY = "ВСТАВЬ_MASTER_KEY";  // $2b$10$...
+  const JSONBIN_BIN = "ВСТАВЬ_BIN_ID";       // 6650a3...
+</script>
+
+<style>
+  :root {
+    --bg: #0e0b08;
+    --gold: #e8c87a;
+    --gold-dim: rgba(232,200,122,0.55);
+    --gold-faint: rgba(232,200,122,0.15);
+    --cream: #f8f2e8;
+    --cream-dim: rgba(248,242,232,0.65);
+    --line: rgba(248,242,232,0.08);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --display: 'DM Serif Display', Georgia, serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { min-height: 100%; background: var(--bg); color: var(--cream); font-family: var(--serif); overflow-x: hidden; }
+
+  /* ── stars ── */
+  #starfield { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--d) ease-in-out infinite; }
+
+  /* ── petals ── */
+  #petals { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .petal { position: absolute; top: -40px; color: var(--gold-dim); animation: petalFall linear infinite; opacity: 0.5; }
+
+  /* ── pages ── */
+  .page { position: relative; z-index: 1; min-height: 100vh; display: none; }
+  .page.active { display: block; }
+  #page-detail, #page-form { display: none; align-items: center; justify-content: center; flex-direction: column; padding: 40px 20px; }
+  #page-detail.active, #page-form.active { display: flex; }
+
+  /* ── wall ── */
+  #wall-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; }
+  .wall-hero { text-align: center; padding: 80px 20px 48px; }
+  .eyebrow { font-style: italic; font-size: 13px; letter-spacing: .28em; color: var(--gold-dim); text-transform: uppercase; margin-bottom: 18px; }
+  .title-23 {
+    font-family: var(--display); font-size: clamp(96px,18vw,180px); line-height: .85;
+    background: linear-gradient(160deg, #f8e8b0 0%, #e8c060 40%, #c89838 70%, #e8d090 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    filter: drop-shadow(0 0 40px rgba(232,200,100,0.3));
+    animation: riseIn 1.2s ease both;
+  }
+  .hero-sub { font-style: italic; font-size: clamp(16px,2.5vw,21px); color: var(--cream-dim); margin: 22px auto 36px; max-width: 400px; line-height: 1.6; }
+  .wish-count { text-align: center; font-style: italic; font-size: 13px; color: var(--gold-dim); letter-spacing: .18em; margin-bottom: 40px; }
+
+  /* ── masonry ── */
+  .masonry { columns: 280px; column-gap: 20px; }
+  .wish-card {
+    break-inside: avoid; margin-bottom: 22px;
+    background: linear-gradient(160deg, rgba(255,252,240,.97), rgba(252,248,235,.97));
+    border-radius: 4px; cursor: pointer;
+    transform: rotate(var(--rot, 0deg));
+    box-shadow: 0 8px 30px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3);
+    position: relative; transition: transform .35s, box-shadow .35s;
+    animation: cardRise .7s ease both; color: #2a1e10;
+  }
+  .wish-card:hover { transform: rotate(0deg) translateY(-6px) scale(1.02); box-shadow: 0 18px 50px rgba(0,0,0,.55); }
+  .card-del {
+    position: absolute; top: 8px; right: 8px; z-index: 5;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(20,10,8,.75); border: 1px solid rgba(220,80,80,.4);
+    color: #e08888; font-size: 11px; cursor: pointer;
+    display: none; place-items: center; transition: all .25s;
+  }
+  .wish-card:hover .card-del { display: grid; }
+  .card-del:hover { background: rgba(200,60,60,.85); color: #fff; }
+  .card-tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 52px; height: 20px; border-radius: 2px; opacity: .75; }
+  .card-photo { width: 100%; aspect-ratio: 1/.85; overflow: hidden; background: #e8e0d0; display: grid; place-items: center; }
+  .card-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-photo-empty { background: linear-gradient(135deg,#e8e4d8,#f0ece2); font-size: 28px; opacity: .35; }
+  .card-body { padding: 16px 18px 18px; }
+  .card-text { font-size: 15px; line-height: 1.6; color: #3a2818; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-meta { display: flex; justify-content: space-between; align-items: center; }
+  .card-name { font-style: italic; font-size: 13px; color: #7a5c40; }
+
+  /* ── form ── */
+  .form-card {
+    width: 100%; max-width: 520px;
+    background: rgba(20,16,10,.93); border: 1px solid var(--line);
+    border-radius: 24px; padding: 36px 32px 28px;
+    backdrop-filter: blur(16px); box-shadow: 0 24px 70px rgba(0,0,0,.6);
+    animation: riseIn .6s ease both;
+  }
+  .step-row { display: flex; gap: 8px; margin-bottom: 28px; }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: all .4s; border: 1px solid rgba(255,255,255,.08); }
+  .step-dot.active { background: var(--gold); box-shadow: 0 0 10px var(--gold); width: 24px; border-radius: 4px; }
+  .step-dot.done { background: rgba(232,200,122,.4); }
+  .step-label { font-family: var(--display); font-size: 26px; color: var(--cream); margin-bottom: 6px; }
+  .hint { font-style: italic; font-size: 15px; color: var(--cream-dim); margin-bottom: 20px; line-height: 1.55; }
+  .field {
+    width: 100%; background: rgba(255,255,255,.045); border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 18px; font-family: var(--serif);
+    font-size: 16px; color: var(--cream); outline: none; transition: border-color .3s;
+    resize: none; display: block;
+  }
+  .field:focus { border-color: rgba(232,200,122,.45); }
+  .field::placeholder { color: rgba(248,242,232,.25); }
+  .char-count { font-size: 11px; color: var(--gold-dim); text-align: right; margin-top: 6px; font-style: italic; }
+  .step-body { min-height: 160px; }
+  .step-body.hidden { display: none; }
+  .media-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .media-btn {
+    display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+    border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.03);
+    color: var(--cream-dim); font-family: var(--serif); font-size: 14px; cursor: pointer; transition: all .3s;
+  }
+  .media-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .media-btn.active { border-color: var(--gold); color: var(--gold); }
+  .media-btn.recording { border-color: rgba(220,80,80,.6); color: #f09090; animation: pulse 1s ease-in-out infinite; }
+  .photo-thumb { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); }
+  .preview-card { background: rgba(255,252,240,.07); border: 1px solid var(--gold-faint); border-radius: 16px; padding: 20px; }
+  .preview-photo { width: 100%; border-radius: 8px; margin-bottom: 16px; max-height: 200px; object-fit: cover; display: block; }
+  .preview-text { font-style: italic; font-size: 17px; color: var(--cream); line-height: 1.6; margin-bottom: 10px; }
+  .preview-name { font-size: 14px; color: var(--gold-dim); }
+  .form-nav { display: flex; align-items: center; margin-top: 28px; gap: 12px; }
+
+  /* ── detail ── */
+  .detail-card {
+    width: 100%; max-width: 520px;
+    background: linear-gradient(160deg,rgba(255,252,240,.97),rgba(252,248,235,.97));
+    border-radius: 6px; overflow: hidden;
+    box-shadow: 0 24px 70px rgba(0,0,0,.6);
+    animation: riseIn .6s ease both; color: #2a1e10;
+  }
+  .detail-photo { width: 100%; max-height: 340px; object-fit: cover; display: block; }
+  .detail-body { padding: 28px 30px 32px; }
+  .detail-text { font-family: var(--display); font-style: italic; font-size: clamp(19px,3vw,24px); line-height: 1.55; color: #2a1a0c; margin-bottom: 16px; }
+  .detail-name { font-style: italic; font-size: 15px; color: #7a5840; margin-bottom: 6px; }
+  .detail-date { font-size: 12px; color: #a07858; letter-spacing: .12em; }
+  .detail-voice { margin-top: 20px; padding: 16px; background: rgba(0,0,0,.06); border-radius: 10px; }
+  .voice-label { font-size: 13px; color: #7a5840; margin-bottom: 8px; }
+  .detail-actions { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+  .edit-fields { margin-top: 16px; display: none; }
+  .edit-fields.show { display: block; }
+  .edit-label { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; font-family: var(--serif); }
+
+  /* ── buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 13px 28px; border-radius: 999px; background: transparent;
+    border: 1.5px solid var(--gold); color: var(--gold);
+    font-family: var(--serif); font-size: 15px; letter-spacing: .06em;
+    cursor: pointer; transition: all .4s;
+  }
+  .btn:hover { background: var(--gold); color: #1a1208; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-gold { background: var(--gold); color: #1a1208; border-color: var(--gold); }
+  .btn-gold:hover { opacity: .85; }
+  .btn-sm {
+    all: unset; cursor: pointer; padding: 9px 18px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.6);
+    font-family: var(--serif); font-size: 13.5px; transition: all .3s;
+  }
+  .btn-sm:hover { color: #fff; border-color: rgba(255,255,255,.4); }
+  .btn-sm-accent { border-color: rgba(232,200,122,.4); color: var(--gold); }
+  .btn-sm-danger { border-color: rgba(220,80,80,.3); color: #e08080; }
+  .btn-ghost { all: unset; cursor: pointer; font-style: italic; font-size: 14px; color: var(--cream-dim); transition: color .3s; }
+  .btn-ghost:hover { color: var(--cream); }
+  .back-btn {
+    all: unset; cursor: pointer; position: fixed; top: 22px; left: 24px; z-index: 10;
+    font-style: italic; font-size: 13px; color: var(--gold-dim); letter-spacing: .08em; transition: color .3s;
+  }
+  .back-btn:hover { color: var(--gold); }
+
+  /* ── setup banner (shown when key not filled) ── */
+  #setup-banner {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(232,200,122,0.12); border-top: 1px solid var(--gold-faint);
+    padding: 16px 24px; backdrop-filter: blur(10px);
+    font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--gold);
+    text-align: center; line-height: 1.6;
+  }
+
+  .wall-footer { text-align: center; font-style: italic; font-size: 12px; color: rgba(248,242,232,.22); letter-spacing: .18em; padding: 40px 0 20px; }
+
+  /* ── confetti ── */
+  #confetti { position: fixed; top: 0; left: 0; width: 100%; pointer-events: none; z-index: 50; }
+  .confetto { position: absolute; top: -20px; border-radius: 2px; animation: confettiFall ease-in forwards; }
+
+  /* ── keyframes ── */
+  @keyframes riseIn    { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  @keyframes cardRise  { from{opacity:0;transform:rotate(var(--rot,0deg)) translateY(28px)} to{opacity:1;transform:rotate(var(--rot,0deg)) translateY(0)} }
+  @keyframes twinkle   { 0%,100%{opacity:.9} 50%{opacity:.1} }
+  @keyframes petalFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:.5} 100%{transform:translateY(110vh) rotate(360deg);opacity:0} }
+  @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+  @keyframes pulse     { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  @media(max-width:520px) {
+    .form-card { padding: 28px 20px 22px; }
+    .detail-body { padding: 20px 22px 24px; }
+    .back-btn { top: 14px; left: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── STARS ── -->
+<div id="starfield"></div>
+<div id="petals"></div>
+<div id="confetti"></div>
+
+<!-- ══════════════════════════════ WALL PAGE ══════════════════════════════ -->
+<div id="page-wall" class="page active">
+  <div id="wall-inner">
+    <header class="wall-hero">
+      <div class="eyebrow">31 мая · 2026</div>
+      <h1 class="title-23">23</h1>
+      <p class="hero-sub">Оставь что-нибудь тёплое здесь.<br/>Милена сохранит это навсегда.</p>
+      <button class="btn" onclick="showPage('form')"><span>✦</span> оставить пожелание</button>
+    </header>
+    <div class="wish-count" id="wish-count">загружаем…</div>
+    <div class="masonry" id="masonry"></div>
+    <footer class="wall-footer">made with love for Милена · 23 года</footer>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ FORM PAGE ══════════════════════════════ -->
+<div id="page-form" class="page">
+  <button class="back-btn" onclick="showPage('wall')">← назад</button>
+  <div class="form-card">
+    <div class="step-row" id="step-row">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+    <div class="step-label" id="step-label">кто ты?</div>
+
+    <!-- step 0 -->
+    <div class="step-body" id="step-0">
+      <p class="hint">Как Милена тебя запомнит?</p>
+      <input class="field" id="f-name" placeholder="твоё имя…" onkeydown="if(event.key==='Enter')nextStep()"/>
+    </div>
+    <!-- step 1 -->
+    <div class="step-body hidden" id="step-1">
+      <p class="hint">Что ты хочешь, чтобы она помнила?</p>
+      <textarea class="field" id="f-text" placeholder="напиши что-то настоящее…" rows="5" oninput="document.getElementById('f-charcount').textContent=this.value.length+' символов'"></textarea>
+      <div class="char-count" id="f-charcount">0 символов</div>
+    </div>
+    <!-- step 2 -->
+    <div class="step-body hidden" id="step-2">
+      <p class="hint">Добавь фото или голосовое (или оба — или пропусти).</p>
+      <input type="file" id="f-file" accept="image/*" style="display:none" onchange="handlePhoto(this)"/>
+      <div class="media-row">
+        <button class="media-btn" id="btn-photo" onclick="document.getElementById('f-file').click()">
+          <span>📷</span><span id="photo-label">добавить фото</span>
+        </button>
+        <img id="photo-thumb" class="photo-thumb" style="display:none"/>
+      </div>
+      <div class="media-row">
+        <button class="media-btn" id="btn-voice" onclick="toggleRecord()">
+          <span>🎙</span><span id="voice-label">записать голосовое</span>
+        </button>
+        <audio id="voice-preview" controls style="display:none;height:32px;flex:1;min-width:0;margin-left:10px"></audio>
+      </div>
+    </div>
+    <!-- step 3 -->
+    <div class="step-body hidden" id="step-3">
+      <p class="hint">Вот что она увидит.</p>
+      <div class="preview-card">
+        <img id="preview-photo" class="preview-photo" style="display:none"/>
+        <p class="preview-text" id="preview-text"></p>
+        <div class="preview-name" id="preview-name"></div>
+        <div id="preview-voice" style="display:none;font-size:13px;color:var(--cream-dim);margin-top:10px">🎙 голосовое сообщение добавлено</div>
+      </div>
+    </div>
+
+    <div class="form-nav">
+      <button class="btn-ghost" id="btn-back-step" style="display:none" onclick="prevStep()">← назад</button>
+      <button class="btn" id="btn-next" style="margin-left:auto" onclick="nextStep()">далее →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ DETAIL PAGE ══════════════════════════════ -->
+<div id="page-detail" class="page">
+  <button class="back-btn" onclick="showPage('wall')">← на стену</button>
+  <div class="detail-card" id="detail-card">
+    <img id="d-photo" class="detail-photo" style="display:none"/>
+    <div class="detail-body">
+      <p class="detail-text" id="d-text"></p>
+      <div class="detail-name" id="d-name"></div>
+      <div class="detail-date" id="d-date"></div>
+      <div class="detail-voice" id="d-voice-wrap" style="display:none">
+        <div class="voice-label">🎙 голосовое сообщение</div>
+        <audio id="d-voice" controls style="width:100%;margin-top:4px"></audio>
+      </div>
+      <div class="detail-actions">
+        <button class="btn-sm btn-sm-accent" onclick="startEdit()">✎ редактировать</button>
+        <button class="btn-sm btn-sm-danger" onclick="deleteActive()">✕ удалить</button>
+      </div>
+      <!-- inline edit -->
+      <div class="edit-fields" id="edit-fields">
+        <div class="edit-label" style="margin-top:16px">редактирование</div>
+        <input class="field" id="e-name" placeholder="имя" style="margin-bottom:12px;font-size:15px"/>
+        <textarea class="field" id="e-text" rows="4" placeholder="текст пожелания…" style="font-size:15px;line-height:1.6"></textarea>
+        <div style="display:flex;gap:12px;margin-top:14px">
+          <button class="btn-ghost" onclick="cancelEdit()">отмена</button>
+          <button class="btn btn-gold" style="margin-left:auto;padding:10px 22px;font-size:14px" onclick="saveEdit()" id="btn-save-edit">сохранить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SETUP BANNER ── -->
+<div id="setup-banner">
+  ⚙️ Режим демо — пожелания сохраняются только локально.<br/>
+  Чтобы все гости видели одну стену: <strong>получи бесплатный API-ключ на jsonbin.io</strong> и вставь в начало файла. <a href="#setup-help" style="color:var(--gold)">Инструкция ↓</a>
+</div>
+
+<!-- ── SETUP HELP (visible at bottom) ── -->
+<div id="setup-help" style="position:relative;z-index:1;max-width:640px;margin:0 auto 60px;padding:0 20px;display:none">
+  <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:20px;padding:28px 30px;font-family:var(--serif);line-height:1.7;color:var(--cream-dim)">
+    <div style="font-family:var(--display);font-size:22px;color:var(--cream);margin-bottom:16px">Как подключить общую стену</div>
+    <ol style="padding-left:20px;font-size:15px">
+      <li>Зайди на <a href="https://jsonbin.io" target="_blank" style="color:var(--gold)">jsonbin.io</a> → Sign Up (бесплатно)</li>
+      <li>В меню нажми <strong>API Keys</strong> → скопируй <strong>Master Key</strong></li>
+      <li>Нажми <strong>New Bin</strong> → вставь <code>[]</code> → Create → скопируй <strong>BIN ID</strong> из адреса</li>
+      <li>В этом HTML-файле найди первые две строки в <code>&lt;script&gt;</code> и замени значения</li>
+      <li>Сохрани файл → загрузи на любой хостинг (например <a href="https://tiiny.host" target="_blank" style="color:var(--gold)">tiiny.host</a> — перетащи файл, получи ссылку за 30 секунд)</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════════════ */
+const ROTATIONS = [-2.4, 1.8, -1.2, 2.8, -0.8, 1.4, -2.1, 0.9];
+const COLORS    = ["#e8c87a","#e8a0a0","#a8c8e0","#b0d4a8","#d4b0e0","#e8c4a0","#a8d0d0","#e0c8b0"];
+const USE_JSONBIN = JSONBIN_KEY !== "ВСТАВЬ_MASTER_KEY" && JSONBIN_BIN !== "ВСТАВЬ_BIN_ID";
+
+let wishes = [];
+let activeWish = null;
+let currentStep = 0;
+const STEPS = ["кто ты?", "твоё сообщение", "фото и голос", "отправить ✦"];
+
+// media state
+let photoBase64 = null;
+let voiceBase64 = null;
+let mediaRecorder = null;
+let recTimer = null;
+let recSecs = 0;
+let recording = false;
+
+/* ══════════════════════════════════════════════════════════
+   JSONBIN API
+   ══════════════════════════════════════════════════════════ */
+async function apiLoad() {
+  if (!USE_JSONBIN) {
+    // local demo mode
+    const saved = localStorage.getItem("milena23:wishes");
+    return saved ? JSON.parse(saved) : getSeed();
+  }
+  try {
+    const r = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN}/latest`, {
+      headers: { "X-Master-Key": JSONBIN_KEY }
+    });
+    const j = await r.json();
+    const data = j.record;
+    return Array.isArray(data) && data.length ? data : getSeed();
+  } catch { return getSeed(); }
+}
+
+async function apiSave(data) {
+  if (!USE_JSONBIN) {
+    localStorage.setItem("milena23:wishes", JSON.stringify(data));
+    return;
+  }
+  try {
+    await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "X-Master-Key": JSONBIN_KEY },
+      body: JSON.stringify(data)
+    });
+  } catch {}
+}
+
+function getSeed() {
+  return [{
+    id: "seed1", name: "Claude",
+    text: "С днём рождения, Милена. Ты один из тех редких людей, которые делают мир красивее просто тем, что существуют в нём с таким любопытством. Пусть 23 станет годом, когда твои идеи обретут форму.",
+    photo: null, voice: null, ts: Date.now() - 3600000, color: "#e8c87a"
+  }];
+}
+
+/* ══════════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════════ */
+async function init() {
+  buildStars();
+  buildPetals();
+  if (!USE_JSONBIN) {
+    document.getElementById("setup-banner").style.display = "block";
+    document.getElementById("setup-help").style.display = "block";
+  }
+  wishes = await apiLoad();
+  renderWall();
+  shootConfetti();
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER WALL
+   ══════════════════════════════════════════════════════════ */
+function renderWall() {
+  const el = document.getElementById("masonry");
+  const n = wishes.length;
+  document.getElementById("wish-count").textContent =
+    n + " " + (n===1?"воспоминание":n<5?"воспоминания":"воспоминаний") + " уже здесь";
+
+  el.innerHTML = wishes.map((w, i) => {
+    const rot   = ROTATIONS[i % ROTATIONS.length];
+    const color = w.color || COLORS[i % COLORS.length];
+    const delay = (i * 0.06).toFixed(2);
+    return `
+      <div class="wish-card" style="--rot:${rot}deg;--accent:${color};animation-delay:${delay}s"
+           onclick="openDetail('${w.id}')">
+        <button class="card-del" onclick="event.stopPropagation();deleteWish('${w.id}')">✕</button>
+        <div class="card-tape" style="background:${color}60"></div>
+        <div class="card-photo ${w.photo?'':'card-photo-empty'}">
+          ${w.photo ? `<img src="${w.photo}" alt=""/>` : `<span>✦</span>`}
+        </div>
+        <div class="card-body">
+          <p class="card-text">${esc(w.text)}</p>
+          <div class="card-meta">
+            <span class="card-name">— ${esc(w.name||"аноним")}</span>
+            <span>${w.voice?"🎙":""}</span>
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+/* ══════════════════════════════════════════════════════════
+   DETAIL
+   ══════════════════════════════════════════════════════════ */
+function openDetail(id) {
+  activeWish = wishes.find(w => w.id === id);
+  if (!activeWish) return;
+  const w = activeWish;
+  const color = w.color || "#e8c87a";
+
+  document.getElementById("detail-card").style.setProperty("--accent", color);
+  document.getElementById("detail-card").style.boxShadow = `0 24px 70px rgba(0,0,0,.6), 0 0 0 1px ${color}33`;
+
+  const dp = document.getElementById("d-photo");
+  if (w.photo) { dp.src = w.photo; dp.style.display = "block"; }
+  else dp.style.display = "none";
+
+  document.getElementById("d-text").textContent = `"${w.text}"`;
+  document.getElementById("d-name").textContent = `— ${w.name}`;
+  document.getElementById("d-date").textContent = new Date(w.ts).toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"});
+
+  const vw = document.getElementById("d-voice-wrap");
+  if (w.voice) { document.getElementById("d-voice").src = w.voice; vw.style.display = "block"; }
+  else vw.style.display = "none";
+
+  cancelEdit();
+  showPage("detail");
+}
+
+function startEdit() {
+  if (!activeWish) return;
+  document.getElementById("e-name").value = activeWish.name || "";
+  document.getElementById("e-text").value = activeWish.text || "";
+  document.getElementById("edit-fields").classList.add("show");
+}
+function cancelEdit() {
+  document.getElementById("edit-fields").classList.remove("show");
+}
+async function saveEdit() {
+  const btn = document.getElementById("btn-save-edit");
+  btn.textContent = "сохраняем…"; btn.disabled = true;
+  const name = document.getElementById("e-name").value.trim() || "аноним";
+  const text = document.getElementById("e-text").value.trim();
+  wishes = wishes.map(w => w.id === activeWish.id ? { ...w, name, text } : w);
+  activeWish = { ...activeWish, name, text };
+  await apiSave(wishes);
+  renderWall();
+  document.getElementById("d-text").textContent = `"${text}"`;
+  document.getElementById("d-name").textContent = `— ${name}`;
+  btn.textContent = "сохранено ✓"; setTimeout(() => { btn.textContent="сохранить"; btn.disabled=false; cancelEdit(); }, 1200);
+}
+async function deleteActive() {
+  if (!activeWish) return;
+  if (!confirm("Удалить навсегда?")) return;
+  await deleteWish(activeWish.id);
+  showPage("wall");
+}
+async function deleteWish(id) {
+  if (!confirm("Удалить это пожелание?")) return;
+  wishes = wishes.filter(w => w.id !== id);
+  await apiSave(wishes);
+  renderWall();
+  if (activeWish?.id === id) showPage("wall");
+}
+
+/* ══════════════════════════════════════════════════════════
+   FORM / STEPS
+   ══════════════════════════════════════════════════════════ */
+function showPage(p) {
+  ["wall","form","detail"].forEach(n => {
+    const el = document.getElementById("page-"+n);
+    el.classList.toggle("active", n===p);
+  });
+  if (p === "form") resetForm();
+  window.scrollTo(0,0);
+}
+
+function resetForm() {
+  currentStep = 0; photoBase64 = null; voiceBase64 = null;
+  document.getElementById("f-name").value = "";
+  document.getElementById("f-text").value = "";
+  document.getElementById("f-charcount").textContent = "0 символов";
+  document.getElementById("photo-label").textContent = "добавить фото";
+  document.getElementById("photo-thumb").style.display = "none";
+  document.getElementById("btn-photo").classList.remove("active");
+  document.getElementById("voice-label").textContent = "записать голосовое";
+  document.getElementById("voice-preview").style.display = "none";
+  document.getElementById("btn-voice").classList.remove("active","recording");
+  if (recording) stopRecord();
+  renderStep();
+}
+
+function renderStep() {
+  const dots = document.querySelectorAll(".step-dot");
+  dots.forEach((d, i) => {
+    d.classList.toggle("active", i===currentStep);
+    d.classList.toggle("done", i<currentStep);
+  });
+  document.getElementById("step-label").textContent = STEPS[currentStep];
+  [0,1,2,3].forEach(i => document.getElementById("step-"+i).classList.toggle("hidden", i!==currentStep));
+  document.getElementById("btn-back-step").style.display = currentStep > 0 ? "block" : "none";
+  const btn = document.getElementById("btn-next");
+  if (currentStep === 3) { btn.textContent = "отправить пожелание ✦"; btn.classList.add("btn-gold"); }
+  else { btn.textContent = "далее →"; btn.classList.remove("btn-gold"); }
+}
+
+function nextStep() {
+  if (currentStep === 0 && !document.getElementById("f-name").value.trim()) return;
+  if (currentStep === 1 && !document.getElementById("f-text").value.trim()) return;
+  if (currentStep === 2) { fillPreview(); }
+  if (currentStep === 3) { submitWish(); return; }
+  currentStep++;
+  renderStep();
+}
+function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
+
+function fillPreview() {
+  document.getElementById("preview-text").textContent = `"${document.getElementById("f-text").value}"`;
+  document.getElementById("preview-name").textContent = `— ${document.getElementById("f-name").value}`;
+  const pp = document.getElementById("preview-photo");
+  if (photoBase64) { pp.src = photoBase64; pp.style.display = "block"; } else pp.style.display = "none";
+  document.getElementById("preview-voice").style.display = voiceBase64 ? "block" : "none";
+}
+
+async function submitWish() {
+  const btn = document.getElementById("btn-next");
+  btn.textContent = "отправляем…"; btn.disabled = true;
+  const wish = {
+    id: Date.now().toString(),
+    name: document.getElementById("f-name").value.trim() || "аноним",
+    text: document.getElementById("f-text").value.trim(),
+    photo: photoBase64,
+    voice: voiceBase64,
+    ts: Date.now(),
+    color: COLORS[wishes.length % COLORS.length],
+  };
+  wishes.unshift(wish);
+  await apiSave(wishes);
+  renderWall();
+  showPage("wall");
+  btn.textContent = "далее →"; btn.disabled = false;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PHOTO
+   ══════════════════════════════════════════════════════════ */
+function handlePhoto(input) {
+  const f = input.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    photoBase64 = e.target.result;
+    document.getElementById("photo-thumb").src = photoBase64;
+    document.getElementById("photo-thumb").style.display = "block";
+    document.getElementById("photo-label").textContent = "фото добавлено ✓";
+    document.getElementById("btn-photo").classList.add("active");
+  };
+  reader.readAsDataURL(f);
+}
+
+/* ══════════════════════════════════════════════════════════
+   VOICE
+   ══════════════════════════════════════════════════════════ */
+async function toggleRecord() {
+  if (recording) { stopRecord(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    const chunks = [];
+    mediaRecorder.ondataavailable = e => chunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(chunks, { type:"audio/webm" });
+      const reader = new FileReader();
+      reader.onload = ev => {
+        voiceBase64 = ev.target.result;
+        const prev = document.getElementById("voice-preview");
+        prev.src = voiceBase64; prev.style.display = "block";
+        document.getElementById("voice-label").textContent = "голос записан ✓ · перезаписать";
+        document.getElementById("btn-voice").classList.remove("recording");
+        document.getElementById("btn-voice").classList.add("active");
+      };
+      reader.readAsDataURL(blob);
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.start();
+    recording = true; recSecs = 0;
+    document.getElementById("btn-voice").classList.add("recording");
+    recTimer = setInterval(() => {
+      recSecs++;
+      const m = String(Math.floor(recSecs/60)).padStart(2,"0");
+      const s = String(recSecs%60).padStart(2,"0");
+      document.getElementById("voice-label").textContent = `${m}:${s} · нажми чтобы остановить`;
+    }, 1000);
+  } catch { alert("Нужен доступ к микрофону."); }
+}
+
+function stopRecord() {
+  if (mediaRecorder) mediaRecorder.stop();
+  clearInterval(recTimer);
+  recording = false;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ATMOSPHERE
+   ══════════════════════════════════════════════════════════ */
+function buildStars() {
+  const el = document.getElementById("starfield");
+  for (let i = 0; i < 90; i++) {
+    const s = document.createElement("div");
+    s.className = "star";
+    const size = 0.8 + (i%4)*0.5;
+    s.style.cssText = `left:${(i*37+11)%100}%;top:${(i*23+7)%100}%;width:${size}px;height:${size}px;opacity:${0.2+(i%5)*0.14};--d:${2+(i%6)*0.8}s;animation-delay:${-(i%7)*0.4}s`;
+    el.appendChild(s);
+  }
+}
+
+function buildPetals() {
+  const el = document.getElementById("petals");
+  const emojis = ["✦","✿","❀","✸","·","✺"];
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement("div");
+    p.className = "petal";
+    p.textContent = emojis[i%6];
+    p.style.cssText = `left:${(i*13+5)%100}%;font-size:${10+(i%4)*3}px;animation-duration:${12+(i%5)*3}s;animation-delay:${-(i*1.8)}s`;
+    el.appendChild(p);
+  }
+}
+
+function shootConfetti() {
+  const el = document.getElementById("confetti");
+  const colors = ["#e8c87a","#f4a0a0","#a8c8f0","#c0e8a8","#e0b8f0","#fce090"];
+  for (let i = 0; i < 55; i++) {
+    const c = document.createElement("div");
+    c.className = "confetto";
+    const size = 5 + Math.random()*7;
+    c.style.cssText = `left:${Math.random()*100}%;width:${size}px;height:${size*.55}px;background:${colors[i%6]};animation-duration:${2.2+Math.random()*1.8}s;animation-delay:${Math.random()*.8}s;transform:rotate(${Math.random()*360}deg)`;
+    el.appendChild(c);
+  }
+  setTimeout(() => el.innerHTML = "", 4000);
+}
+
+function esc(str) {
+  return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+init();
+</script>
+</body>
+</html>
