@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DÉBUT · Speaking Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --emerald:#284139;
+  --emerald-deep:#1A2B25;
+  --wasabi:#809076;
+  --wasabi-light:#A6B29B;
+  --khaki:#F8D794;
+  --earth:#BB6830;
+  --noir:#0E1514;
+  --cream:#F3EEE2;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Jost',sans-serif;
+  background:var(--noir);color:var(--cream);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 3rem;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at top,rgba(40,65,57,0.5),transparent 60%);
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;
+}
+.container{width:100%;max-width:460px;position:relative;z-index:1;}
+
+header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2.5rem;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;letter-spacing:0.16em;color:var(--khaki);}
+.logo-sub{font-size:10px;letter-spacing:0.14em;color:var(--wasabi);text-transform:uppercase;}
+
+.screen{animation:fade 0.6s ease;}
+.hidden{display:none !important;}
+@keyframes fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── INTRO / LEVEL SELECT ── */
+.intro-tag{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--khaki);border:0.5px solid rgba(248,215,148,0.3);padding:5px 13px;border-radius:20px;margin-bottom:1.5rem;}
+.intro-title{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,9vw,52px);font-weight:300;font-style:italic;line-height:1.1;margin-bottom:0.75rem;}
+.intro-desc{font-size:14px;font-weight:300;color:var(--wasabi-light);line-height:1.65;margin-bottom:0.5rem;}
+.intro-desc-ru{font-size:11px;font-weight:300;color:var(--wasabi);line-height:1.5;margin-bottom:2.25rem;opacity:0.8;}
+
+.levels{display:flex;flex-direction:column;gap:12px;}
+.level-card{
+  background:linear-gradient(135deg,rgba(40,65,57,0.4),rgba(26,43,37,0.6));
+  border:0.5px solid rgba(128,144,118,0.25);border-radius:14px;
+  padding:18px 20px;cursor:pointer;text-align:left;
+  transition:border-color 0.2s,transform 0.2s,background 0.2s;
+  display:flex;align-items:center;gap:16px;
+}
+.level-card:hover{border-color:var(--khaki);transform:translateX(5px);background:linear-gradient(135deg,rgba(40,65,57,0.7),rgba(26,43,37,0.8));}
+.level-dot{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.level-dot.easy{background:rgba(128,144,118,0.25);border:1px solid var(--wasabi);}
+.level-dot.medium{background:rgba(248,215,148,0.2);border:1px solid var(--khaki);}
+.level-dot.spicy{background:rgba(187,104,48,0.25);border:1px solid var(--earth);}
+.level-dot.cinema{background:rgba(40,65,57,0.4);border:1px solid var(--wasabi-light);}
+.level-dot.deep{background:rgba(248,215,148,0.18);border:1px solid var(--khaki);}
+.level-info{flex:1;}
+.level-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--cream);line-height:1.1;}
+.level-en{font-size:12px;color:var(--wasabi-light);margin-top:2px;}
+.level-ru{font-size:10px;color:var(--wasabi);margin-top:3px;opacity:0.75;}
+.level-arrow{color:var(--wasabi);font-size:18px;}
+
+/* ── CHALLENGE SCREEN ── */
+.challenge-top{display:flex;align-items:center;gap:12px;margin-bottom:2rem;}
+.back-btn{background:none;border:0.5px solid rgba(128,144,118,0.3);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px;color:var(--wasabi);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s;}
+.back-btn:hover{background:rgba(128,144,118,0.12);}
+.progress-track{flex:1;display:flex;gap:6px;}
+.progress-seg{flex:1;height:3px;border-radius:2px;background:rgba(128,144,118,0.2);transition:background 0.3s;}
+.progress-seg.active{background:var(--khaki);}
+.progress-seg.done{background:var(--wasabi);}
+.level-badge{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.level-badge.easy{color:var(--wasabi);border:0.5px solid var(--wasabi);}
+.level-badge.medium{color:var(--khaki);border:0.5px solid var(--khaki);}
+.level-badge.spicy{color:var(--earth);border:0.5px solid var(--earth);}
+.level-badge.travel{color:var(--wasabi-light);border:0.5px solid var(--wasabi-light);}
+.level-badge.deep{color:var(--khaki);border:0.5px solid var(--khaki);}
+
+.step-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--wasabi);margin-bottom:1rem;text-align:center;}
+
+.prompt-card{
+  background:linear-gradient(155deg,var(--emerald),var(--emerald-deep));
+  border:0.5px solid rgba(128,144,118,0.3);border-radius:18px;
+  padding:2rem 1.75rem;margin-bottom:1.5rem;position:relative;overflow:hidden;
+  min-height:230px;display:flex;flex-direction:column;justify-content:center;
+}
+.prompt-card::before{content:'';position:absolute;top:-30%;right:-20%;width:60%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(248,215,148,0.06),transparent 70%);}
+.prompt-quote{font-family:'Cormorant Garamond',serif;font-size:42px;color:rgba(248,215,148,0.25);line-height:0.5;margin-bottom:0.5rem;}
+.prompt-text{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,5.5vw,30px);font-weight:400;color:var(--cream);line-height:1.35;position:relative;}
+.prompt-ru{font-size:12px;font-weight:300;color:var(--wasabi);line-height:1.5;margin-top:1rem;opacity:0.8;position:relative;}
+
+/* TWIST */
+.twist-banner{
+  background:rgba(187,104,48,0.15);border:0.5px solid rgba(187,104,48,0.4);
+  border-radius:12px;padding:14px 16px;margin-bottom:1.5rem;display:none;animation:fade 0.4s ease;
+}
+.twist-banner.show{display:block;}
+.twist-label{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--earth);margin-bottom:5px;}
+.twist-text{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--cream);line-height:1.4;}
+.twist-ru{font-size:11px;color:var(--wasabi);margin-top:5px;opacity:0.8;}
+
+/* TIMER */
+.timer-zone{display:flex;flex-direction:column;align-items:center;margin-bottom:1.5rem;}
+.timer-ring{position:relative;width:140px;height:140px;margin-bottom:1rem;}
+.timer-ring svg{transform:rotate(-90deg);}
+.timer-ring .bg{fill:none;stroke:rgba(128,144,118,0.15);stroke-width:5;}
+.timer-ring .fg{fill:none;stroke:var(--khaki);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+.timer-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--khaki);font-variant-numeric:tabular-nums;}
+.timer-controls{display:flex;gap:10px;}
+.t-btn{background:var(--khaki);color:var(--noir);border:none;border-radius:8px;padding:12px 28px;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:0.06em;cursor:pointer;transition:opacity 0.2s;}
+.t-btn:hover{opacity:0.9;}
+.t-btn.ghost{background:transparent;color:var(--wasabi-light);border:0.5px solid rgba(128,144,118,0.4);}
+
+.next-btn{width:100%;background:var(--khaki);color:var(--noir);border:none;border-radius:10px;padding:15px;font-family:'Jost',sans-serif;font-size:14px;letter-spacing:0.05em;cursor:pointer;transition:opacity 0.2s;font-weight:400;}
+.next-btn:hover{opacity:0.9;}
+.skip-btn{width:100%;background:transparent;color:var(--wasabi);border:none;padding:12px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:0.04em;cursor:pointer;margin-top:6px;}
+.skip-btn:hover{color:var(--wasabi-light);}
+
+/* ── RESULT CARD ── */
+.result-card{
+  background:linear-gradient(160deg,var(--emerald),var(--emerald-deep));
+  border:0.5px solid rgba(248,215,148,0.25);border-radius:18px;
+  padding:2.25rem 1.75rem;text-align:center;position:relative;overflow:hidden;margin-bottom:1.25rem;
+}
+.result-card::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:120%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(248,215,148,0.08),transparent 60%);}
+.result-logo{font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:0.18em;color:var(--khaki);margin-bottom:1.5rem;position:relative;}
+.result-icon{font-size:40px;margin-bottom:0.75rem;position:relative;}
+.result-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;font-style:italic;color:var(--cream);margin-bottom:0.5rem;position:relative;}
+.result-sub{font-size:13px;color:var(--wasabi-light);line-height:1.6;margin-bottom:1.5rem;position:relative;}
+.result-stats{display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;position:relative;}
+.stat{text-align:center;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:var(--khaki);line-height:1;}
+.stat-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--wasabi);margin-top:5px;}
+.result-quote{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--khaki);line-height:1.5;position:relative;padding:0 0.5rem;}
+
+.result-actions{display:flex;flex-direction:column;gap:9px;}
+
+.footer-cta{text-align:center;margin-top:1.5rem;padding-top:1.25rem;border-top:0.5px solid rgba(128,144,118,0.2);}
+.footer-cta p{font-size:12px;color:var(--wasabi);margin-bottom:8px;}
+.footer-cta a{font-size:13px;color:var(--khaki);text-decoration:none;border-bottom:0.5px solid rgba(248,215,148,0.3);padding-bottom:1px;}
+
+/* RANDOM card */
+.random-card{border-color:rgba(248,215,148,0.3);background:linear-gradient(135deg,rgba(40,65,57,0.5),rgba(187,104,48,0.15));}
+.random-card:hover{border-color:var(--khaki);}
+.level-dot.random{background:rgba(248,215,148,0.15);border:1px dashed var(--khaki);}
+.level-badge.random{color:var(--khaki);border:0.5px solid var(--khaki);}
+
+/* SAVED PHRASES CARD */
+.saved-card{
+  background:linear-gradient(145deg,var(--emerald),var(--emerald-deep));
+  border:0.5px solid rgba(128,144,118,0.3);border-radius:14px;
+  padding:1.25rem 1.25rem 1rem;margin-bottom:1.25rem;
+}
+.saved-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;}
+.saved-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--khaki);}
+.saved-hint{font-size:10px;color:var(--wasabi);letter-spacing:0.05em;}
+.saved-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem;}
+.saved-phrase-item{
+  background:rgba(17,26,25,0.5);border-radius:8px;padding:10px 13px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.saved-phrase-text{flex:1;}
+.saved-phrase-en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--cream);}
+.saved-phrase-ru{font-size:11px;color:var(--wasabi);margin-top:3px;opacity:0.8;}
+.unsave-btn{background:none;border:none;color:var(--wasabi);cursor:pointer;font-size:14px;padding:2px;flex-shrink:0;opacity:0.6;transition:opacity 0.15s;}
+.unsave-btn:hover{opacity:1;}
+.copy-all-btn{
+  width:100%;background:rgba(248,215,148,0.12);border:0.5px solid rgba(248,215,148,0.3);
+  border-radius:8px;padding:12px;font-family:'Jost',sans-serif;
+  font-size:13px;color:var(--khaki);cursor:pointer;letter-spacing:0.05em;
+  transition:background 0.2s;
+}
+.copy-all-btn:hover{background:rgba(248,215,148,0.2);}
+.saved-empty{text-align:center;padding:1.25rem 0;font-size:13px;color:var(--wasabi);}
+.saved-empty-ru{font-size:11px;margin-top:6px;opacity:0.7;}
+
+/* SAVE PHRASE BUTTON inside phrases list */
+.phrase-item{
+  background:rgba(17,26,25,0.5);border-radius:8px;padding:11px 14px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.phrase-texts{flex:1;}
+.save-phrase-btn{
+  background:none;border:0.5px solid rgba(128,144,118,0.3);border-radius:6px;
+  color:var(--wasabi);cursor:pointer;font-size:13px;padding:4px 8px;
+  flex-shrink:0;transition:all 0.2s;white-space:nowrap;
+}
+.save-phrase-btn:hover{background:rgba(248,215,148,0.12);color:var(--khaki);border-color:var(--khaki);}
+.save-phrase-btn.saved{color:var(--khaki);border-color:var(--khaki);background:rgba(248,215,148,0.1);}
+
+/* PHRASES PANEL */
+.phrases-panel{
+  background:rgba(40,65,57,0.35);border:0.5px solid rgba(128,144,118,0.25);
+  border-radius:12px;margin-bottom:1rem;overflow:hidden;
+}
+.phrases-summary{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;cursor:pointer;list-style:none;
+  transition:background 0.2s;
+}
+.phrases-summary:hover{background:rgba(40,65,57,0.4);}
+.phrases-summary::-webkit-details-marker{display:none;}
+.phrases-icon{font-size:16px;}
+.phrases-title{font-size:14px;font-weight:400;color:var(--cream);flex:1;}
+.phrases-hint{font-size:10px;color:var(--wasabi);opacity:0.7;}
+.phrases-arrow{font-size:18px;color:var(--wasabi);transition:transform 0.2s;}
+details[open] .phrases-arrow{transform:rotate(90deg);}
+.phrases-list{padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;}
+.phrase-item{
+  background:rgba(17,26,25,0.5);border-radius:8px;padding:11px 14px;
+}
+.phrase-en{font-size:14px;color:var(--cream);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:3px;}
+.phrase-ru{font-size:11px;color:var(--wasabi);opacity:0.8;}
+</style>
+<!-- Analytics: replace YOUR-DOMAIN with your Netlify URL e.g. debut-studio.netlify.app -->
+<script defer data-domain="YOUR-DOMAIN" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <span class="logo">DÉBUT</span>
+    <span class="logo-sub">speaking studio</span>
+  </header>
+
+  <!-- INTRO / LEVELS -->
+  <div id="intro" class="screen">
+    <div class="intro-tag">speaking practice</div>
+    <div class="intro-title">Find your<br>words</div>
+    <div class="intro-desc">Three prompts. One voice. No script. Pick your level and speak out loud — alone, in English, like no one's listening.</div>
+    <div class="intro-desc-ru">Три задания подряд. Говори вслух на английском, без подготовки. Выбери уровень сложности ниже.</div>
+    <div class="levels">
+      <button class="level-card" onclick="startSession('easy')">
+        <div class="level-dot easy">🌱</div>
+        <div class="level-info">
+          <div class="level-name">Easy</div>
+          <div class="level-en">Warm, simple, everyday topics</div>
+          <div class="level-ru">Простые тёплые темы для разогрева</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('medium')">
+        <div class="level-dot medium">✦</div>
+        <div class="level-info">
+          <div class="level-name">Medium</div>
+          <div class="level-en">Opinions, stories, imagination</div>
+          <div class="level-ru">Мнения, истории, воображение</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('spicy')">
+        <div class="level-dot spicy">🔥</div>
+        <div class="level-info">
+          <div class="level-name">Spicy</div>
+          <div class="level-en">Bold, weird, debate-worthy</div>
+          <div class="level-ru">Дерзкие и неожиданные — для смелых</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('travel')">
+        <div class="level-dot cinema">✈️</div>
+        <div class="level-info">
+          <div class="level-name">Travel</div>
+          <div class="level-en">Trips, cities, adventures</div>
+          <div class="level-ru">Путешествия, города, приключения</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('deep')">
+        <div class="level-dot deep">💛</div>
+        <div class="level-info">
+          <div class="level-name">Deep talk</div>
+          <div class="level-en">Warm, personal, meaningful</div>
+          <div class="level-ru">Тёплые личные вопросы по душам</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card random-card" onclick="startSession('random')">
+        <div class="level-dot random">🎲</div>
+        <div class="level-info">
+          <div class="level-name">Random</div>
+          <div class="level-en">Mixed prompts from all themes</div>
+          <div class="level-ru">Случайные вопросы из всех тем</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- CHALLENGE -->
+  <div id="challenge" class="screen hidden">
+    <div class="challenge-top">
+      <button class="back-btn" onclick="goHome()">←</button>
+      <div class="progress-track">
+        <div class="progress-seg" id="seg0"></div>
+        <div class="progress-seg" id="seg1"></div>
+        <div class="progress-seg" id="seg2"></div>
+      </div>
+      <span class="level-badge" id="levelBadge"></span>
+    </div>
+
+    <div class="step-label" id="stepLabel"></div>
+
+    <div class="prompt-card">
+      <div class="prompt-quote">"</div>
+      <div class="prompt-text" id="promptText"></div>
+      <div class="prompt-ru" id="promptRu"></div>
+    </div>
+
+    <div class="timer-zone">
+      <div class="timer-ring">
+        <svg width="140" height="140">
+          <circle class="bg" cx="70" cy="70" r="64"></circle>
+          <circle class="fg" id="timerFg" cx="70" cy="70" r="64"></circle>
+        </svg>
+        <div class="timer-num" id="timerNum">0:45</div>
+      </div>
+      <div class="timer-controls">
+        <button class="t-btn" id="timerStart">Start</button>
+        <button class="t-btn ghost" id="timerReset">Reset</button>
+      </div>
+    </div>
+
+    <!-- PHRASES -->
+    <details class="phrases-panel" id="phrasesPanel">
+      <summary class="phrases-summary">
+        <span class="phrases-icon">💬</span>
+        <span class="phrases-title">Useful phrases</span>
+        <span class="phrases-hint">подсказки для говорения</span>
+        <span class="phrases-arrow">›</span>
+      </summary>
+      <div class="phrases-list" id="phrasesList"></div>
+    </details>
+
+    <button class="next-btn" id="nextBtn">Next prompt →</button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" class="screen hidden">
+    <div class="result-card">
+      <div class="result-logo">DÉBUT</div>
+      <div class="result-icon" id="resIcon">🎬</div>
+      <div class="result-title" id="resTitle"></div>
+      <div class="result-sub" id="resSub"></div>
+      <div class="result-stats">
+        <div class="stat">
+          <div class="stat-num" id="statPrompts">3</div>
+          <div class="stat-label">prompts</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="statSaved">0</div>
+          <div class="stat-label">phrases saved</div>
+        </div>
+      </div>
+      <div class="result-quote" id="resQuote"></div>
+    </div>
+
+    <!-- SAVED PHRASES CARD -->
+    <div class="saved-card" id="savedCard">
+      <div class="saved-header">
+        <div class="saved-title">My phrases</div>
+        <div class="saved-hint">твой словарик этой сессии</div>
+      </div>
+      <div class="saved-list" id="savedList"></div>
+      <button class="copy-all-btn" id="copyAllBtn">Copy all phrases</button>
+      <div class="saved-empty hidden" id="savedEmpty">
+        <div>You didn't save any phrases this time.</div>
+        <div class="saved-empty-ru">В следующий раз нажимай ❤ рядом с фразами которые нравятся</div>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="next-btn" onclick="shareResult()">Share your result</button>
+      <button class="skip-btn" onclick="goHome()" style="border:0.5px solid rgba(128,144,118,0.3);border-radius:10px;">Play again</button>
+    </div>
+  </div>
+
+  <div class="footer-cta">
+    <p>Want to practice speaking every day, with people like you?</p>
+    <a href="https://t.me/debutcommunity" target="_blank">Join DÉBUT →</a>
+  </div>
+
+</div>
+
+<script>
+const TIMER_SECONDS = 45;
+const DATA = {
+  easy: {
+    badge:"Easy", icon:"🌱",
+    prompts:[
+      {en:"Describe what you're wearing right now, piece by piece.",ru:"Опиши во что ты сейчас одет — вещь за вещью."},
+      {en:"Talk about what you ate today, from morning to now.",ru:"Расскажи что ты ел сегодня — с утра до этого момента."},
+      {en:"Describe the room you're in right now.",ru:"Опиши комнату, в которой ты сейчас находишься."},
+      {en:"Name 3 things you did yesterday and talk about each.",ru:"Назови 3 дела, что ты делал вчера, и расскажи о каждом."},
+      {en:"Talk about the last film or series you watched.",ru:"Расскажи о последнем фильме или сериале, что ты смотрел."},
+      {en:"Describe your way to work or school step by step.",ru:"Опиши свой путь на работу или учёбу шаг за шагом."},
+      {en:"Talk about what you'll do right after this.",ru:"Расскажи что будешь делать сразу после этого."},
+      {en:"Describe your phone's home screen and your top 3 apps.",ru:"Опиши главный экран телефона и свои топ-3 приложения."}
+    ]
+  },
+  medium: {
+    badge:"Medium", icon:"✦",
+    prompts:[
+      {en:"Describe your morning today like a movie trailer.",ru:"Опиши своё сегодняшнее утро как трейлер к фильму."},
+      {en:"Tell me about the last time you were really happy.",ru:"Расскажи о последнем разе, когда ты был по-настоящему счастлив."},
+      {en:"Convince me to visit the city you live in right now.",ru:"Убеди меня приехать в город, где ты сейчас живёшь."},
+      {en:"You have one free hour today. Walk me through it.",ru:"У тебя есть свободный час сегодня. Расскажи, как проведёшь."},
+      {en:"Describe the best meal you've had this month.",ru:"Опиши лучшую еду, что ты ел в этом месяце."},
+      {en:"Tell me about a person you texted today and why.",ru:"Расскажи о человеке, которому писал сегодня, и почему."},
+      {en:"What's a small habit you want to build? Explain how.",ru:"Какую маленькую привычку хочешь завести? Объясни как."},
+      {en:"Describe your dream apartment, room by room.",ru:"Опиши квартиру мечты — комната за комнатой."}
+    ]
+  },
+  spicy: {
+    badge:"Spicy", icon:"🔥",
+    prompts:[
+      {en:"Convince me that pineapple belongs on pizza.",ru:"Убеди меня, что ананасу место на пицце."},
+      {en:"Argue that staying in beats going out. Defend it.",ru:"Докажи, что остаться дома лучше, чем пойти гулять."},
+      {en:"You're a villain who steals all the world's coffee. Explain why.",ru:"Ты злодей, укравший весь кофе мира. Объясни зачем."},
+      {en:"Argue that Mondays are secretly the best day of the week.",ru:"Докажи, что понедельник тайно лучший день недели."},
+      {en:"Sell me this spoon like it's the best thing ever made.",ru:"Продай мне эту ложку как лучшую вещь на свете."},
+      {en:"Explain TikTok to someone from the year 1850.",ru:"Объясни TikTok человеку из 1850 года."},
+      {en:"Argue that cats are secretly running the world.",ru:"Докажи, что коты тайно правят миром."},
+      {en:"Defend this opinion: cereal is a soup. Be serious.",ru:"Защити мнение: хлопья — это суп. Серьёзно."}
+    ]
+  },
+  travel: {
+    badge:"Travel", icon:"✈️",
+    prompts:[
+      {en:"Describe the best trip you've ever taken.",ru:"Опиши лучшую поездку в твоей жизни."},
+      {en:"You can fly anywhere tomorrow. Where, and what's your first day?",ru:"Можешь улететь куда угодно завтра. Куда и как пройдёт первый день?"},
+      {en:"Describe a city you'd love to live in and why.",ru:"Опиши город, в котором хотел бы жить, и почему."},
+      {en:"Talk about a place that surprised you — good or bad.",ru:"Расскажи о месте, которое тебя удивило — хорошо или плохо."},
+      {en:"What 3 things do you always pack? Explain each.",ru:"Какие 3 вещи ты всегда берёшь в поездку? Объясни каждую."},
+      {en:"Describe your idea of a perfect weekend getaway.",ru:"Опиши идеальную поездку на выходные."},
+      {en:"Beach, mountains or city break? Defend your choice.",ru:"Пляж, горы или город? Защити свой выбор."},
+      {en:"Tell me about a local dish you tried while travelling.",ru:"Расскажи о местном блюде, которое ты пробовал в поездке."}
+    ]
+  },
+  deep: {
+    badge:"Deep talk", icon:"💛",
+    prompts:[
+      {en:"Talk about something you're grateful for today.",ru:"Расскажи, за что ты благодарен сегодня."},
+      {en:"Describe a person who shaped who you are.",ru:"Опиши человека, который повлиял на то, какой ты есть."},
+      {en:"What does a good life mean to you? Put it in words.",ru:"Что для тебя хорошая жизнь? Сформулируй словами."},
+      {en:"Talk about a fear you've slowly grown out of.",ru:"Расскажи о страхе, который ты постепенно перерос."},
+      {en:"Describe a moment you felt truly proud of yourself.",ru:"Опиши момент, когда ты по-настоящему собой гордился."},
+      {en:"What advice would you give your 15-year-old self?",ru:"Что бы ты посоветовал себе в 15 лет?"},
+      {en:"Talk about a place that feels like home to you.",ru:"Расскажи о месте, которое для тебя как дом."},
+      {en:"What's something you've changed your mind about? Why?",ru:"О чём ты поменял мнение со временем? Почему?"}
+    ]
+  }
+};
+
+// ── PHRASE BANKS — per prompt ──
+// Key = first 30 chars of prompt EN text
+const PROMPT_PHRASES = {
+  // EASY
+  "Describe what you're wearing ri":[
+    {en:"Starting from the top, I'm wearing...",ru:"Начну сверху — я одет в..."},
+    {en:"The colours are mostly...",ru:"Цвета в основном..."},
+    {en:"It's quite casual / formal today because...",ru:"Сегодня я одет довольно неформально / официально, потому что..."},
+    {en:"My favourite thing I'm wearing right now is...",ru:"Моя любимая вещь из того, что на мне сейчас — это..."},
+    {en:"I chose this because...",ru:"Я выбрал это потому что..."}
+  ],
+  "Talk about what you ate today, ":[
+    {en:"For breakfast I had... and honestly it was...",ru:"На завтрак у меня было... и честно говоря это было..."},
+    {en:"I didn't really have time for... so instead I...",ru:"У меня не было времени на... поэтому я..."},
+    {en:"My favourite meal today was definitely...",ru:"Мой любимый приём пищи сегодня — определённо..."},
+    {en:"I've been craving... all day but...",ru:"Весь день хотелось... но..."},
+    {en:"Compared to yesterday, today's food was...",ru:"По сравнению со вчера, сегодняшняя еда была..."}
+  ],
+  "Describe the room you're in rig":[
+    {en:"The first thing you'd notice coming in is...",ru:"Первое, что ты заметишь войдя — это..."},
+    {en:"The light in here is...",ru:"Освещение здесь..."},
+    {en:"It's a bit... but I like it because...",ru:"Здесь немного... но мне нравится, потому что..."},
+    {en:"On my left I can see..., and on my right...",ru:"Слева я вижу..., а справа..."},
+    {en:"The overall vibe of this room is...",ru:"Общая атмосфера этой комнаты — это..."}
+  ],
+  "Name 3 things you did yesterday":[
+    {en:"The first thing I did was... which took about...",ru:"Первое, что я сделал — это... на это ушло примерно..."},
+    {en:"What I enjoyed most was...",ru:"Больше всего мне понравилось..."},
+    {en:"I didn't plan to... but ended up...",ru:"Я не планировал... но в итоге..."},
+    {en:"Looking back, yesterday was...",ru:"Оглядываясь назад, вчера было..."},
+    {en:"One thing I wish I'd have done differently...",ru:"Одно, что я бы сделал иначе..."}
+  ],
+  "Talk about the last film or ser":[
+    {en:"So the basic plot is...",ru:"Итак, основной сюжет такой..."},
+    {en:"What I liked most about it was...",ru:"Больше всего мне понравилось..."},
+    {en:"The main character is... and they basically...",ru:"Главный герой — это... и он по сути..."},
+    {en:"I'd recommend it to anyone who likes...",ru:"Я бы порекомендовал это всем, кто любит..."},
+    {en:"What surprised me was...",ru:"Меня удивило то, что..."}
+  ],
+  "Describe your way to work or sc":[
+    {en:"It usually takes me about... to get there.",ru:"Обычно мне уходит около... чтобы добраться."},
+    {en:"I normally go by... but sometimes...",ru:"Обычно я езжу на... но иногда..."},
+    {en:"The best part of my commute is...",ru:"Лучшее в моей дороге — это..."},
+    {en:"I usually spend the time...",ru:"Обычно я трачу это время на..."},
+    {en:"The route takes me through...",ru:"Маршрут проходит через..."}
+  ],
+  "Talk about what you'll do right":[
+    {en:"Right after this, I'm planning to...",ru:"Сразу после этого я планирую..."},
+    {en:"I'm either going to... or...",ru:"Я либо... либо..."},
+    {en:"Honestly, I'll probably just...",ru:"Честно, я наверное просто..."},
+    {en:"I've been looking forward to... all day.",ru:"Я ждал... весь день."},
+    {en:"It depends on whether...",ru:"Это зависит от того..."}
+  ],
+  "Describe your phone's home scre":[
+    {en:"My background is... because...",ru:"Мой фон — это... потому что..."},
+    {en:"The apps I use most are... and I open them when...",ru:"Приложения, которые я использую чаще всего — это... я открываю их когда..."},
+    {en:"I have way too many apps for...",ru:"У меня слишком много приложений для..."},
+    {en:"Something unusual on my phone is...",ru:"Что-то необычное в моём телефоне — это..."},
+    {en:"I recently deleted... because...",ru:"Недавно я удалил... потому что..."}
+  ],
+  // MEDIUM
+  "Describe your morning today lik":[
+    {en:"It opens with a close-up of me...",ru:"Это начинается крупным планом — я..."},
+    {en:"The soundtrack would be something like...",ru:"Саундтрек был бы чем-то вроде..."},
+    {en:"The dramatic turning point was when...",ru:"Драматический поворот наступил, когда..."},
+    {en:"The tagline of today's morning would be...",ru:"Слоган сегодняшнего утра был бы..."},
+    {en:"And the final scene ends with...",ru:"А финальная сцена заканчивается..."}
+  ],
+  "Tell me about the last time you":[
+    {en:"It was when... and the reason it made me happy was...",ru:"Это было когда... и причина, почему я был счастлив..."},
+    {en:"What made it special was not just... but also...",ru:"Что сделало это особенным — не только... но и..."},
+    {en:"I remember feeling...",ru:"Помню, я чувствовал..."},
+    {en:"It's the kind of happiness when...",ru:"Это такое счастье, когда..."},
+    {en:"Looking back at that moment...",ru:"Оглядываясь на тот момент..."}
+  ],
+  "Convince me to visit the city y":[
+    {en:"The first thing you have to do when you arrive is...",ru:"Первое, что нужно сделать по приезде — это..."},
+    {en:"What makes it different from other cities is...",ru:"Что отличает его от других городов — это..."},
+    {en:"The best hidden spot most tourists never find is...",ru:"Лучшее скрытое место, которое большинство туристов не находят — это..."},
+    {en:"The food scene here is...",ru:"Гастрономическая сцена здесь..."},
+    {en:"Trust me, you'll leave thinking...",ru:"Поверь, уезжая ты будешь думать..."}
+  ],
+  "You have one free hour today. W":[
+    {en:"First I'd probably...",ru:"Сначала я бы наверное..."},
+    {en:"I'd spend roughly... minutes on...",ru:"Я бы потратил примерно... минут на..."},
+    {en:"The thing I've been putting off is..., so maybe...",ru:"То, что я откладывал — это... так что может быть..."},
+    {en:"Ideally the hour would end with me feeling...",ru:"В идеале этот час закончился бы с ощущением..."},
+    {en:"No phone, no distractions — I'd...",ru:"Без телефона, без отвлечений — я бы..."}
+  ],
+  "Describe the best meal you've h":[
+    {en:"It was a... and I had it at...",ru:"Это было... и я ел это в..."},
+    {en:"What made it stand out was...",ru:"Что выделяло его — это..."},
+    {en:"The flavour was hard to describe but kind of...",ru:"Вкус сложно описать, но что-то вроде..."},
+    {en:"I'd been craving it because...",ru:"Я хотел этого потому что..."},
+    {en:"I'd go back just for that meal.",ru:"Я бы вернулся только ради этой еды."}
+  ],
+  "Tell me about a person you text":[
+    {en:"We were talking about...",ru:"Мы говорили о..."},
+    {en:"I texted them because...",ru:"Я написал им потому что..."},
+    {en:"They're the kind of person who...",ru:"Они такой человек, который..."},
+    {en:"Our conversation went from... to...",ru:"Наш разговор перешёл от... к..."},
+    {en:"What I appreciate about talking to them is...",ru:"Что мне нравится в общении с ними — это..."}
+  ],
+  "What's a small habit you want t":[
+    {en:"The habit I have in mind is...",ru:"Привычка, которую я имею в виду — это..."},
+    {en:"I'd do it every day at... because...",ru:"Я бы делал это каждый день в... потому что..."},
+    {en:"The reason I keep putting it off is...",ru:"Причина, почему я откладываю — это..."},
+    {en:"My plan to make it stick is...",ru:"Мой план, чтобы закрепить её — это..."},
+    {en:"In a month, I'd expect to...",ru:"Через месяц я ожидаю..."}
+  ],
+  "Describe your dream apartment, ":[
+    {en:"Starting at the entrance, you'd immediately notice...",ru:"Начиная со входа, ты сразу заметишь..."},
+    {en:"The living room would have...",ru:"В гостиной была бы..."},
+    {en:"Light is really important to me so...",ru:"Свет для меня очень важен, поэтому..."},
+    {en:"The one thing I'd splurge on is...",ru:"Одна вещь, на которую я бы не пожалел денег — это..."},
+    {en:"The overall feeling I want is...",ru:"Общее ощущение, которого я хочу — это..."}
+  ],
+  // SPICY
+  "Argue that staying in beats goi":[
+    {en:"Think about it — when you stay in, you...",ru:"Подумай об этом — когда остаёшься дома, ты..."},
+    {en:"Going out sounds fun until...",ru:"Выходить звучит весело, пока не..."},
+    {en:"The energy you save by staying in can be used for...",ru:"Энергию, которую ты сохраняешь дома, можно потратить на..."},
+    {en:"The best nights I've had were actually at home because...",ru:"Лучшие вечера у меня были дома, потому что..."},
+    {en:"And let's be honest — the next morning you feel...",ru:"И давайте честно — на следующее утро ты чувствуешь..."}
+  ],
+  "You're a villain who steals all":[
+    {en:"My master plan was simple — without coffee...",ru:"Мой коварный план был прост — без кофе..."},
+    {en:"I chose coffee specifically because...",ru:"Я выбрал именно кофе потому что..."},
+    {en:"The world without coffee would become...",ru:"Мир без кофе стал бы..."},
+    {en:"My demands are simple — in exchange for the coffee...",ru:"Мои требования просты — в обмен на кофе..."},
+    {en:"And yes, I kept one secret stash for myself because...",ru:"И да, я оставил один тайный запас для себя, потому что..."}
+  ],
+  "Argue that Mondays are secretly":[
+    {en:"Here's what people get wrong about Mondays...",ru:"Вот что люди неправильно понимают про понедельник..."},
+    {en:"Monday is the only day when...",ru:"Понедельник — единственный день когда..."},
+    {en:"Think about the energy on Monday morning — it's actually...",ru:"Подумай об энергии в понедельник утром — она на самом деле..."},
+    {en:"Every other day of the week depends on Monday because...",ru:"Каждый другой день недели зависит от понедельника, потому что..."},
+    {en:"The secret Monday lovers never admit is...",ru:"Секрет, который любители понедельника никогда не признают — это..."}
+  ],
+  "Sell me this spoon like it's th":[
+    {en:"What you're looking at is not just a spoon — it's...",ru:"То, на что ты смотришь — не просто ложка — это..."},
+    {en:"Imagine never having to worry about...",ru:"Представь, что тебе больше никогда не придётся беспокоиться о..."},
+    {en:"This spoon has been scientifically designed to...",ru:"Эта ложка научно разработана для того, чтобы..."},
+    {en:"Celebrities you admire are already using it to...",ru:"Знаменитости, которыми ты восхищаешься, уже используют её для..."},
+    {en:"For only... you could own a piece of...",ru:"Всего за... ты можешь владеть частью..."}
+  ],
+  "Explain TikTok to someone from ":[
+    {en:"Imagine a tiny theatre that fits in your pocket where...",ru:"Представь крошечный театр, который помещается в кармане, где..."},
+    {en:"People in the future discovered that everyone has...",ru:"Люди будущего обнаружили, что у каждого есть..."},
+    {en:"It's a bit like a newspaper, except...",ru:"Это немного похоже на газету, только..."},
+    {en:"The strange thing is, you don't choose what to watch — instead...",ru:"Странная вещь — ты не выбираешь что смотреть, вместо этого..."},
+    {en:"Within seconds, the whole world can see you...",ru:"За секунды весь мир может видеть тебя..."}
+  ],
+  "Argue that cats are secretly ru":[
+    {en:"Think about it — cats have never had to work a single day because...",ru:"Подумай — коты никогда не работали ни дня, потому что..."},
+    {en:"Every major historical event happened just when cats...",ru:"Каждое крупное историческое событие происходило именно тогда, когда коты..."},
+    {en:"Humans built the internet and the first thing they used it for was...",ru:"Люди построили интернет и первое, для чего они его использовали — это..."},
+    {en:"Cats don't follow rules. They don't have to. Because...",ru:"Коты не следуют правилам. Им не нужно. Потому что..."},
+    {en:"The final proof is that no matter what you do...",ru:"Окончательное доказательство — что бы ты ни делал..."}
+  ],
+  "Defend this opinion: cereal is ":[
+    {en:"By definition, a soup is..., and cereal clearly fits because...",ru:"По определению суп — это..., и хлопья явно подходят, потому что..."},
+    {en:"Both cereal and soup share... which means...",ru:"И хлопья, и суп имеют общее... что означает..."},
+    {en:"The only reason people resist this idea is...",ru:"Единственная причина, почему люди сопротивляются этой идее — это..."},
+    {en:"If we accept that cereal is a soup, then logically...",ru:"Если мы признаём, что хлопья — это суп, то логически..."},
+    {en:"And before you argue — hot soup, cold soup... so...",ru:"И прежде чем спорить — горячий суп, холодный суп... значит..."}
+  ],
+  // TRAVEL
+  "Describe the best trip you've e":[
+    {en:"It was in... and I went there because...",ru:"Это было в... и я поехал туда, потому что..."},
+    {en:"The moment I'll never forget was...",ru:"Момент, который я никогда не забуду — это..."},
+    {en:"What made it unlike any other trip was...",ru:"Что отличало эту поездку от всех остальных — это..."},
+    {en:"The people I met there...",ru:"Люди, которых я встретил там..."},
+    {en:"If I could relive one day from that trip, it would be...",ru:"Если бы я мог прожить один день из той поездки заново — это был бы..."}
+  ],
+  "You can fly anywhere tomorrow. ":[
+    {en:"I'd choose... and the first thing I'd do when I land is...",ru:"Я бы выбрал... и первое, что я сделаю по прилёту — это..."},
+    {en:"I've always been drawn to... because...",ru:"Меня всегда тянуло к... потому что..."},
+    {en:"I'd spend the morning... and the evening...",ru:"Утро я бы провёл... а вечер..."},
+    {en:"The one thing I'd make sure not to miss is...",ru:"Одно, что я бы точно не пропустил — это..."},
+    {en:"I'd probably feel... walking through the streets of...",ru:"Я бы наверное чувствовал... идя по улицам..."}
+  ],
+  "Describe a city you'd love to l":[
+    {en:"The city I keep coming back to in my mind is...",ru:"Город, к которому я постоянно возвращаюсь мысленно — это..."},
+    {en:"What draws me there is not just the... but also...",ru:"Меня привлекает туда не только... но и..."},
+    {en:"I imagine my daily routine there would look like...",ru:"Я представляю мой ежедневный распорядок там как..."},
+    {en:"The language and culture would...",ru:"Язык и культура..."},
+    {en:"The hardest part about living there would probably be...",ru:"Самым трудным в жизни там, наверное, было бы..."}
+  ],
+  "Talk about a place that surpris":[
+    {en:"I expected it to be... but instead it was...",ru:"Я ожидал, что это будет... но вместо этого..."},
+    {en:"What completely caught me off guard was...",ru:"Что полностью застало меня врасплох — это..."},
+    {en:"Before going, everyone told me..., but in reality...",ru:"До поездки все говорили мне..., но на самом деле..."},
+    {en:"The moment I realised I was wrong about it was...",ru:"Момент, когда я понял, что ошибался насчёт этого — это..."},
+    {en:"It changed the way I think about...",ru:"Это изменило моё отношение к..."}
+  ],
+  "What 3 things do you always pac":[
+    {en:"The first thing that always goes in is... because without it...",ru:"Первое, что всегда идёт в сумку — это... потому что без этого..."},
+    {en:"My second essential is... which saved me once when...",ru:"Моя вторая необходимая вещь — это... которая однажды спасла меня, когда..."},
+    {en:"The third one might sound unusual but...",ru:"Третья может звучать необычно, но..."},
+    {en:"I've learned the hard way that you always need...",ru:"Я на собственном опыте понял, что всегда нужно..."},
+    {en:"The one thing I always forget but shouldn't is...",ru:"Одна вещь, которую я всегда забываю, но не должен — это..."}
+  ],
+  "Describe your idea of a perfect":[
+    {en:"It would start with...",ru:"Это начиналось бы с..."},
+    {en:"The destination would be... because...",ru:"Направление было бы... потому что..."},
+    {en:"The ideal travel companion for this would be... because...",ru:"Идеальный попутчик для этого был бы... потому что..."},
+    {en:"There'd be no... but definitely...",ru:"Там не было бы... но точно было бы..."},
+    {en:"The perfect ending to the weekend would be...",ru:"Идеальное завершение выходных было бы..."}
+  ],
+  "Beach, mountains or city break?":[
+    {en:"For me it's always going to be... and here's why...",ru:"Для меня это всегда будет... и вот почему..."},
+    {en:"I know some people prefer... but personally...",ru:"Я знаю, некоторые предпочитают... но лично я..."},
+    {en:"The thing that... gives you that nothing else can is...",ru:"То, что... даёт тебе, чего ничто другое не может — это..."},
+    {en:"My best memory of... was when...",ru:"Моё лучшее воспоминание о... было когда..."},
+    {en:"And honestly, the food situation at... is...",ru:"И честно говоря, ситуация с едой в... это..."}
+  ],
+  "Tell me about a local dish you ":[
+    {en:"The dish was called... and it looked like...",ru:"Блюдо называлось... и выглядело как..."},
+    {en:"I was a bit nervous to try it because...",ru:"Я немного боялся попробовать это, потому что..."},
+    {en:"The taste was unlike anything I've had before — kind of...",ru:"Вкус был непохож ни на что, что я пробовал — что-то вроде..."},
+    {en:"The local who recommended it told me...",ru:"Местный житель, который посоветовал мне это, сказал..."},
+    {en:"I've tried to recreate it at home but...",ru:"Я пытался воссоздать это дома, но..."}
+  ],
+  // DEEP
+  "Talk about something you're gra":[
+    {en:"Today specifically, I'm grateful for...",ru:"Именно сегодня я благодарен за..."},
+    {en:"It's something small but it matters because...",ru:"Это мелочь, но она важна, потому что..."},
+    {en:"I don't always notice it but...",ru:"Я не всегда это замечаю, но..."},
+    {en:"Thinking about it now makes me feel...",ru:"Думая об этом сейчас, я чувствую..."},
+    {en:"I wish I said thank you for this more often to...",ru:"Я бы хотел чаще говорить за это спасибо..."}
+  ],
+  "Describe a person who shaped wh":[
+    {en:"The person who comes to mind immediately is...",ru:"Человек, который сразу приходит на ум — это..."},
+    {en:"What they taught me wasn't through words, but through...",ru:"Они учили меня не словами, а..."},
+    {en:"Before I met them, I used to...",ru:"До того как я встретил их, я..."},
+    {en:"The one thing they said that I still carry with me is...",ru:"Одна вещь, которую они сказали и которую я всё ещё несу с собой — это..."},
+    {en:"I think I became... because of them.",ru:"Я думаю, я стал... благодаря им."}
+  ],
+  "What does a good life mean to y":[
+    {en:"For me a good life isn't about... it's about...",ru:"Для меня хорошая жизнь — это не..., это..."},
+    {en:"I used to think it meant... but now I believe...",ru:"Раньше я думал, что это означает... но теперь считаю..."},
+    {en:"The moments that feel most like a good life to me are...",ru:"Моменты, которые больше всего ощущаются как хорошая жизнь для меня — это..."},
+    {en:"What I know for sure is that without... life feels...",ru:"Что я знаю точно — без... жизнь ощущается..."},
+    {en:"If I'm honest, the gap between my life now and my ideal is...",ru:"Если честно, разрыв между моей жизнью сейчас и идеальной — это..."}
+  ],
+  "Talk about a fear you've slowly":[
+    {en:"It sounds small but I used to be genuinely afraid of...",ru:"Это звучит мелко, но я был по-настоящему напуган..."},
+    {en:"What helped me most was...",ru:"Что помогло мне больше всего — это..."},
+    {en:"There was a specific moment when I realised...",ru:"Был конкретный момент, когда я понял..."},
+    {en:"I'm not completely over it, but now...",ru:"Я не до конца преодолел это, но теперь..."},
+    {en:"Growing out of that fear taught me...",ru:"Преодоление этого страха научило меня..."}
+  ],
+  "Describe a moment you felt trul":[
+    {en:"It was when..., and the reason it hit so hard was...",ru:"Это было когда..., и причина, почему это так задело — это..."},
+    {en:"I'd worked really hard for it because...",ru:"Я очень старался ради этого, потому что..."},
+    {en:"What made it meaningful wasn't just... but...",ru:"Что сделало это значимым — не просто..., а..."},
+    {en:"I remember thinking at that moment...",ru:"Помню, я думал в тот момент..."},
+    {en:"It's the kind of pride that comes from...",ru:"Это такая гордость, которая приходит от..."}
+  ],
+  "What advice would you give your":[
+    {en:"The first thing I'd say is...",ru:"Первое, что я бы сказал — это..."},
+    {en:"I'd tell myself not to worry so much about... because...",ru:"Я бы сказал себе не беспокоиться так сильно о... потому что..."},
+    {en:"The thing I figured out too late was...",ru:"То, что я понял слишком поздно — это..."},
+    {en:"I'd probably say: just...",ru:"Я бы наверное сказал: просто..."},
+    {en:"Looking back, my 15-year-old self needed to hear...",ru:"Оглядываясь назад, моему 15-летнему я нужно было услышать..."}
+  ],
+  "Talk about a place that feels l":[
+    {en:"The place I'm thinking of is...",ru:"Место, о котором я думаю — это..."},
+    {en:"It feels like home because when I'm there...",ru:"Оно чувствуется как дом, потому что когда я там..."},
+    {en:"It's not where I grew up, but...",ru:"Это не место, где я вырос, но..."},
+    {en:"The specific thing about it that gets me every time is...",ru:"Конкретная вещь, которая меня каждый раз цепляет — это..."},
+    {en:"I feel most like myself when I'm...",ru:"Я чувствую себя собой больше всего, когда я..."}
+  ],
+  "What's something you've changed":[
+    {en:"Something I used to believe firmly was...",ru:"Что я раньше твёрдо считал — это..."},
+    {en:"What made me reconsider was...",ru:"Что заставило меня пересмотреть — это..."},
+    {en:"It wasn't easy to admit I was wrong because...",ru:"Было нелегко признать, что я ошибался, потому что..."},
+    {en:"The new way I see it now is...",ru:"Новый способ, которым я это вижу сейчас — это..."},
+    {en:"Changing my mind about this made me more...",ru:"Изменение мнения об этом сделало меня более..."}
+  ]
+};
+
+// Fallback phrases for random mode
+const FALLBACK_PHRASES = [
+  {en:"To start off...",ru:"Для начала..."},
+  {en:"What comes to mind is...",ru:"На ум приходит..."},
+  {en:"The way I see it...",ru:"На мой взгляд..."},
+  {en:"I'd say...",ru:"Я бы сказал..."},
+  {en:"What's interesting is...",ru:"Что интересно — это..."},
+  {en:"In a word...",ru:"Одним словом..."}
+];
+
+function getPhrasesForPrompt(promptEn){
+  const key = promptEn.substring(0,31);
+  return PROMPT_PHRASES[key] || FALLBACK_PHRASES;
+}
+
+
+
+const RESULTS = [
+  {icon:"🎬",title:"The Natural",sub:"You spoke without overthinking — that's exactly how fluency is built.",quote:"\"Fluency isn't perfect. It's brave.\""},
+  {icon:"✨",title:"The Storyteller",sub:"You turned simple prompts into real moments. Keep that voice going.",quote:"\"Every word out loud is one less fear inside.\""},
+  {icon:"🌿",title:"The Brave One",sub:"You showed up and spoke. That's the whole secret — most people never start.",quote:"\"You don't find your words. You speak them into being.\""}
+];
+
+let session = {level:null,step:0,total:3,prompts:[],totalSpoken:0};
+
+function startSession(level){
+  let chosen = [];
+  if(level === 'random'){
+    // pick 4 prompts from different categories
+    const keys = ['easy','medium','spicy','travel','deep'];
+    const shuffled = keys.sort(()=>Math.random()-0.5);
+    for(let i=0;i<4;i++){
+      const pool = [...DATA[shuffled[i]].prompts];
+      const idx = Math.floor(Math.random()*pool.length);
+      chosen.push(pool[idx]);
+    }
+  } else {
+    const pool = [...DATA[level].prompts];
+    for(let i=0;i<3;i++){
+      const idx = Math.floor(Math.random()*pool.length);
+      chosen.push(pool.splice(idx,1)[0]);
+    }
+  }
+  const total = level === 'random' ? 4 : 3;
+  const badge = level === 'random' ? 'Random' : DATA[level].badge;
+  session = {level, step:0, total, prompts:chosen, totalSpoken:0};
+
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('challenge').classList.remove('hidden');
+  const badgeEl = document.getElementById('levelBadge');
+  badgeEl.textContent = badge;
+  badgeEl.className = 'level-badge '+level;
+  // Track which level was chosen
+  if(window.plausible) plausible('Session started', {props:{level: badge}});
+
+  // update progress segments
+  const track = document.getElementById('progress-track')||document.querySelector('.progress-track');
+  track.innerHTML = '';
+  for(let i=0;i<total;i++){
+    const seg = document.createElement('div');
+    seg.className='progress-seg';seg.id='seg'+i;
+    track.appendChild(seg);
+  }
+  renderStep();
+}
+
+function renderStep(){
+  const p = session.prompts[session.step];
+  document.getElementById('stepLabel').textContent = `Prompt ${session.step+1} of ${session.total}`;
+  document.getElementById('promptText').textContent = p.en;
+  document.getElementById('promptRu').textContent = p.ru;
+
+  for(let i=0;i<session.total;i++){
+    const seg = document.getElementById('seg'+i);
+    if(seg) seg.className = 'progress-seg'+(i<session.step?' done':i===session.step?' active':'');
+  }
+
+  // phrases — per prompt
+  const phrases = getPhrasesForPrompt(p.en);
+  renderPhrases(phrases);
+  // close details
+  document.querySelector('.phrases-panel').removeAttribute('open');
+
+  resetTimer();
+  document.getElementById('nextBtn').textContent = session.step===session.total-1 ? 'Finish →' : 'Next prompt →';
+}
+
+// ── TIMER ──
+let timeLeft=45, timerInt=null, running=false;
+const CIRC = 2*Math.PI*64;
+document.getElementById('timerFg').style.strokeDasharray = CIRC;
+
+function resetTimer(){
+  clearInterval(timerInt); running=false;
+  timeLeft = TIMER_SECONDS;
+  updateTimer();
+  document.getElementById('timerStart').textContent='Start';
+}
+function updateTimer(){
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  document.getElementById('timerNum').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  const frac = timeLeft/TIMER_SECONDS;
+  document.getElementById('timerFg').style.strokeDashoffset = CIRC*(1-frac);
+}
+document.getElementById('timerStart').addEventListener('click',()=>{
+  const btn=document.getElementById('timerStart');
+  if(running){clearInterval(timerInt);running=false;btn.textContent='Resume';return;}
+  if(timeLeft===0)resetTimer();
+  running=true;btn.textContent='Pause';
+  timerInt=setInterval(()=>{
+    timeLeft--;session.totalSpoken++;updateTimer();
+    if(timeLeft<=0){clearInterval(timerInt);running=false;playBeep();btn.textContent='Done ✓';}
+  },1000);
+});
+document.getElementById('timerReset').addEventListener('click',resetTimer);
+
+function playBeep(){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;const ac=new AC();
+    [0,0.22,0.44].forEach((t,i)=>{
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.connect(g);g.connect(ac.destination);
+      o.frequency.value=600+i*120;o.type='sine';
+      g.gain.setValueAtTime(0.0001,ac.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(0.22,ac.currentTime+t+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+t+0.18);
+      o.start(ac.currentTime+t);o.stop(ac.currentTime+t+0.2);
+    });
+  }catch(e){}
+}
+
+// ── SAVED PHRASES ──
+let savedPhrases = [];
+
+function renderPhrases(phrases){
+  const phrasesList = document.getElementById('phrasesList');
+  phrasesList.innerHTML = '';
+  phrases.forEach((ph, i) => {
+    const alreadySaved = savedPhrases.some(s => s.en === ph.en);
+    phrasesList.innerHTML += `
+      <div class="phrase-item" id="phrase-item-${i}">
+        <div class="phrase-texts">
+          <div class="phrase-en">"${ph.en}"</div>
+          <div class="phrase-ru">${ph.ru}</div>
+        </div>
+        <button class="save-phrase-btn ${alreadySaved?'saved':''}" onclick="togglePhrase(${i},'${ph.en.replace(/'/g,"\\'")}','${ph.ru.replace(/'/g,"\\'")}')">
+          ${alreadySaved ? '❤ saved' : '❤ save'}
+        </button>
+      </div>`;
+  });
+}
+
+function togglePhrase(i, en, ru){
+  const existing = savedPhrases.findIndex(s => s.en === en);
+  const btn = document.querySelector(`#phrase-item-${i} .save-phrase-btn`);
+  if(existing >= 0){
+    savedPhrases.splice(existing, 1);
+    if(btn){ btn.textContent = '❤ save'; btn.classList.remove('saved'); }
+  } else {
+    savedPhrases.push({en, ru});
+    if(btn){ btn.textContent = '❤ saved'; btn.classList.add('saved'); }
+  }
+}
+
+function renderSavedPhrases(){
+  const list = document.getElementById('savedList');
+  const empty = document.getElementById('savedEmpty');
+  const copyBtn = document.getElementById('copyAllBtn');
+  document.getElementById('statSaved').textContent = savedPhrases.length;
+
+  if(savedPhrases.length === 0){
+    list.innerHTML = '';
+    copyBtn.classList.add('hidden');
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  copyBtn.classList.remove('hidden');
+  list.innerHTML = '';
+  savedPhrases.forEach((ph, i) => {
+    list.innerHTML += `
+      <div class="saved-phrase-item">
+        <div class="saved-phrase-text">
+          <div class="saved-phrase-en">"${ph.en}"</div>
+          <div class="saved-phrase-ru">${ph.ru}</div>
+        </div>
+        <button class="unsave-btn" onclick="removeSaved(${i})">✕</button>
+      </div>`;
+  });
+}
+
+function removeSaved(i){
+  savedPhrases.splice(i,1);
+  renderSavedPhrases();
+}
+
+document.getElementById('copyAllBtn').addEventListener('click', ()=>{
+  const text = savedPhrases.map(p => `"${p.en}" — ${p.ru}`).join('\n');
+  const full = `My phrases from DÉBUT Speaking Studio:\n\n${text}\n\nPractice more → @debutcommunity`;
+  navigator.clipboard.writeText(full).then(()=>{
+    const btn = document.getElementById('copyAllBtn');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(()=>btn.textContent=orig, 2000);
+  });
+});
+
+// ── NEXT ──
+document.getElementById('nextBtn').addEventListener('click',()=>{
+  if(session.step<session.total-1){
+    session.step++;
+    renderStep();
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else {
+    showResult();
+  }
+});
+
+function showResult(){
+  if(window.plausible) plausible('Session completed', {props:{level: session.level, seconds: session.totalSpoken}});
+  clearInterval(timerInt); running=false;
+  document.getElementById('challenge').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  const r = RESULTS[Math.floor(Math.random()*RESULTS.length)];
+  document.getElementById('resIcon').textContent=r.icon;
+  document.getElementById('resTitle').textContent=r.title;
+  document.getElementById('resSub').textContent=r.sub;
+  document.getElementById('resQuote').textContent=r.quote;
+  document.getElementById('statPrompts').textContent=session.total;
+  renderSavedPhrases();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function shareResult(){
+  const title=document.getElementById('resTitle').textContent;
+  const saved = savedPhrases.length > 0 ? `\n\nI saved ${savedPhrases.length} phrase${savedPhrases.length>1?'s':''} to practice.` : '';
+  const txt=`I just did a speaking session with DÉBUT 🎬\n\nResult: ${title}${saved}\n\nTry it → @debutcommunity`;
+  if(navigator.share){navigator.share({text:txt});}
+  else{navigator.clipboard.writeText(txt).then(()=>{
+    const b=event.target;const o=b.textContent;b.textContent='Copied ✓';setTimeout(()=>b.textContent=o,2000);
+  });}
+}
+
+function goHome(){
+  clearInterval(timerInt);running=false;
+  savedPhrases=[];
+  document.getElementById('challenge').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
