@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DÉBUT · Find Your Summer Film</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#FBF6EE;
+  --bg2:#F5EFE3;
+  --ink:#1C1810;
+  --ink-m:#4A3F30;
+  --muted:#9A8E7E;
+  --gold:#C8952A;
+  --gold-l:#E8B84A;
+  --coral:#E05A3A;
+  --sky:#5BA3C8;
+  --sage:#5A9070;
+  --film:#2A1F10;
+  --border:rgba(100,85,60,.15);
+  --card:rgba(255,248,238,.8);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Jost',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 5rem;
+  position:relative;
+}
+/* Warm sun gradient top */
+body::before{content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 85% -10%,rgba(255,200,80,.35),transparent 50%),
+    radial-gradient(ellipse at 10% 90%,rgba(90,160,112,.12),transparent 50%);
+  pointer-events:none;z-index:0;}
+/* Film grain */
+body::after{content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;}
+.wrap{width:100%;max-width:480px;position:relative;z-index:1;}
+header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2rem;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:.16em;color:var(--gold);}
+.logo-s{font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;}
+.sc{animation:up .5s ease;}
+.off{display:none!important;}
+@keyframes up{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* INTRO */
+.tag{display:inline-block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--coral);border:.5px solid rgba(224,90,58,.25);padding:5px 13px;
+  border-radius:20px;margin-bottom:1.5rem;background:rgba(224,90,58,.06);}
+.ih{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,10vw,54px);
+  font-weight:300;font-style:italic;line-height:1.1;margin-bottom:.6rem;color:var(--ink);}
+.ih span{color:var(--gold);}
+.id{font-size:14px;font-weight:300;color:var(--ink-m);line-height:1.7;margin-bottom:.4rem;}
+.id-ru{font-size:11px;color:var(--muted);margin-bottom:2rem;}
+.go{
+  background:var(--gold);color:#fff;border:none;border-radius:6px;
+  padding:14px 36px;font-family:'Jost',sans-serif;font-size:14px;letter-spacing:.05em;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 20px rgba(200,149,42,.35);
+}
+.go:hover{background:var(--gold-l);transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,149,42,.4);}
+
+/* QUIZ */
+.qmeta{display:flex;align-items:center;gap:12px;margin-bottom:1.75rem;}
+.qc{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.pt{flex:1;height:3px;background:rgba(100,85,60,.12);border-radius:2px;overflow:hidden;}
+.pf{height:100%;background:linear-gradient(90deg,var(--gold),var(--coral));border-radius:2px;transition:width .45s ease;}
+
+.qcard{
+  background:var(--card);
+  border:1px solid var(--border);border-radius:20px;
+  padding:1.75rem 1.5rem 1.5rem;margin-bottom:1rem;
+  position:relative;overflow:hidden;
+  box-shadow:0 4px 24px rgba(100,80,40,.08),0 1px 0 rgba(255,255,255,.9) inset;
+}
+.qcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--coral),var(--sky));border-radius:20px 20px 0 0;}
+.qcard::after{content:'';position:absolute;top:-30%;right:-15%;width:55%;aspect-ratio:1;
+  border-radius:50%;background:radial-gradient(circle,rgba(200,149,42,.06),transparent 70%);}
+.qn{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;}
+.qt{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,5.5vw,27px);
+  font-weight:400;color:var(--ink);line-height:1.4;margin-bottom:.4rem;}
+.qt-ru{font-size:11px;font-weight:300;color:var(--muted);line-height:1.5;}
+
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{
+  background:rgba(255,252,245,.7);
+  border:1px solid rgba(100,85,60,.12);border-radius:12px;
+  padding:13px 15px;text-align:left;font-family:'Jost',sans-serif;
+  font-size:13.5px;color:var(--ink-m);cursor:pointer;line-height:1.4;
+  display:flex;flex-direction:column;gap:3px;
+  transition:all .18s;
+  box-shadow:0 2px 8px rgba(100,80,40,.05);
+}
+.opt:hover{
+  background:rgba(255,248,225,.95);border-color:rgba(200,149,42,.4);
+  transform:translateX(4px);box-shadow:0 4px 16px rgba(200,149,42,.12);
+}
+.opt.picked{background:rgba(200,149,42,.12);border-color:var(--gold);}
+.opt-en{font-size:13.5px;color:var(--ink);}
+.opt-ru{font-size:11px;color:var(--muted);}
+
+/* RESULT HERO — bright gradient card */
+.result-hero{
+  width:100%;border-radius:22px;padding:2.5rem 1.75rem 2rem;
+  margin-bottom:1rem;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:flex-start;
+  min-height:240px;justify-content:flex-end;
+  box-shadow:0 12px 40px rgba(100,80,40,.18),0 4px 12px rgba(100,80,40,.1);
+}
+.result-hero::before{
+  content:'';position:absolute;inset:0;
+  background:inherit;filter:brightness(1.08);
+}
+/* decorative circles */
+.result-hero::after{
+  content:'';position:absolute;top:-40%;right:-20%;
+  width:70%;aspect-ratio:1;border-radius:50%;
+  background:rgba(255,255,255,.15);
+}
+.rh-circle{
+  position:absolute;bottom:-30%;left:-15%;
+  width:60%;aspect-ratio:1;border-radius:50%;
+  background:rgba(0,0,0,.08);pointer-events:none;
+}
+.rh-tag{font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.7);margin-bottom:.5rem;position:relative;z-index:1;}
+.rh-title{font-family:'Cormorant Garamond',serif;
+  font-size:clamp(28px,8vw,40px);font-weight:400;font-style:italic;
+  color:#fff;line-height:1.1;margin-bottom:.3rem;position:relative;z-index:1;
+  text-shadow:0 2px 12px rgba(0,0,0,.2);}
+.rh-year{font-size:13px;color:rgba(255,255,255,.65);position:relative;z-index:1;}
+.rh-emoji{position:absolute;top:1.5rem;right:1.75rem;font-size:52px;
+  opacity:.7;z-index:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15));}
+
+.rcard{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:1.25rem;margin-bottom:.9rem;
+  box-shadow:0 2px 12px rgba(100,80,40,.07);
+}
+.rcl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;}
+.rct{font-size:14px;font-weight:300;color:var(--ink-m);line-height:1.68;}
+.rct-ru{font-size:11px;color:var(--muted);margin-top:.5rem;line-height:1.5;}
+
+.trailer-btn{
+  display:flex;align-items:center;gap:12px;width:100%;
+  background:linear-gradient(135deg,rgba(224,90,58,.08),rgba(200,149,42,.08));
+  border:1px solid rgba(224,90,58,.2);
+  border-radius:12px;padding:14px 16px;cursor:pointer;
+  font-family:'Jost',sans-serif;font-size:13px;color:var(--ink-m);
+  text-decoration:none;transition:all .2s;margin-bottom:1rem;
+  box-shadow:0 2px 10px rgba(224,90,58,.08);
+}
+.trailer-btn:hover{background:linear-gradient(135deg,rgba(224,90,58,.14),rgba(200,149,42,.14));transform:translateY(-1px);}
+.play-icon{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--coral),var(--gold));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(224,90,58,.3);
+}
+.trailer-texts{flex:1;}
+.trailer-en{font-size:13px;font-weight:500;color:var(--ink);}
+.trailer-ru{font-size:11px;color:var(--muted);margin-top:2px;}
+
+.acts{display:flex;flex-direction:column;gap:8px;}
+.abtn{border:none;border-radius:10px;padding:14px;font-family:'Jost',sans-serif;
+  font-size:13px;letter-spacing:.04em;cursor:pointer;transition:all .2s;}
+.abtn.pri{
+  background:linear-gradient(135deg,var(--gold),var(--coral));color:#fff;
+  box-shadow:0 4px 18px rgba(200,149,42,.3);
+}
+.abtn.pri:hover{opacity:.9;transform:translateY(-1px);}
+.abtn.gho{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.abtn.gho:hover{background:rgba(100,85,60,.06);}
+
+.fcta{text-align:center;margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+.fcta p{font-size:12px;color:var(--muted);margin-bottom:.55rem;}
+.fcta a{font-size:13px;color:var(--gold);text-decoration:none;
+  border-bottom:1px solid rgba(200,149,42,.3);padding-bottom:1px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><span class="logo">DÉBUT</span><span class="logo-s">film quiz</span></header>
+
+  <!-- INTRO -->
+  <div id="intro" class="sc">
+    <div class="tag">5 questions · 8 films</div>
+    <h1 class="ih">Find your<br><span>summer film</span></h1>
+    <p class="id">Answer five questions about your summer mood. We'll find the film that matches exactly how you feel right now.</p>
+    <p class="id-ru">Пять вопросов про твоё настроение — и мы найдём фильм который точно про тебя этим летом.</p>
+    <button class="go" onclick="start()">Start →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="sc off">
+    <div class="qmeta">
+      <span class="qc" id="qc">1 / 5</span>
+      <div class="pt"><div class="pf" id="pf" style="width:0%"></div></div>
+    </div>
+    <div class="qcard">
+      <div class="qn" id="qn">01</div>
+      <div class="qt" id="qt"></div>
+      <div class="qt-ru" id="qt-ru"></div>
+    </div>
+    <div class="opts" id="opts"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" class="sc off">
+    <div class="result-hero" id="resultHero">
+      <div class="rh-tag" id="rTag">your summer film</div>
+      <div class="rh-title" id="rTitle"></div>
+      <div class="rh-year" id="rYear"></div>
+      <div class="rh-emoji" id="rEmoji"></div>
+    </div>
+    <div class="rcard">
+      <div class="rcl">about the film</div>
+      <div class="rct" id="rDesc"></div>
+      <div class="rct-ru" id="rDescRu"></div>
+    </div>
+    <a class="trailer-btn" id="rTrailer" href="#" target="_blank">
+      <div class="play-icon">
+        <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="#282F41"/></svg>
+      </div>
+      <div class="trailer-texts">
+        <div class="trailer-en">Watch official trailer</div>
+        <div class="trailer-ru">Смотреть официальный трейлер</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="color:var(--muted)"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="acts">
+      <button class="abtn pri" onclick="shareResult()">Share your result</button>
+      <button class="abtn gho" onclick="restart()">Try again</button>
+    </div>
+    <div class="fcta">
+      <p>Watch it in the original language — that's where the real magic is.</p>
+      <a href="https://t.me/debutcommunity" target="_blank">Join DÉBUT →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const Q = [
+  {
+    en:"What's your summer energy right now?",
+    ru:"Какая у тебя сейчас летняя энергия?",
+    opts:[
+      {en:"Slow and languid — heat, no rush, time melting",ru:"Медленная — жара, никуда не спешу",scores:{cmbyn:3,midnight:1}},
+      {en:"Spontaneous — one night can change everything",ru:"Спонтанная — одна ночь может изменить всё",scores:{sunrise:3,mamma:1}},
+      {en:"On the move — roads, new places, forward",ru:"В движении — дороги, новые места, вперёд",scores:{mitty:3,eplove:2}},
+      {en:"Loud and full — people, music, beautiful chaos",ru:"Громкая — люди, музыка, прекрасный хаос",scores:{mamma:3,famous:2}},
+    ]
+  },
+  {
+    en:"Where does your summer belong?",
+    ru:"Где живёт твоё лето?",
+    opts:[
+      {en:"Italian countryside, a villa, afternoon light",ru:"Итальянская деревня, вилла, послеполуденный свет",scores:{cmbyn:3}},
+      {en:"The streets of a European city at night",ru:"Улицы европейского города ночью",scores:{sunrise:3,midnight:2}},
+      {en:"A Greek island — sea, sun, someone singing",ru:"Греческий остров — море, солнце, кто-то поёт",scores:{mamma:3}},
+      {en:"Somewhere far and completely unknown",ru:"Где-то далеко и совсем незнакомом",scores:{mitty:3,eplove:3,famous:1}},
+      {en:"A city with golden-hour rooftops and big dreams",ru:"Город с золотыми закатами и большими мечтами",scores:{lala:3,midnight:1}},
+    ]
+  },
+  {
+    en:"This summer is really about...",
+    ru:"Это лето на самом деле про...",
+    opts:[
+      {en:"One person. That's the whole story.",ru:"Одного человека. Это и есть вся история.",scores:{cmbyn:3,sunrise:2}},
+      {en:"Finding out what you actually want from life",ru:"Понять чего ты на самом деле хочешь от жизни",scores:{eplove:3,mitty:2}},
+      {en:"Chasing something you've always dreamed of",ru:"Гнаться за тем о чём всегда мечтал",scores:{lala:3,famous:2}},
+      {en:"Being alive — loudly, completely, with everyone",ru:"Быть живым — громко, полностью, со всеми",scores:{mamma:3,famous:2}},
+      {en:"Beauty, nostalgia, and things that could have been",ru:"Красота, ностальгия и то что могло бы быть",scores:{midnight:3,lala:1}},
+    ]
+  },
+  {
+    en:"What feeling do you want to carry into September?",
+    ru:"Какое чувство хочешь унести в сентябрь?",
+    opts:[
+      {en:"That this summer changed something inside me forever",ru:"Что это лето изменило что-то внутри навсегда",scores:{cmbyn:3,sunrise:1}},
+      {en:"That I finally did the thing I kept putting off",ru:"Что я наконец сделал то, что всё откладывал",scores:{mitty:3,eplove:3}},
+      {en:"That it was beautiful and a little bittersweet",ru:"Что было красиво и немного горько-сладко",scores:{lala:3,midnight:2}},
+      {en:"That I was really, truly, completely alive",ru:"Что я был по-настоящему, полностью живым",scores:{famous:3,mamma:1,sunrise:1}},
+    ]
+  },
+  {
+    en:"Pick a soundtrack for your summer.",
+    ru:"Выбери саундтрек для своего лета.",
+    opts:[
+      {en:"Soft guitar, cicadas, warm Italian evenings",ru:"Тихая гитара, цикады, тёплые итальянские вечера",scores:{cmbyn:3}},
+      {en:"ABBA at full volume, sea breeze, everyone dancing",ru:"ABBA на полную, морской бриз, все танцуют",scores:{mamma:3}},
+      {en:"Jazz in a small club, city lights, something old and beautiful",ru:"Джаз в маленьком клубе, огни города, что-то старое и красивое",scores:{lala:2,midnight:3}},
+      {en:"Classic rock on an open highway, wind, freedom",ru:"Классический рок на шоссе, ветер, свобода",scores:{famous:3,mitty:1}},
+      {en:"Silence — just wind, open space, a new place",ru:"Тишина — только ветер, открытое пространство, новое место",scores:{mitty:2,eplove:3,sunrise:1}},
+    ]
+  }
+];
+
+const FILMS = {
+  cmbyn:{
+    title:"Call Me By Your Name",year:"2017",emoji:"🍑",
+    gradient:"linear-gradient(135deg,#E8842A 0%,#F5A84A 40%,#C8552A 100%)",
+    desc:"A sensual and transcendent tale of first love. In the summer of 1983 in northern Italy, a 17-year-old discovers a summer that will alter his life forever.",
+    descRu:"Чувственная история первой любви. Лето 1983 года в Северной Италии — лето которое изменит всё.",
+    trailer:"https://www.youtube.com/watch?v=Z9AYPxH5NTM"
+  },
+  sunrise:{
+    title:"Before Sunrise",year:"1995",emoji:"🌙",
+    gradient:"linear-gradient(135deg,#2A5A8C 0%,#4A82B8 45%,#8A5A9A 100%)",
+    desc:"An American meets a French student on a train. They spend one unplanned night wandering Vienna together — and discover that a single conversation can change everything.",
+    descRu:"Американец встречает французскую студентку в поезде. Одна незапланированная ночь в Вене — и разговор который меняет всё.",
+    trailer:"https://www.youtube.com/watch?v=6MUcuqbGTxc"
+  },
+  mamma:{
+    title:"Mamma Mia",year:"2008",emoji:"🏝️",
+    gradient:"linear-gradient(135deg,#1A9AAA 0%,#2ABCD0 40%,#1A7A9A 100%)",
+    desc:"On a colorful Greek island, a bride-to-be secretly invites three men who might be her father to the wedding — and the chaos that follows is pure summer magic.",
+    descRu:"На греческом острове невеста тайно приглашает на свадьбу трёх мужчин, каждый из которых может быть её отцом.",
+    trailer:"https://www.youtube.com/watch?v=nB7L76TwQkI"
+  },
+  mitty:{
+    title:"The Secret Life of Walter Mitty",year:"2013",emoji:"🏔️",
+    gradient:"linear-gradient(135deg,#3A6A4A 0%,#5A9A6A 40%,#2A4A5A 100%)",
+    desc:"A daydreamer finally stops dreaming and starts living — embarking on an extraordinary real adventure across the globe to discover what life is truly about.",
+    descRu:"Мечтатель наконец перестаёт мечтать и начинает жить — отправляясь в настоящее приключение через весь мир.",
+    trailer:"https://www.youtube.com/watch?v=QD6cy4PBQPI"
+  },
+  midnight:{
+    title:"Midnight in Paris",year:"2011",emoji:"🗼",
+    gradient:"linear-gradient(135deg,#1A1A4A 0%,#3A2A6A 45%,#5A3A4A 100%)",
+    desc:"A romantic writer in Paris finds himself mysteriously transported back to the 1920s every night at midnight — and falls in love with a city and an era.",
+    descRu:"Писатель в Париже каждую ночь в полночь переносится в 1920-е — и влюбляется в город и эпоху.",
+    trailer:"https://www.youtube.com/watch?v=FAfR8omt-CY"
+  },
+  famous:{
+    title:"Almost Famous",year:"2000",emoji:"🎸",
+    gradient:"linear-gradient(135deg,#8A3A1A 0%,#C85A2A 40%,#4A2A0A 100%)",
+    desc:"A 15-year-old journalist goes on tour with a rock band for Rolling Stone magazine — and lives the summer that will define the rest of his life.",
+    descRu:"15-летний журналист едет в тур с рок-группой для Rolling Stone — и переживает лето которое определит всю его жизнь.",
+    trailer:"https://www.youtube.com/watch?v=F-aKRh-zID0"
+  },
+  lala:{
+    title:"La La Land",year:"2016",emoji:"✨",
+    gradient:"linear-gradient(135deg,#6A1A8A 0%,#C83A7A 45%,#E8702A 100%)",
+    desc:"Two ambitious dreamers fall in love in Los Angeles — a jazz pianist and an aspiring actress chasing their dreams, risking everything for their passions.",
+    descRu:"Два мечтателя влюбляются в Лос-Анджелесе — джазовый пианист и начинающая актриса, готовые рискнуть всем ради своих страстей.",
+    trailer:"https://www.youtube.com/watch?v=0pdqf4P9MB8"
+  },
+  eplove:{
+    title:"Eat Pray Love",year:"2010",emoji:"🌺",
+    gradient:"linear-gradient(135deg,#2A6A3A 0%,#5AA84A 40%,#C87A2A 100%)",
+    desc:"After a painful divorce, Liz Gilbert takes off on a journey around the world — Italy, India, Bali — to rediscover herself, pleasure, devotion, and love.",
+    descRu:"После развода Лиз Гилберт отправляется в путешествие вокруг света — Италия, Индия, Бали — чтобы заново найти себя.",
+    trailer:"https://www.youtube.com/watch?v=NS8lWPIkyL8"
+  }
+};
+
+
+// ── QUIZ LOGIC ──
+let cur=0,scores={cmbyn:0,sunrise:0,mamma:0,mitty:0,midnight:0,famous:0,lala:0,eplove:0};
+let winner=null;
+
+function start(){
+  document.getElementById('intro').classList.add('off');
+  document.getElementById('quiz').classList.remove('off');
+  render();
+}
+
+function render(){
+  const q=Q[cur];
+  document.getElementById('qc').textContent=`${cur+1} / ${Q.length}`;
+  document.getElementById('qn').textContent=String(cur+1).padStart(2,'0');
+  document.getElementById('qt').textContent=q.en;
+  document.getElementById('qt-ru').textContent=q.ru;
+  document.getElementById('pf').style.width=`${(cur/Q.length)*100}%`;
+  const el=document.getElementById('opts');el.innerHTML='';
+  const shuffled=[...q.opts].sort(()=>Math.random()-.5);
+  shuffled.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML=`<div class="opt-en">${o.en}</div><div class="opt-ru">${o.ru}</div>`;
+    b.onclick=()=>pick(o,b);
+    el.appendChild(b);
+  });
+}
+
+function pick(o,btn){
+  if(document.querySelector('.opt.picked')) return;
+  btn.classList.add('picked');
+  Object.entries(o.scores).forEach(([k,v])=>scores[k]=(scores[k]||0)+v);
+  setTimeout(()=>{
+    cur++;
+    if(cur<Q.length) render();
+    else showResult();
+  },320);
+}
+
+function showResult(){
+  document.getElementById('quiz').classList.add('off');
+  document.getElementById('result').classList.remove('off');
+  winner=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+  const f=FILMS[winner];
+  const hero=document.getElementById('resultHero');
+  hero.style.background=f.gradient;
+  // add decorative circle
+  hero.innerHTML=`
+    <div class="rh-circle"></div>
+    <div class="rh-tag" id="rTag">your summer film</div>
+    <div class="rh-title" id="rTitle">${f.title}</div>
+    <div class="rh-year" id="rYear">${f.year}</div>
+    <div class="rh-emoji">${f.emoji}</div>
+  `;
+  document.getElementById('rDesc').textContent=f.desc;
+  document.getElementById('rDescRu').textContent=f.descRu;
+  document.getElementById('rTrailer').href=f.trailer;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function shareResult(){
+  const f=FILMS[winner];
+  const txt=`My summer film this year — ${f.title} (${f.year})\n\nTook the quiz on DÉBUT 🎬\n→ @debutcommunity`;
+  if(navigator.share){navigator.share({text:txt});}
+  else{navigator.clipboard.writeText(txt).then(()=>{
+    const b=event.target;const o=b.textContent;
+    b.textContent='Copied ✓';setTimeout(()=>b.textContent=o,2000);
+  });}
+}
+
+function restart(){
+  cur=0;scores={cmbyn:0,sunrise:0,mamma:0,mitty:0,midnight:0,famous:0,lala:0,eplove:0};winner=null;
+  document.getElementById('result').classList.add('off');
+  document.getElementById('intro').classList.remove('off');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
