@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DÉBUT · British vs American English</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#FBF6EE;--ink:#2A2018;--ink-m:#5A4F40;--muted:#A39882;
+  --uk:#3A6FB0;--uk-l:#E8F0FB;--uk-d:#2A5590;
+  --us:#E0623A;--us-l:#FDEFE8;--us-d:#C24A28;
+  --sage:#5A9070;--sage-l:#E6F2EB;
+  --gold:#D9A030;
+  --card:#FFFFFF;--border:rgba(100,85,60,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Jost',sans-serif;background:var(--bg);color:var(--ink);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:1.75rem .9rem 4rem;
+}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 85% -10%,rgba(224,98,58,.10),transparent 50%),
+              radial-gradient(ellipse at 10% 100%,rgba(58,111,176,.10),transparent 50%);
+  pointer-events:none;z-index:0;}
+.wrap{width:100%;max-width:640px;position:relative;z-index:1;}
+header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.25rem;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:300;letter-spacing:.16em;color:var(--us);}
+.logo-s{font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;}
+
+.tag{display:inline-block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--us-d);border:1px solid rgba(224,98,58,.25);padding:5px 13px;
+  border-radius:20px;margin-bottom:1rem;background:var(--us-l);}
+.ih{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,8vw,42px);
+  font-weight:400;font-style:italic;line-height:1.15;margin-bottom:.5rem;}
+.ih span{color:var(--uk-d);}
+.id{font-size:13.5px;font-weight:300;color:var(--ink-m);line-height:1.6;margin-bottom:.3rem;}
+.id-ru{font-size:11px;color:var(--muted);margin-bottom:1.25rem;}
+
+/* WORD BANK */
+.bank-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+.bank{
+  display:flex;flex-wrap:wrap;gap:8px;
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:14px;margin-bottom:1.1rem;min-height:64px;
+  box-shadow:0 2px 10px rgba(100,80,40,.05);
+}
+.chip{
+  background:linear-gradient(135deg,#FFF8EC,#FDF1DD);
+  border:1px solid rgba(217,160,48,.35);border-radius:10px;
+  padding:9px 14px;font-size:14px;font-weight:500;color:var(--ink);
+  cursor:grab;user-select:none;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 2px 6px rgba(217,160,48,.15);
+  touch-action:none;
+}
+.chip:active{cursor:grabbing;}
+.chip.dragging{opacity:.4;}
+.chip.placed{display:none;}
+
+/* COLUMNS */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.1rem;}
+.col{
+  background:var(--card);border:2px dashed var(--border);border-radius:16px;
+  padding:12px;min-height:380px;transition:border-color .2s,background .2s;
+}
+.col.dragover{border-color:var(--gold);background:rgba(217,160,48,.06);}
+.col-head{display:flex;align-items:center;gap:8px;margin-bottom:.7rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);}
+.col-flag{font-size:20px;}
+.col-title{font-size:13px;font-weight:600;letter-spacing:.04em;}
+.col.uk .col-title{color:var(--uk-d);}
+.col.us .col-title{color:var(--us-d);}
+.col-list{display:flex;flex-direction:column;gap:6px;min-height:40px;}
+
+.placed-item{
+  border-radius:9px;padding:9px 12px;font-size:13.5px;font-weight:500;
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  animation:pop .25s ease;
+  background:#F4EFE6;border:1px solid rgba(100,85,60,.15);color:var(--ink);
+}
+@keyframes pop{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+.placed-item.correct{background:var(--sage-l);color:#2F5C42;border:1px solid rgba(90,144,112,.3);}
+.placed-item.wrong{background:#FBE8E4;color:#A03B22;border:1px solid rgba(224,98,58,.3);}
+.placed-item .note{font-size:10px;font-weight:400;opacity:.85;white-space:nowrap;}
+
+/* ACTIONS */
+.actions{display:flex;gap:8px;margin-bottom:1.25rem;}
+.btn{flex:1;border:none;border-radius:10px;padding:13px;font-family:'Jost',sans-serif;
+  font-size:13px;font-weight:500;letter-spacing:.04em;cursor:pointer;transition:all .2s;}
+.btn.check{background:linear-gradient(135deg,var(--gold),#E8B84A);color:#fff;
+  box-shadow:0 4px 16px rgba(217,160,48,.3);}
+.btn.check:hover{transform:translateY(-1px);}
+.btn.check:disabled{opacity:.4;cursor:default;transform:none;}
+.btn.reset{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn.reset:hover{background:rgba(100,85,60,.05);}
+
+/* SCORE */
+.score-card{
+  background:linear-gradient(135deg,var(--sage-l),#FFF8EC);
+  border:1px solid var(--border);border-radius:16px;
+  padding:1.5rem;text-align:center;margin-bottom:1.25rem;display:none;
+  animation:up .4s ease;
+}
+.score-card.show{display:block;}
+@keyframes up{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.score-num{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:400;color:var(--sage);line-height:1;}
+.score-label{font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.4rem;}
+.score-msg{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--ink-m);margin-top:.8rem;}
+
+.fcta{text-align:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);}
+.fcta p{font-size:12px;color:var(--muted);margin-bottom:.5rem;}
+.fcta a{font-size:13px;color:var(--us-d);text-decoration:none;border-bottom:1px solid rgba(224,98,58,.3);padding-bottom:1px;}
+
+@media(max-width:420px){
+  .col{min-height:480px;}
+  .chip{font-size:13px;padding:8px 12px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><span class="logo">DÉBUT</span><span class="logo-s">word sort</span></header>
+
+  <div class="tag">drag & drop · 20 words</div>
+  <h1 class="ih">British <span>vs</span> American</h1>
+  <p class="id">Drag each word into the column where it belongs — UK or US English.</p>
+  <p class="id-ru">Перетащи каждое слово в нужную колонку — британский или американский английский.</p>
+
+  <div class="bank-label">words to sort</div>
+  <div class="bank" id="bank"></div>
+
+  <div class="cols">
+    <div class="col uk" id="colUK" ondragover="onDragOver(event)" ondrop="onDrop(event,'uk')" ondragleave="onDragLeave(event)">
+      <div class="col-head"><span class="col-flag">🇬🇧</span><span class="col-title">British English</span></div>
+      <div class="col-list" id="listUK"></div>
+    </div>
+    <div class="col us" id="colUS" ondragover="onDragOver(event)" ondrop="onDrop(event,'us')" ondragleave="onDragLeave(event)">
+      <div class="col-head"><span class="col-flag">🇺🇸</span><span class="col-title">American English</span></div>
+      <div class="col-list" id="listUS"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn check" id="checkBtn" onclick="checkAnswers()" disabled>Check answers</button>
+    <button class="btn reset" onclick="resetQuiz()">Reset</button>
+  </div>
+
+  <div class="score-card" id="scoreCard">
+    <div class="score-num" id="scoreNum">0 / 20</div>
+    <div class="score-label">correct</div>
+    <div class="score-msg" id="scoreMsg"></div>
+  </div>
+
+  <div class="fcta">
+    <p>Mixing them isn't a problem in conversation — but pick one for exams.</p>
+    <a href="https://t.me/debutcommunity" target="_blank">Join DÉBUT →</a>
+  </div>
+</div>
+
+<script>
+const WORDS = [
+  {w:"Flat",side:"uk",pair:"Apartment"},
+  {w:"Apartment",side:"us",pair:"Flat"},
+  {w:"Lift",side:"uk",pair:"Elevator"},
+  {w:"Elevator",side:"us",pair:"Lift"},
+  {w:"Film",side:"uk",pair:"Movie"},
+  {w:"Movie",side:"us",pair:"Film"},
+  {w:"Petrol",side:"uk",pair:"Gas"},
+  {w:"Gas",side:"us",pair:"Petrol"},
+  {w:"Biscuit",side:"uk",pair:"Cookie"},
+  {w:"Cookie",side:"us",pair:"Biscuit"},
+  {w:"Holiday",side:"uk",pair:"Vacation"},
+  {w:"Vacation",side:"us",pair:"Holiday"},
+  {w:"Autumn",side:"uk",pair:"Fall"},
+  {w:"Fall",side:"us",pair:"Autumn"},
+  {w:"Queue",side:"uk",pair:"Line"},
+  {w:"Line",side:"us",pair:"Queue"},
+  {w:"Underground",side:"uk",pair:"Subway"},
+  {w:"Subway",side:"us",pair:"Underground"},
+  {w:"Torch",side:"uk",pair:"Flashlight"},
+  {w:"Flashlight",side:"us",pair:"Torch"},
+];
+
+let placedCount = 0;
+let dragWord = null;
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function init(){
+  const bank = document.getElementById('bank');
+  bank.innerHTML='';
+  shuffle(WORDS).forEach(item=>{
+    const chip=document.createElement('div');
+    chip.className='chip';
+    chip.textContent=item.w;
+    chip.draggable=true;
+    chip.dataset.word=item.w;
+    chip.dataset.side=item.side;
+    chip.dataset.pair=item.pair;
+    chip.addEventListener('dragstart',e=>{
+      dragWord=item;
+      chip.classList.add('dragging');
+      e.dataTransfer.setData('text/plain',item.w);
+    });
+    chip.addEventListener('dragend',()=>chip.classList.remove('dragging'));
+    bank.appendChild(chip);
+  });
+  document.getElementById('listUK').innerHTML='';
+  document.getElementById('listUS').innerHTML='';
+  document.getElementById('scoreCard').classList.remove('show');
+  document.getElementById('checkBtn').disabled=true;
+  placedCount=0;
+}
+
+function onDragOver(e){
+  e.preventDefault();
+  e.currentTarget.classList.add('dragover');
+}
+function onDragLeave(e){
+  e.currentTarget.classList.remove('dragover');
+}
+
+function onDrop(e,target){
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  if(!dragWord) return;
+
+  const chip=[...document.querySelectorAll('.chip')].find(c=>c.dataset.word===dragWord.w && !c.classList.contains('placed'));
+  if(chip) chip.classList.add('placed');
+
+  const list=document.getElementById(target==='uk'?'listUK':'listUS');
+  const item=document.createElement('div');
+  item.className='placed-item';
+  item.dataset.word=dragWord.w;
+  item.dataset.correctSide=dragWord.side;
+  item.dataset.placedSide=target;
+  item.dataset.pair=dragWord.pair;
+  item.innerHTML=`<span>${dragWord.w}</span>`;
+  list.appendChild(item);
+
+  placedCount++;
+  dragWord=null;
+  document.getElementById('checkBtn').disabled = placedCount < WORDS.length;
+}
+
+function checkAnswers(){
+  let correct=0;
+  document.querySelectorAll('.placed-item').forEach(item=>{
+    const isCorrect = item.dataset.correctSide === item.dataset.placedSide;
+    if(isCorrect){
+      item.classList.add('correct');
+      correct++;
+    } else {
+      item.classList.add('wrong');
+      const note=document.createElement('span');
+      note.className='note';
+      note.textContent = item.dataset.correctSide==='uk' ? '→ British English' : '→ American English';
+      item.appendChild(note);
+    }
+  });
+
+  document.getElementById('checkBtn').disabled=true;
+
+  const scoreCard=document.getElementById('scoreCard');
+  scoreCard.classList.add('show');
+  document.getElementById('scoreNum').textContent=`${correct} / ${WORDS.length}`;
+
+  let msg;
+  if(correct===WORDS.length) msg="Perfect — you know exactly which is which.";
+  else if(correct>=15) msg="Very solid. Just a few quirks to remember.";
+  else if(correct>=10) msg="Good start — these pairs trip up a lot of people.";
+  else msg="Tricky, right? That's exactly why exams ask you to pick one.";
+  document.getElementById('scoreMsg').textContent=msg;
+
+  scoreCard.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function resetQuiz(){
+  init();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+init();
+</script>
+</body>
+</html>
