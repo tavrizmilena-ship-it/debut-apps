@@ -1,0 +1,3764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DÉBUT · Speaking Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0F1B2D;
+  --navy-deep:#090F1A;
+  --navy-mid:#162032;
+  --blue:#1E3A5F;
+  --blue-light:#2A5080;
+  --steel:#5B7FA6;
+  --steel-light:#8AADD0;
+  --sky:#B8D4F0;
+  --gold:#C9A84C;
+  --gold-light:#E0C27A;
+  --cream:#EEF4FB;
+  --muted:#4A6585;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Jost',sans-serif;
+  background:var(--navy);color:var(--cream);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 3rem;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at top,rgba(30,58,95,0.6),transparent 65%);
+  pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;
+}
+.container{width:100%;max-width:460px;position:relative;z-index:1;}
+
+header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2rem;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;letter-spacing:0.16em;color:var(--gold);}
+.logo-sub{font-size:10px;letter-spacing:0.14em;color:var(--steel);text-transform:uppercase;}
+
+.screen{animation:fade 0.5s ease;}
+.hidden{display:none !important;}
+@keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ─── DEBUTIK ─── */
+.debutik-wrap{display:flex;justify-content:center;margin:0.5rem 0 1.75rem;position:relative;}
+.debutik-bubble{
+  position:absolute;top:-10px;right:calc(50% - 130px);
+  background:rgba(30,58,95,0.95);border:0.5px solid rgba(91,127,166,0.5);
+  border-radius:16px 16px 16px 4px;padding:10px 14px;
+  font-size:13px;color:var(--sky);max-width:170px;line-height:1.45;
+  display:none;animation:bubblePop 0.25s ease;box-shadow:0 4px 20px rgba(0,0,0,0.3);
+  z-index:10;
+}
+.debutik-bubble::after{
+  content:'';position:absolute;bottom:-7px;left:12px;
+  border-left:7px solid transparent;border-right:7px solid transparent;
+  border-top:7px solid rgba(30,58,95,0.95);
+}
+.debutik-bubble.show{display:block;}
+@keyframes bubblePop{from{opacity:0;transform:scale(0.85) translateY(5px);}to{opacity:1;transform:scale(1) translateY(0);}}
+
+.debutik-svg{cursor:pointer;filter:drop-shadow(0 8px 20px rgba(15,27,45,0.5));transition:transform 0.15s;}
+.debutik-svg:hover{transform:scale(1.04);}
+/* Body float */
+@keyframes debutikFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.debutik-body-group{animation:debutikFloat 3.5s ease-in-out infinite;}
+/* Breathing */
+@keyframes debutikBreath{0%,100%{transform:scaleX(1) scaleY(1);}50%{transform:scaleX(1.025) scaleY(0.975);}}
+.debutik-body{animation:debutikBreath 3s ease-in-out infinite;transform-origin:center;}
+/* Blink */
+@keyframes debutikBlink{0%,92%,100%{transform:scaleY(1);}95%{transform:scaleY(0.05);}}
+.debutik-eye{animation:debutikBlink 4s ease-in-out infinite;transform-origin:center;}
+.debutik-eye-r{animation:debutikBlink 4s ease-in-out infinite 0.05s;transform-origin:center;}
+/* Wave */
+@keyframes debutikWave{0%,100%{transform:rotate(0deg);}20%{transform:rotate(18deg);}40%{transform:rotate(-8deg);}60%{transform:rotate(15deg);}80%{transform:rotate(-5deg);}}
+.debutik-arm-r{animation:debutikWave 3s ease-in-out infinite 1s;transform-origin:45% 40%;}
+/* Soft hat bob */
+@keyframes debutikHat{0%,100%{transform:rotate(0deg);}50%{transform:rotate(-1.5deg);}}
+.debutik-hat{animation:debutikHat 3.5s ease-in-out infinite;transform-origin:center bottom;}
+
+/* ─── LEVEL SELECT (English proficiency) ─── */
+#levelSelect{padding-bottom:0.5rem;}
+.select-tag{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(201,168,76,0.35);padding:5px 13px;border-radius:20px;margin-bottom:1.25rem;}
+.select-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,8vw,44px);font-weight:300;font-style:italic;line-height:1.15;margin-bottom:0.6rem;}
+.select-desc{font-size:13px;font-weight:300;color:var(--steel-light);line-height:1.6;margin-bottom:0.4rem;}
+.select-desc-ru{font-size:11px;font-weight:300;color:var(--steel);line-height:1.5;margin-bottom:1.75rem;opacity:0.85;}
+
+.eng-levels{display:flex;flex-direction:column;gap:10px;margin-bottom:1rem;}
+.eng-card{
+  background:linear-gradient(135deg,rgba(22,32,50,0.8),rgba(9,15,26,0.9));
+  border:0.5px solid rgba(91,127,166,0.22);border-radius:14px;
+  padding:16px 20px;cursor:pointer;text-align:left;
+  transition:border-color 0.2s,transform 0.2s,background 0.2s;
+  display:flex;align-items:center;gap:15px;
+}
+.eng-card:hover{border-color:var(--gold);transform:translateX(4px);background:linear-gradient(135deg,rgba(30,58,95,0.5),rgba(22,32,50,0.95));}
+.eng-card.selected-eng{border-color:var(--gold);background:linear-gradient(135deg,rgba(30,58,95,0.55),rgba(22,32,50,0.95));}
+.eng-dot{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.eng-dot.beginner{background:rgba(91,127,166,0.2);border:1px solid var(--steel);}
+.eng-dot.intermediate{background:rgba(201,168,76,0.18);border:1px solid var(--gold);}
+.eng-dot.advanced{background:rgba(42,80,128,0.25);border:1px solid var(--blue-light);}
+.eng-info{flex:1;}
+.eng-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--cream);line-height:1.1;}
+.eng-range{font-size:11px;color:var(--gold);margin-top:2px;letter-spacing:0.04em;}
+.eng-desc{font-size:11px;color:var(--steel-light);margin-top:3px;opacity:0.85;}
+.eng-arrow{color:var(--steel);font-size:18px;}
+
+/* ─── INTRO / TOPIC SELECT ─── */
+.intro-tag{display:inline-block;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(201,168,76,0.3);padding:5px 13px;border-radius:20px;margin-bottom:1.5rem;}
+.intro-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,8.5vw,50px);font-weight:300;font-style:italic;line-height:1.1;margin-bottom:0.7rem;}
+.intro-desc{font-size:14px;font-weight:300;color:var(--steel-light);line-height:1.65;margin-bottom:0.4rem;}
+.intro-desc-ru{font-size:11px;font-weight:300;color:var(--steel);line-height:1.5;margin-bottom:0.6rem;opacity:0.8;}
+.eng-level-pill{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(201,168,76,0.35);padding:4px 11px;border-radius:20px;margin-bottom:2rem;cursor:pointer;transition:background 0.2s;}
+.eng-level-pill:hover{background:rgba(201,168,76,0.1);}
+
+.levels{display:flex;flex-direction:column;gap:11px;}
+.level-card{
+  background:linear-gradient(135deg,rgba(22,32,50,0.7),rgba(9,15,26,0.85));
+  border:0.5px solid rgba(91,127,166,0.2);border-radius:14px;
+  padding:17px 20px;cursor:pointer;text-align:left;
+  transition:border-color 0.2s,transform 0.2s,background 0.2s;
+  display:flex;align-items:center;gap:15px;
+}
+.level-card:hover{border-color:var(--gold);transform:translateX(4px);background:linear-gradient(135deg,rgba(30,58,95,0.5),rgba(22,32,50,0.95));}
+.level-dot{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.level-dot.easy{background:rgba(42,80,128,0.25);border:1px solid var(--steel);}
+.level-dot.medium{background:rgba(42,80,128,0.25);border:1px solid var(--steel);}
+.level-dot.spicy{background:rgba(42,80,128,0.25);border:1px solid var(--steel);}
+.level-dot.travel{background:rgba(42,80,128,0.25);border:1px solid var(--steel);}
+.level-dot.cinema{background:rgba(42,80,128,0.25);border:1px solid var(--steel);}
+.level-dot.deep{background:rgba(42,80,128,0.25);border:1px solid var(--steel);}
+.level-dot.random{background:rgba(42,80,128,0.25);border:1px dashed var(--steel-light);}
+.level-info{flex:1;}
+.level-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--cream);line-height:1.1;}
+.level-en{font-size:12px;color:var(--steel-light);margin-top:2px;}
+.level-ru{font-size:10px;color:var(--steel);margin-top:3px;opacity:0.75;}
+.level-arrow{color:var(--steel);font-size:18px;}
+
+/* ─── CHALLENGE ─── */
+.challenge-top{display:flex;align-items:center;gap:12px;margin-bottom:2rem;}
+.back-btn{background:none;border:0.5px solid rgba(91,127,166,0.3);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:15px;color:var(--steel);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s;}
+.back-btn:hover{background:rgba(91,127,166,0.12);}
+.progress-track{flex:1;display:flex;gap:6px;}
+.progress-seg{flex:1;height:3px;border-radius:2px;background:rgba(91,127,166,0.2);transition:background 0.3s;}
+.progress-seg.active{background:var(--gold);}
+.progress-seg.done{background:var(--steel);}
+.level-badge{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.level-badge.easy,.level-badge.travel{color:var(--steel-light);border:0.5px solid var(--steel-light);}
+.level-badge.medium,.level-badge.deep,.level-badge.random{color:var(--gold);border:0.5px solid var(--gold);}
+.level-badge.spicy{color:var(--sky);border:0.5px solid var(--sky);}
+
+.step-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--steel);margin-bottom:1rem;text-align:center;}
+
+.prompt-card{
+  background:linear-gradient(155deg,var(--blue),var(--navy-mid));
+  border:0.5px solid rgba(91,127,166,0.3);border-radius:18px;
+  padding:2rem 1.75rem;margin-bottom:1.5rem;position:relative;overflow:hidden;
+  min-height:220px;display:flex;flex-direction:column;justify-content:center;
+}
+.prompt-card::before{content:'';position:absolute;top:-30%;right:-20%;width:60%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 70%);}
+.diff-badge{display:inline-block;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;padding:3px 9px;border-radius:10px;margin-bottom:0.75rem;position:relative;}
+.diff-badge.beginner{background:rgba(91,127,166,0.2);color:var(--sky);}
+.diff-badge.intermediate{background:rgba(201,168,76,0.15);color:var(--gold);}
+.diff-badge.advanced{background:rgba(42,80,128,0.3);color:var(--steel-light);}
+.prompt-quote{font-family:'Cormorant Garamond',serif;font-size:42px;color:rgba(201,168,76,0.2);line-height:0.5;margin-bottom:0.5rem;}
+.prompt-text{font-family:'Cormorant Garamond',serif;font-size:clamp(23px,5.2vw,29px);font-weight:400;color:var(--cream);line-height:1.35;position:relative;}
+.prompt-ru{font-size:12px;font-weight:300;color:var(--steel);line-height:1.5;margin-top:1rem;opacity:0.8;position:relative;}
+
+/* TIMER */
+.timer-zone{display:flex;flex-direction:column;align-items:center;margin-bottom:1.5rem;}
+.timer-ring{position:relative;width:140px;height:140px;margin-bottom:1rem;}
+.timer-ring svg{transform:rotate(-90deg);}
+.timer-ring .bg{fill:none;stroke:rgba(91,127,166,0.15);stroke-width:5;}
+.timer-ring .fg{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+.timer-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--gold);font-variant-numeric:tabular-nums;}
+.timer-controls{display:flex;gap:10px;}
+.t-btn{background:var(--gold);color:var(--navy-deep);border:none;border-radius:8px;padding:12px 28px;font-family:'Jost',sans-serif;font-size:13px;letter-spacing:0.06em;cursor:pointer;transition:opacity 0.2s;}
+.t-btn:hover{opacity:0.9;}
+.t-btn.ghost{background:transparent;color:var(--steel-light);border:0.5px solid rgba(91,127,166,0.4);}
+
+.next-btn{width:100%;background:var(--gold);color:var(--navy-deep);border:none;border-radius:10px;padding:15px;font-family:'Jost',sans-serif;font-size:14px;letter-spacing:0.05em;cursor:pointer;transition:opacity 0.2s;font-weight:400;}
+.next-btn:hover{opacity:0.9;}
+.skip-btn{width:100%;background:transparent;color:var(--steel);border:none;padding:12px;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:0.04em;cursor:pointer;margin-top:6px;}
+.skip-btn:hover{color:var(--steel-light);}
+
+/* DEBUTIK in challenge — small + bubble */
+.challenge-debutik-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:1rem;position:relative;}
+.challenge-debutik-hint{font-size:11px;color:var(--steel);padding-bottom:4px;line-height:1.4;}
+.challenge-debutik-hint span{color:var(--gold);}
+.debutik-tap-btn{background:none;border:none;padding:0;cursor:pointer;display:block;}
+
+/* PHRASES BUBBLE */
+.phrases-bubble{
+  background:rgba(22,32,50,0.97);border:0.5px solid rgba(91,127,166,0.35);
+  border-radius:16px;padding:1.25rem 1.25rem 1rem;margin-bottom:1rem;
+  display:none;animation:bubblePop 0.25s ease;
+}
+.phrases-bubble.open{display:block;}
+.phrases-bubble-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.phrases-bubble-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--gold);}
+.phrases-close{background:none;border:none;color:var(--steel);cursor:pointer;font-size:18px;padding:0;transition:color 0.15s;}
+.phrases-close:hover{color:var(--cream);}
+.phrases-list{display:flex;flex-direction:column;gap:8px;}
+.phrases-bubble-sub{font-size:11px;color:var(--steel);margin-bottom:0.75rem;letter-spacing:0.03em;}
+.vocab-section{margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid rgba(91,127,166,0.2);}
+.vocab-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--gold);margin-bottom:2px;}
+.vocab-sub{font-size:11px;color:var(--steel);margin-bottom:0.75rem;}
+.vocab-list{display:flex;flex-direction:column;gap:6px;}
+.vocab-item{background:rgba(14,22,38,0.6);border:0.5px solid rgba(91,127,166,0.15);border-radius:8px;padding:9px 13px;display:flex;gap:10px;align-items:center;justify-content:space-between;}
+.vocab-item-left{display:flex;gap:10px;align-items:baseline;flex:1;}
+.save-vocab-btn{
+  background:none;border:0.5px solid rgba(91,127,166,0.3);border-radius:6px;
+  color:var(--steel);font-size:10px;letter-spacing:0.06em;padding:3px 8px;
+  cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0;
+}
+.save-vocab-btn:hover{background:rgba(201,168,76,0.12);color:var(--gold);border-color:var(--gold);}
+.save-vocab-btn.saved{color:var(--gold);border-color:var(--gold);background:rgba(201,168,76,0.1);}
+/* result saved sections */
+.saved-section-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--steel);margin:1rem 0 0.5rem;opacity:0.8;}
+.saved-vocab-item{background:rgba(14,22,38,0.5);border:0.5px solid rgba(91,127,166,0.12);border-radius:8px;padding:9px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.saved-vocab-word{font-size:13px;color:var(--sky);}
+.saved-vocab-def{font-size:11.5px;color:var(--steel-light);}
+.saved-vocab-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.vocab-word{font-size:13px;font-weight:400;color:var(--sky);white-space:nowrap;}
+.vocab-def{font-size:11.5px;color:var(--steel-light);line-height:1.4;}
+.phrase-item{
+  background:rgba(9,15,26,0.6);border-radius:9px;padding:11px 14px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.phrase-texts{flex:1;}
+.phrase-en{font-size:14px;color:var(--cream);font-family:'Cormorant Garamond',serif;font-style:italic;margin-bottom:3px;}
+.phrase-ru{font-size:11px;color:var(--steel);opacity:0.8;}
+.save-phrase-btn{
+  background:none;border:0.5px solid rgba(91,127,166,0.3);border-radius:6px;
+  color:var(--steel);cursor:pointer;font-size:13px;padding:4px 8px;
+  flex-shrink:0;transition:all 0.2s;white-space:nowrap;
+}
+.save-phrase-btn:hover{background:rgba(201,168,76,0.12);color:var(--gold);border-color:var(--gold);}
+.save-phrase-btn.saved{color:var(--gold);border-color:var(--gold);background:rgba(201,168,76,0.1);}
+
+/* RESULT */
+.result-card{
+  background:linear-gradient(160deg,var(--blue),var(--navy-mid));
+  border:0.5px solid rgba(201,168,76,0.22);border-radius:18px;
+  padding:2.25rem 1.75rem;text-align:center;position:relative;overflow:hidden;margin-bottom:1.25rem;
+}
+.result-card::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:120%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.07),transparent 60%);}
+.result-debutik-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:0.5rem;}
+.result-stars{font-size:18px;color:var(--gold);letter-spacing:8px;margin-top:-4px;animation:fade 0.8s ease 0.3s both;}
+.result-praise{
+  background:linear-gradient(135deg,rgba(30,58,95,0.6),rgba(22,32,50,0.8));
+  border:0.5px solid rgba(91,127,166,0.3);border-radius:14px;
+  padding:14px 18px;font-size:14px;color:var(--sky);line-height:1.6;
+  margin:1rem 0 0.5rem;font-style:italic;text-align:center;
+}
+.result-logo{font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:0.18em;color:var(--gold);margin-bottom:1.5rem;position:relative;}
+.result-icon{font-size:40px;margin-bottom:0.75rem;position:relative;}
+.result-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;font-style:italic;color:var(--cream);margin-bottom:0.5rem;position:relative;}
+.result-sub{font-size:13px;color:var(--steel-light);line-height:1.6;margin-bottom:1.5rem;position:relative;}
+.result-stats{display:flex;justify-content:center;gap:2rem;margin-bottom:1.5rem;position:relative;}
+.stat{text-align:center;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:var(--gold);line-height:1;}
+.stat-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--steel);margin-top:5px;}
+.result-quote{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--gold);line-height:1.5;position:relative;padding:0 0.5rem;}
+
+.result-actions{display:flex;flex-direction:column;gap:9px;}
+
+/* SAVED PHRASES CARD */
+.saved-card{
+  background:linear-gradient(145deg,var(--blue),var(--navy-mid));
+  border:0.5px solid rgba(91,127,166,0.25);border-radius:14px;
+  padding:1.25rem 1.25rem 1rem;margin-bottom:1.25rem;
+}
+.saved-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;}
+.saved-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--gold);}
+.saved-hint{font-size:10px;color:var(--steel);letter-spacing:0.05em;}
+.saved-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem;}
+.saved-phrase-item{
+  background:rgba(9,15,26,0.55);border-radius:8px;padding:10px 13px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+}
+.saved-phrase-text{flex:1;}
+.saved-phrase-en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--cream);}
+.saved-phrase-ru{font-size:11px;color:var(--steel);margin-top:3px;opacity:0.8;}
+.unsave-btn{background:none;border:none;color:var(--steel);cursor:pointer;font-size:14px;padding:2px;flex-shrink:0;opacity:0.6;transition:opacity 0.15s;}
+.unsave-btn:hover{opacity:1;}
+.copy-all-btn{
+  width:100%;background:rgba(201,168,76,0.1);border:0.5px solid rgba(201,168,76,0.3);
+  border-radius:8px;padding:12px;font-family:'Jost',sans-serif;
+  font-size:13px;color:var(--gold);cursor:pointer;letter-spacing:0.05em;
+  transition:background 0.2s;
+}
+.copy-all-btn:hover{background:rgba(201,168,76,0.18);}
+.saved-empty{text-align:center;padding:1.25rem 0;font-size:13px;color:var(--steel);}
+.saved-empty-ru{font-size:11px;margin-top:6px;opacity:0.7;}
+
+.footer-cta{text-align:center;margin-top:1.5rem;padding-top:1.25rem;border-top:0.5px solid rgba(91,127,166,0.18);}
+.footer-cta p{font-size:12px;color:var(--steel);margin-bottom:8px;}
+.footer-cta a{font-size:13px;color:var(--gold);text-decoration:none;border-bottom:0.5px solid rgba(201,168,76,0.3);padding-bottom:1px;}
+
+.random-card{border-color:rgba(201,168,76,0.25);background:linear-gradient(135deg,rgba(22,32,50,0.6),rgba(42,80,128,0.15));}
+.random-card:hover{border-color:var(--gold);}
+</style>
+<script defer data-domain="YOUR-DOMAIN" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+<div class="container">
+  <header>
+    <span class="logo">DÉBUT</span>
+    <span class="logo-sub">speaking studio</span>
+  </header>
+
+  <!-- ══ ENGLISH LEVEL SELECT ══ -->
+  <div id="levelSelect" class="screen">
+    <!-- Debutik waving -->
+    <div class="debutik-wrap" style="margin-bottom:1.5rem;">
+      <div style="position:relative;">
+        <div class="debutik-bubble" id="levelBubble">Hi! Pick your level and I'll find the right questions for you 🌟</div>
+        <svg class="debutik-svg" id="debutikMain" width="140" height="158" viewBox="0 0 140 158" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="pingLevelBubble()">
+          <g class="debutik-body-group">
+            <!-- shadow -->
+            <ellipse cx="70" cy="150" rx="34" ry="5.5" fill="rgba(9,15,26,0.35)"/>
+            <!-- body — rounder, more shape -->
+            <ellipse class="debutik-body" cx="70" cy="100" rx="38" ry="42" fill="#C4D8EE"/>
+            <!-- subtle body shading left -->
+            <ellipse cx="50" cy="105" rx="14" ry="20" fill="rgba(150,180,210,0.25)"/>
+            <!-- collar / chest detail -->
+            <path d="M55 115 Q70 122 85 115" stroke="rgba(160,190,220,0.6)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- blush -->
+            <ellipse cx="49" cy="108" rx="9" ry="6" fill="rgba(200,150,170,0.28)"/>
+            <ellipse cx="91" cy="108" rx="9" ry="6" fill="rgba(200,150,170,0.28)"/>
+            <!-- FACE area - slightly lighter -->
+            <ellipse cx="70" cy="97" rx="26" ry="24" fill="#D4E5F5"/>
+            <!-- eyebrows -->
+            <path d="M58 83 Q63 80 67 82" stroke="#2A4060" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            <path d="M73 82 Q77 80 82 83" stroke="#2A4060" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            <!-- eyes — more realistic, almond shape -->
+            <g class="debutik-eye">
+              <ellipse cx="62" cy="91" rx="5.5" ry="6" fill="#1A2B45"/>
+              <ellipse cx="60.5" cy="89" rx="1.8" ry="1.8" fill="white" opacity="0.85"/>
+              <ellipse cx="64" cy="92" rx="0.8" ry="0.8" fill="white" opacity="0.4"/>
+            </g>
+            <g class="debutik-eye-r">
+              <ellipse cx="78" cy="91" rx="5.5" ry="6" fill="#1A2B45"/>
+              <ellipse cx="76.5" cy="89" rx="1.8" ry="1.8" fill="white" opacity="0.85"/>
+              <ellipse cx="80" cy="92" rx="0.8" ry="0.8" fill="white" opacity="0.4"/>
+            </g>
+            <!-- nose — tiny dot -->
+            <ellipse cx="70" cy="101" rx="1.5" ry="1" fill="rgba(42,64,96,0.35)"/>
+            <!-- smile — natural curve -->
+            <path d="M61 108 Q70 116 79 108" stroke="#1A2B45" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <!-- teeth hint -->
+            <path d="M63 109 Q70 114 77 109" stroke="white" stroke-width="1" stroke-linecap="round" fill="none" opacity="0.4"/>
+            <!-- left arm -->
+            <ellipse cx="27" cy="110" rx="10" ry="14" fill="#AABFD8" transform="rotate(-18 27 110)"/>
+            <ellipse cx="22" cy="122" rx="7" ry="5" fill="#AABFD8" transform="rotate(-10 22 122)"/>
+            <!-- right arm (waves) -->
+            <g class="debutik-arm-r">
+              <ellipse cx="113" cy="98" rx="10" ry="14" fill="#AABFD8" transform="rotate(22 113 98)"/>
+              <!-- hand -->
+              <ellipse cx="120" cy="86" rx="7" ry="5.5" fill="#AABFD8" transform="rotate(10 120 86)"/>
+              <!-- fingers hint -->
+              <path d="M116 82 Q118 78 122 80" stroke="#9AAFC8" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <path d="M119 80 Q121 76 125 79" stroke="#9AAFC8" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            </g>
+            <!-- legs -->
+            <ellipse cx="57" cy="138" rx="11" ry="8" fill="#9BB5D0"/>
+            <ellipse cx="83" cy="138" rx="11" ry="8" fill="#9BB5D0"/>
+            <!-- shoes -->
+            <ellipse cx="57" cy="143" rx="11" ry="5" fill="#1E3A5F"/>
+            <ellipse cx="83" cy="143" rx="11" ry="5" fill="#1E3A5F"/>
+            <!-- hat -->
+            <g class="debutik-hat">
+              <!-- brim -->
+              <rect x="35" y="60" width="70" height="11" rx="5.5" fill="#2A5080"/>
+              <!-- crown -->
+              <rect x="42" y="35" width="56" height="30" rx="9" fill="#1E3A5F"/>
+              <!-- hat band -->
+              <rect x="42" y="57" width="56" height="5" rx="2" fill="#243D6A"/>
+              <!-- DÉBUT tag on hat -->
+              <rect x="51" y="43" width="38" height="16" rx="4" fill="rgba(238,244,251,0.92)"/>
+              <text x="70" y="55" text-anchor="middle" font-family="Jost,sans-serif" font-size="7" fill="#1E3A5F" font-weight="500" letter-spacing="0.8">DÉBUT</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="select-tag">first step · первый шаг</div>
+    <div class="select-title">What's your<br>English level?</div>
+    <div class="select-desc">Pick your level — questions will adapt to you. You can change it anytime.</div>
+    <div class="select-desc-ru">Выбери уровень — вопросы подстроятся. Всегда можно изменить.</div>
+
+    <div class="eng-levels">
+      <button class="eng-card" id="engBtn-beginner" onclick="selectEngLevel('beginner')">
+        <div class="eng-dot beginner">🔷</div>
+        <div class="eng-info">
+          <div class="eng-name">Beginner</div>
+          <div class="eng-range">A2 – B1</div>
+          <div class="eng-desc">Simple everyday topics, clear vocabulary, short answers</div>
+        </div>
+        <div class="eng-arrow">→</div>
+      </button>
+      <button class="eng-card" id="engBtn-intermediate" onclick="selectEngLevel('intermediate')">
+        <div class="eng-dot intermediate">🔷</div>
+        <div class="eng-info">
+          <div class="eng-name">Intermediate</div>
+          <div class="eng-range">B1 – B2</div>
+          <div class="eng-desc">Opinions, stories, richer vocabulary</div>
+        </div>
+        <div class="eng-arrow">→</div>
+      </button>
+      <button class="eng-card" id="engBtn-advanced" onclick="selectEngLevel('advanced')">
+        <div class="eng-dot advanced">🔷</div>
+        <div class="eng-info">
+          <div class="eng-name">Advanced</div>
+          <div class="eng-range">B2 – C1</div>
+          <div class="eng-desc">Abstract topics, nuanced discussions, sharp vocabulary</div>
+        </div>
+        <div class="eng-arrow">→</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ TOPIC SELECT (INTRO) ══ -->
+  <div id="intro" class="screen hidden">
+    <div class="intro-tag">speaking practice</div>
+    <div class="intro-title">Find your<br>words</div>
+    <div class="intro-desc">Three prompts. One voice. No script. Pick a topic and speak out loud — alone, in English, like no one's listening.</div>
+    <div class="intro-desc-ru">Три задания подряд. Говори вслух на английском, без подготовки.</div>
+    <div class="eng-level-pill" onclick="changeEngLevel()" id="levelPill">✦ Beginner · A2–B1 · <span style="opacity:0.7">изменить</span></div>
+    <div class="levels">
+      <button class="level-card" onclick="startSession('easy')">
+        <div class="level-dot easy">🌱</div>
+        <div class="level-info">
+          <div class="level-name">Easy</div>
+          <div class="level-en">Warm, simple, everyday topics</div>
+          <div class="level-ru">Простые тёплые темы для разогрева</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('medium')">
+        <div class="level-dot medium">✦</div>
+        <div class="level-info">
+          <div class="level-name">Medium</div>
+          <div class="level-en">Opinions, stories, imagination</div>
+          <div class="level-ru">Мнения, истории, воображение</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('spicy')">
+        <div class="level-dot spicy">🔥</div>
+        <div class="level-info">
+          <div class="level-name">Spicy</div>
+          <div class="level-en">Bold, weird, debate-worthy</div>
+          <div class="level-ru">Дерзкие и неожиданные — для смелых</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('travel')">
+        <div class="level-dot travel">✈️</div>
+        <div class="level-info">
+          <div class="level-name">Travel</div>
+          <div class="level-en">Trips, cities, adventures</div>
+          <div class="level-ru">Путешествия, города, приключения</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('deep')">
+        <div class="level-dot deep">💛</div>
+        <div class="level-info">
+          <div class="level-name">Deep talk</div>
+          <div class="level-en">Warm, personal, meaningful</div>
+          <div class="level-ru">Тёплые личные вопросы по душам</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card" onclick="startSession('cinema')">
+        <div class="level-dot cinema">🎬</div>
+        <div class="level-info">
+          <div class="level-name">Cinema & Culture</div>
+          <div class="level-en">Films, music, art, ideas</div>
+          <div class="level-ru">Кино, музыка, искусство, идеи</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+      <button class="level-card random-card" onclick="startSession('random')">
+        <div class="level-dot random">🎲</div>
+        <div class="level-info">
+          <div class="level-name">Random</div>
+          <div class="level-en">Mixed prompts from all themes</div>
+          <div class="level-ru">Случайные вопросы из всех тем</div>
+        </div>
+        <div class="level-arrow">→</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ CHALLENGE ══ -->
+  <div id="challenge" class="screen hidden">
+    <div class="challenge-top">
+      <button class="back-btn" onclick="goHome()">←</button>
+      <div class="progress-track" id="progress-track">
+        <div class="progress-seg" id="seg0"></div>
+        <div class="progress-seg" id="seg1"></div>
+        <div class="progress-seg" id="seg2"></div>
+      </div>
+      <span class="level-badge" id="levelBadge"></span>
+    </div>
+    <div class="step-label" id="stepLabel"></div>
+    <div class="prompt-card">
+      <div class="diff-badge" id="diffBadge"></div>
+      <div class="prompt-quote">"</div>
+      <div class="prompt-text" id="promptText"></div>
+      <div class="prompt-ru" id="promptRu"></div>
+    </div>
+
+    <!-- Debutik small + bubble trigger -->
+    <div class="challenge-debutik-row">
+      <button class="debutik-tap-btn" onclick="togglePhrases()" title="Нажми — получи подсказки">
+        <svg width="54" height="62" viewBox="0 0 140 158" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+          <g style="animation:debutikFloat 3.5s ease-in-out infinite;">
+            <ellipse cx="70" cy="150" rx="34" ry="5.5" fill="rgba(9,15,26,0.3)"/>
+            <ellipse cx="70" cy="100" rx="38" ry="42" fill="#C4D8EE" style="animation:debutikBreath 3s ease-in-out infinite;transform-origin:center;"/>
+            <ellipse cx="50" cy="105" rx="14" ry="20" fill="rgba(150,180,210,0.2)"/>
+            <ellipse cx="49" cy="108" rx="9" ry="6" fill="rgba(200,150,170,0.28)"/>
+            <ellipse cx="91" cy="108" rx="9" ry="6" fill="rgba(200,150,170,0.28)"/>
+            <ellipse cx="70" cy="97" rx="26" ry="24" fill="#D4E5F5"/>
+            <path d="M58 83 Q63 80 67 82" stroke="#2A4060" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            <path d="M73 82 Q77 80 82 83" stroke="#2A4060" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            <g style="animation:debutikBlink 4s ease-in-out infinite;transform-origin:center;">
+              <ellipse cx="62" cy="91" rx="5.5" ry="6" fill="#1A2B45"/>
+              <ellipse cx="60.5" cy="89" rx="1.8" ry="1.8" fill="white" opacity="0.85"/>
+            </g>
+            <g style="animation:debutikBlink 4s ease-in-out infinite 0.05s;transform-origin:center;">
+              <ellipse cx="78" cy="91" rx="5.5" ry="6" fill="#1A2B45"/>
+              <ellipse cx="76.5" cy="89" rx="1.8" ry="1.8" fill="white" opacity="0.85"/>
+            </g>
+            <ellipse cx="70" cy="101" rx="1.5" ry="1" fill="rgba(42,64,96,0.35)"/>
+            <path d="M61 108 Q70 116 79 108" stroke="#1A2B45" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <ellipse cx="27" cy="110" rx="10" ry="14" fill="#AABFD8" transform="rotate(-18 27 110)"/>
+            <g style="animation:debutikWave 3s ease-in-out infinite 1s;transform-origin:45% 40%;">
+              <ellipse cx="113" cy="98" rx="10" ry="14" fill="#AABFD8" transform="rotate(22 113 98)"/>
+              <ellipse cx="120" cy="86" rx="7" ry="5.5" fill="#AABFD8"/>
+            </g>
+            <ellipse cx="57" cy="138" rx="11" ry="8" fill="#9BB5D0"/>
+            <ellipse cx="83" cy="138" rx="11" ry="8" fill="#9BB5D0"/>
+            <ellipse cx="57" cy="143" rx="11" ry="5" fill="#1E3A5F"/>
+            <ellipse cx="83" cy="143" rx="11" ry="5" fill="#1E3A5F"/>
+            <g style="animation:debutikHat 3.5s ease-in-out infinite;transform-origin:center bottom;">
+              <rect x="35" y="60" width="70" height="11" rx="5.5" fill="#2A5080"/>
+              <rect x="42" y="35" width="56" height="30" rx="9" fill="#1E3A5F"/>
+              <rect x="42" y="57" width="56" height="5" rx="2" fill="#243D6A"/>
+              <rect x="51" y="43" width="38" height="16" rx="4" fill="rgba(238,244,251,0.92)"/>
+              <text x="70" y="55" text-anchor="middle" font-family="Jost,sans-serif" font-size="7" fill="#1E3A5F" font-weight="500" letter-spacing="0.8">DÉBUT</text>
+            </g>
+          </g>
+        </svg>
+      </button>
+      <div class="challenge-debutik-hint">Tap Debutik for<br><span>starter phrases + vocab</span></div>
+    </div>
+
+    <!-- Phrases bubble (replaces old <details>) -->
+    <div class="phrases-bubble" id="phrasesBubble">
+      <div class="phrases-bubble-header">
+        <div class="phrases-bubble-title">Starter phrases</div>
+        <button class="phrases-close" onclick="togglePhrases()">✕</button>
+      </div>
+      <div class="phrases-bubble-sub">полезные фразы для этого вопроса</div>
+      <div class="phrases-list" id="phrasesList"></div>
+      <div class="vocab-section" id="vocabSection">
+        <div class="vocab-title">Useful vocabulary</div>
+        <div class="vocab-sub">лексика по теме</div>
+        <div class="vocab-list" id="vocabList"></div>
+      </div>
+    </div>
+
+    <div class="timer-zone">
+      <div class="timer-ring">
+        <svg width="140" height="140">
+          <circle class="bg" cx="70" cy="70" r="64"></circle>
+          <circle class="fg" id="timerFg" cx="70" cy="70" r="64"></circle>
+        </svg>
+        <div class="timer-num" id="timerNum">0:45</div>
+      </div>
+      <div class="timer-controls">
+        <button class="t-btn" id="timerStart">Start</button>
+        <button class="t-btn ghost" id="timerReset">Reset</button>
+      </div>
+    </div>
+
+    <button class="next-btn" id="nextBtn">Next prompt →</button>
+  </div>
+
+  <!-- ══ RESULT ══ -->
+  <div id="result" class="screen hidden">
+
+    <!-- Debutik celebrating -->
+    <div class="result-debutik-wrap">
+      <svg width="110" height="126" viewBox="0 0 140 158" fill="none" xmlns="http://www.w3.org/2000/svg" id="resultDebutik">
+        <g style="animation:debutikFloat 3s ease-in-out infinite;">
+          <ellipse cx="70" cy="150" rx="34" ry="5.5" fill="rgba(9,15,26,0.3)"/>
+          <ellipse cx="70" cy="100" rx="38" ry="42" fill="#C4D8EE"/>
+          <ellipse cx="50" cy="105" rx="14" ry="20" fill="rgba(150,180,210,0.2)"/>
+          <ellipse cx="49" cy="108" rx="9" ry="6" fill="rgba(200,150,170,0.32)"/>
+          <ellipse cx="91" cy="108" rx="9" ry="6" fill="rgba(200,150,170,0.32)"/>
+          <ellipse cx="70" cy="97" rx="26" ry="24" fill="#D4E5F5"/>
+          <path d="M58 83 Q63 80 67 82" stroke="#2A4060" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <path d="M73 82 Q77 80 82 83" stroke="#2A4060" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <!-- eyes — happy squint for result -->
+          <g style="animation:debutikBlink 5s ease-in-out infinite;">
+            <path d="M56 91 Q62 86 68 91" stroke="#1A2B45" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </g>
+          <g style="animation:debutikBlink 5s ease-in-out infinite 0.1s;">
+            <path d="M72 91 Q78 86 84 91" stroke="#1A2B45" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </g>
+          <ellipse cx="70" cy="101" rx="1.5" ry="1" fill="rgba(42,64,96,0.3)"/>
+          <!-- big happy smile -->
+          <path d="M59 108 Q70 120 81 108" stroke="#1A2B45" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M62 110 Q70 117 78 110" stroke="white" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.45"/>
+          <!-- both arms up celebrating -->
+          <ellipse cx="27" cy="98" rx="10" ry="14" fill="#AABFD8" transform="rotate(-35 27 98)"/>
+          <ellipse cx="22" cy="85" rx="7" ry="5.5" fill="#AABFD8"/>
+          <ellipse cx="113" cy="98" rx="10" ry="14" fill="#AABFD8" transform="rotate(35 113 98)"/>
+          <ellipse cx="118" cy="85" rx="7" ry="5.5" fill="#AABFD8"/>
+          <ellipse cx="57" cy="138" rx="11" ry="8" fill="#9BB5D0"/>
+          <ellipse cx="83" cy="138" rx="11" ry="8" fill="#9BB5D0"/>
+          <ellipse cx="57" cy="143" rx="11" ry="5" fill="#1E3A5F"/>
+          <ellipse cx="83" cy="143" rx="11" ry="5" fill="#1E3A5F"/>
+          <rect x="35" y="60" width="70" height="11" rx="5.5" fill="#2A5080"/>
+          <rect x="42" y="35" width="56" height="30" rx="9" fill="#1E3A5F"/>
+          <rect x="42" y="57" width="56" height="5" rx="2" fill="#243D6A"/>
+          <rect x="51" y="43" width="38" height="16" rx="4" fill="rgba(238,244,251,0.92)"/>
+          <text x="70" y="55" text-anchor="middle" font-family="Jost,sans-serif" font-size="7" fill="#1E3A5F" font-weight="500" letter-spacing="0.8">DÉBUT</text>
+        </g>
+      </svg>
+      <!-- confetti stars -->
+      <div class="result-stars">✦ ✦ ✦</div>
+    </div>
+
+    <div class="result-card">
+      <div class="result-logo">DÉBUT</div>
+      <div class="result-title" id="resTitle"></div>
+      <div class="result-sub" id="resSub"></div>
+      <!-- Debutik praise message -->
+      <div class="result-praise" id="resPraise"></div>
+      <div class="result-stats">
+        <div class="stat">
+          <div class="stat-num" id="statPrompts">3</div>
+          <div class="stat-label">prompts</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="statTime">0</div>
+          <div class="stat-label">seconds spoken</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="statSaved">0</div>
+          <div class="stat-label">saved</div>
+        </div>
+      </div>
+      <div class="result-quote" id="resQuote"></div>
+    </div>
+
+    <div class="saved-card" id="savedCard">
+      <div class="saved-header">
+        <div class="saved-title">My phrases</div>
+        <div class="saved-hint">your vocabulary from this session</div>
+      </div>
+      <div class="saved-list" id="savedList"></div>
+      <button class="copy-all-btn" id="copyAllBtn">Copy all phrases & vocab</button>
+      <div class="saved-empty hidden" id="savedEmpty">
+        <div>You didn't save anything this time.</div>
+        <div class="saved-empty-ru">Next time tap ❤ next to phrases or vocab words you like</div>
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <button class="next-btn" onclick="shareResult()">Share your result</button>
+      <button class="skip-btn" onclick="goHome()" style="border:0.5px solid rgba(91,127,166,0.3);border-radius:10px;">Practice again</button>
+    </div>
+  </div>
+
+  <div class="footer-cta">
+    <p>Want to practice speaking every day, with people like you?</p>
+    <a href="https://t.me/debutcommunity" target="_blank">Join DÉBUT →</a>
+  </div>
+</div>
+
+<script>
+// ── English level ──
+let engLevel = localStorage.getItem('debut_eng_level') || null;
+
+const ENG_LABELS = {
+  beginner:     { label:'Beginner', range:'A2–B1' },
+  intermediate: { label:'Intermediate', range:'B1–B2' },
+  advanced:     { label:'Advanced', range:'B2–C1' }
+};
+
+function pingLevelBubble(){
+  const b = document.getElementById('levelBubble');
+  b.classList.add('show');
+  setTimeout(()=>b.classList.remove('show'), 3500);
+}
+
+function selectEngLevel(lvl){
+  engLevel = lvl;
+  localStorage.setItem('debut_eng_level', lvl);
+  // update pill on intro screen
+  updateLevelPill();
+  // go to topic select
+  document.getElementById('levelSelect').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+}
+
+function updateLevelPill(){
+  const pill = document.getElementById('levelPill');
+  if(!engLevel){ pill.innerHTML = '✦ выбери уровень'; return; }
+  const info = ENG_LABELS[engLevel];
+  pill.innerHTML = `✦ ${info.label} · ${info.range} · <span style="opacity:0.7">изменить</span>`;
+}
+
+function changeEngLevel(){
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('levelSelect').classList.remove('hidden');
+}
+
+// On load: skip level select if already chosen
+window.addEventListener('DOMContentLoaded',()=>{
+  updateLevelPill();
+  if(engLevel){
+    document.getElementById('levelSelect').classList.add('hidden');
+    document.getElementById('intro').classList.remove('hidden');
+    // show bubble on intro debutik click bound differently — not needed here
+  } else {
+    // show bubble after 1s
+    setTimeout(pingLevelBubble, 1000);
+  }
+});
+
+
+</script>
+<script>
+const DATA_EASY = {
+  label: "Everyday Life",
+  emoji: "🌱",
+  prompts: {
+    beginner: [
+      {
+        en: "What did you have for breakfast today?",
+        ru: "Что ты ел(а) на завтрак сегодня?",
+        phrases: [
+          "This morning I had…",
+          "I usually start with… but today…",
+          "To be honest, I skipped breakfast because…",
+          "My go-to breakfast is… but today I went for…",
+          "It was pretty simple — just…"
+        ],
+        vocab: [
+          { w: "to skip a meal", d: "пропустить приём пищи" },
+          { w: "a go-to", d: "привычный вариант, к которому всегда возвращаешься" },
+          { w: "grab something quick", d: "перекусить на ходу" },
+          { w: "on an empty stomach", d: "на пустой желудок" },
+          { w: "leftovers", d: "остатки еды со вчера" }
+        ]
+      },
+      {
+        en: "Describe the room you're in right now.",
+        ru: "Опиши комнату, в которой ты сейчас находишься.",
+        phrases: [
+          "The first thing you'd notice coming in is…",
+          "On my left there's… and on my right…",
+          "The light in here is kind of…",
+          "It's a bit messy / cosy / minimal because…",
+          "The thing I like most about this room is…"
+        ],
+        vocab: [
+          { w: "cluttered", d: "захламлённый, загромождённый" },
+          { w: "cosy", d: "уютный" },
+          { w: "natural light", d: "естественное освещение" },
+          { w: "minimalist", d: "минималистичный" },
+          { w: "the vibe of a place", d: "атмосфера, дух места" }
+        ]
+      },
+      {
+        en: "What do you usually do on Sunday mornings?",
+        ru: "Что ты обычно делаешь утром в воскресенье?",
+        phrases: [
+          "My typical Sunday starts with…",
+          "I try to keep Sundays for…",
+          "Unlike weekdays, on Sundays I…",
+          "I'm the kind of person who… on weekends",
+          "Ideally, Sunday morning means…"
+        ],
+        vocab: [
+          { w: "slow morning", d: "неспешное утро без дел" },
+          { w: "lie in", d: "поваляться в постели подольше" },
+          { w: "ritual", d: "ритуал, привычный порядок" },
+          { w: "recharge", d: "восстановить силы" },
+          { w: "catch up on", d: "наверстать что-то упущенное" }
+        ]
+      },
+      {
+        en: "Talk about your favourite drink.",
+        ru: "Расскажи о своём любимом напитке.",
+        phrases: [
+          "My go-to is definitely… and I have it when…",
+          "I got into it because…",
+          "There's something about… that just…",
+          "I drink it every morning / evening / when I need…",
+          "I can't really start my day without…"
+        ],
+        vocab: [
+          { w: "an acquired taste", d: "вкус, к которому нужно привыкнуть" },
+          { w: "caffeine", d: "кофеин" },
+          { w: "ritual", d: "ритуал" },
+          { w: "unwind", d: "расслабиться, отдохнуть" },
+          { w: "to be hooked on something", d: "быть зависимым от чего-то, не мочь без этого" }
+        ]
+      },
+      {
+        en: "Describe what you're wearing today.",
+        ru: "Опиши, что ты сегодня надел(а).",
+        phrases: [
+          "Starting from the top, I'm wearing…",
+          "Today I went for something… because…",
+          "The colours are mostly…",
+          "I grabbed this because…",
+          "It's pretty casual / smart today because…"
+        ],
+        vocab: [
+          { w: "casual / smart casual", d: "повседневный / элегантно-повседневный стиль" },
+          { w: "layer up", d: "одеться в несколько слоёв" },
+          { w: "go-to outfit", d: "любимый привычный образ" },
+          { w: "to match", d: "сочетаться, подходить по цвету/стилю" },
+          { w: "comfortable", d: "удобный" }
+        ]
+      },
+      {
+        en: "What is the weather like today?",
+        ru: "Какая сегодня погода?",
+        phrases: [
+          "Right now it's… and it feels…",
+          "It's one of those days when the sky is…",
+          "The temperature is around… which means…",
+          "I'd describe today's weather as…",
+          "It started off… but now it's turning…"
+        ],
+        vocab: [
+          { w: "overcast", d: "пасмурный, затянутый тучами" },
+          { w: "muggy", d: "душный, влажный и жаркий" },
+          { w: "crisp", d: "свежий, бодрящий (о воздухе)" },
+          { w: "drizzle", d: "мелкий моросящий дождь" },
+          { w: "forecast", d: "прогноз погоды" }
+        ]
+      },
+      {
+        en: "Name three things you can see from where you're sitting.",
+        ru: "Назови три вещи, которые видишь с того места, где сидишь.",
+        phrases: [
+          "Right in front of me there's…",
+          "If I look to my left, I can see…",
+          "Something a bit unusual I notice is…",
+          "The most interesting thing in my eyeline is…",
+          "Just behind that there's…"
+        ],
+        vocab: [
+          { w: "in my eyeline", d: "в поле зрения, прямо перед глазами" },
+          { w: "cluttered", d: "захламлённый" },
+          { w: "on the surface", d: "на поверхности" },
+          { w: "in the background", d: "на заднем плане" },
+          { w: "catch someone's eye", d: "привлечь чьё-то внимание" }
+        ]
+      },
+      {
+        en: "What time did you wake up and what did you do first?",
+        ru: "В котором часу ты проснулся(-ась) и что сделал(а) первым делом?",
+        phrases: [
+          "I woke up at… which is… for me",
+          "The first thing I did was…",
+          "I hit snooze… times before…",
+          "As soon as I got up I…",
+          "My first thought this morning was…"
+        ],
+        vocab: [
+          { w: "hit snooze", d: "нажать «ещё 5 минут» на будильнике" },
+          { w: "groggy", d: "сонный, вялый после пробуждения" },
+          { w: "wide awake", d: "полностью проснувшийся, бодрый" },
+          { w: "get going", d: "начать действовать, взяться за дело" },
+          { w: "first thing in the morning", d: "первым делом с утра" }
+        ]
+      }
+    ],
+    intermediate: [
+      {
+        en: "Describe your morning routine and how it sets the tone for your day.",
+        ru: "Опиши своё утреннее расписание и как оно влияет на весь день.",
+        phrases: [
+          "My morning usually starts around… and the first thing I do is…",
+          "I've noticed that when I…, the rest of my day tends to…",
+          "I'm not really a morning person, so…",
+          "There's one thing I never skip, and that's…",
+          "On good days my routine looks like… but on bad days…"
+        ],
+        vocab: [
+          { w: "set the tone", d: "задавать настрой, определять характер чего-либо" },
+          { w: "intentional", d: "осознанный, намеренный" },
+          { w: "non-negotiable", d: "то, от чего не отказываешься ни при каких условиях" },
+          { w: "autopilot", d: "автопилот — делать что-то машинально" },
+          { w: "wind up", d: "взбодриться, настроиться на работу" }
+        ]
+      },
+      {
+        en: "Talk about a small habit that makes your day better.",
+        ru: "Расскажи о небольшой привычке, которая улучшает твой день.",
+        phrases: [
+          "The habit I'm thinking of is… and it sounds simple but…",
+          "I started doing it because…",
+          "It only takes… minutes but it changes…",
+          "Before I had this habit, I used to…",
+          "The effect it has on my mood / energy is…"
+        ],
+        vocab: [
+          { w: "habit stacking", d: "связывание новой привычки с уже существующей" },
+          { w: "consistency", d: "постоянство, регулярность" },
+          { w: "trigger", d: "триггер — сигнал, запускающий привычку" },
+          { w: "ripple effect", d: "эффект домино, цепная реакция" },
+          { w: "subtle difference", d: "едва заметное, но важное изменение" }
+        ]
+      },
+      {
+        en: "What does your ideal evening at home look like?",
+        ru: "Как выглядит твой идеальный вечер дома?",
+        phrases: [
+          "My ideal evening starts with…",
+          "I'd probably spend the first hour…",
+          "At some point I'd want to…",
+          "The perfect ending to the evening for me is…",
+          "What I want most in the evening is a sense of…"
+        ],
+        vocab: [
+          { w: "decompress", d: "расслабиться, сбросить напряжение" },
+          { w: "switch off", d: "отключиться от забот, перестать думать о работе" },
+          { w: "screen-free", d: "без экранов" },
+          { w: "indulge", d: "побаловать себя" },
+          { w: "wind down", d: "постепенно успокоиться перед сном" }
+        ]
+      },
+      {
+        en: "Describe your relationship with your phone.",
+        ru: "Опиши свои отношения с телефоном.",
+        phrases: [
+          "Honestly, I probably use it… more than I should because…",
+          "The apps I find myself on most are… and the reason is…",
+          "I've tried to… but it hasn't really worked",
+          "What I like about it is… but what bothers me is…",
+          "If I put my phone away for a day, I think I'd…"
+        ],
+        vocab: [
+          { w: "doom-scrolling", d: "бесконечная прокрутка негативных новостей" },
+          { w: "screen time", d: "время за экраном" },
+          { w: "set boundaries", d: "устанавливать границы" },
+          { w: "distraction", d: "отвлечение, помеха" },
+          { w: "mindless", d: "бездумный, механический" }
+        ]
+      },
+      {
+        en: "Talk about the last meal you really enjoyed.",
+        ru: "Расскажи о последней еде, которая тебе по-настоящему понравилась.",
+        phrases: [
+          "It was… and I had it at / with…",
+          "What made it stand out was…",
+          "The flavour was hard to describe but kind of…",
+          "It wasn't just the food — it was also…",
+          "I'd go back just for that."
+        ],
+        vocab: [
+          { w: "texture", d: "текстура, консистенция еды" },
+          { w: "flavour profile", d: "вкусовой профиль, сочетание вкусов" },
+          { w: "atmosphere", d: "атмосфера места" },
+          { w: "comfort food", d: "еда, которая дарит уют и приятные ощущения" },
+          { w: "savour", d: "смаковать, наслаждаться каждым кусочком" }
+        ]
+      },
+      {
+        en: "How do you usually spend your lunch break?",
+        ru: "Как ты обычно проводишь обеденный перерыв?",
+        phrases: [
+          "Most days I…, which isn't ideal but…",
+          "I try to use it as a chance to…",
+          "My favourite thing is when I get to…",
+          "Lunch breaks are… for me — I see them as…",
+          "Lately I've been trying to…"
+        ],
+        vocab: [
+          { w: "recharge", d: "восстановить энергию" },
+          { w: "step away", d: "отойти, сделать перерыв" },
+          { w: "mental reset", d: "перезагрузка, отдых для головы" },
+          { w: "grab a bite", d: "перекусить" },
+          { w: "multitask", d: "делать несколько дел одновременно" }
+        ]
+      },
+      {
+        en: "Describe the neighbourhood you live in.",
+        ru: "Опиши район, в котором живёшь.",
+        phrases: [
+          "The area I live in is… — it's the kind of place where…",
+          "What I like most about it is…",
+          "One thing I'd change is…",
+          "It used to be… but now it's becoming…",
+          "My favourite spot nearby is…"
+        ],
+        vocab: [
+          { w: "residential", d: "жилой (о районе)" },
+          { w: "up-and-coming", d: "развивающийся, набирающий популярность" },
+          { w: "commute", d: "ежедневная дорога на работу/учёбу" },
+          { w: "local gem", d: "скрытое сокровище района, малоизвестное отличное место" },
+          { w: "atmosphere", d: "атмосфера" }
+        ]
+      },
+      {
+        en: "What does a productive day look like for you?",
+        ru: "Как выглядит продуктивный день для тебя?",
+        phrases: [
+          "For me, a productive day means…",
+          "I usually feel productive when I've…",
+          "It's not just about ticking boxes — it's about…",
+          "The thing that kills my productivity most is…",
+          "By the end of a good day I feel…"
+        ],
+        vocab: [
+          { w: "deep work", d: "глубокая сфокусированная работа без отвлечений" },
+          { w: "prioritise", d: "расставлять приоритеты" },
+          { w: "momentum", d: "импульс, рабочий темп" },
+          { w: "output", d: "результат, то, что произведено" },
+          { w: "tick a box", d: "галочка — выполнить пункт из списка" }
+        ]
+      }
+    ],
+    advanced: [
+      {
+        en: "How does your physical environment affect your mood and creativity?",
+        ru: "Как физическая среда влияет на твоё настроение и творчество?",
+        phrases: [
+          "I've noticed that when my space is…, I tend to…",
+          "There's a real connection between my environment and…",
+          "For me, the most important factor is… rather than…",
+          "I work best when…, which tells me something about…",
+          "Some people don't think environment matters, but in my experience…"
+        ],
+        vocab: [
+          { w: "stimulus", d: "стимул, раздражитель, внешний сигнал" },
+          { w: "ambient noise", d: "фоновый шум" },
+          { w: "sensory", d: "сенсорный, связанный с ощущениями" },
+          { w: "cognitive load", d: "когнитивная нагрузка на мозг" },
+          { w: "psychological safety", d: "психологическая безопасность, комфорт" }
+        ]
+      },
+      {
+        en: "Discuss the paradox of productivity.",
+        ru: "Обсуди парадокс продуктивности.",
+        phrases: [
+          "The paradox I find most interesting is…",
+          "We're told that doing more means…, but actually…",
+          "I think the problem is how we define productivity — because…",
+          "The people I know who seem most effective tend to…",
+          "There's a difference between being busy and being…"
+        ],
+        vocab: [
+          { w: "diminishing returns", d: "убывающая отдача — чем больше делаешь, тем меньше результат" },
+          { w: "deep work", d: "глубокая работа без отвлечений" },
+          { w: "output vs outcome", d: "количество сделанного vs реальный результат" },
+          { w: "hustle culture", d: "культура «пахать 24/7»" },
+          { w: "sustainable", d: "устойчивый, тот, который можно поддерживать долго" }
+        ]
+      },
+      {
+        en: "In what ways does your daily routine reflect your deeper values?",
+        ru: "Как твой распорядок дня отражает твои глубинные ценности?",
+        phrases: [
+          "If someone looked at my routine, they'd probably conclude that I value…",
+          "There's a gap between what I say I value and what my routine shows — for example…",
+          "The parts of my day I protect most are… which says something about…",
+          "I think routine is a form of…",
+          "When my routine breaks down, I notice…"
+        ],
+        vocab: [
+          { w: "alignment", d: "согласованность между словами и действиями" },
+          { w: "intentional living", d: "осознанный образ жизни" },
+          { w: "trade-offs", d: "компромиссы, жертвы ради чего-то" },
+          { w: "priority", d: "приоритет" },
+          { w: "unconscious choices", d: "неосознанные, автоматические решения" }
+        ]
+      },
+      {
+        en: "How has your relationship with time changed as you've gotten older?",
+        ru: "Как изменилось твоё отношение ко времени с возрастом?",
+        phrases: [
+          "I used to feel like time was… but now I…",
+          "The shift happened when…",
+          "I think about time differently now because…",
+          "Something I've had to accept is…",
+          "The way I use my time now reflects…"
+        ],
+        vocab: [
+          { w: "finite", d: "конечный, ограниченный" },
+          { w: "urgency", d: "срочность, ощущение, что времени мало" },
+          { w: "procrastination", d: "прокрастинация, откладывание на потом" },
+          { w: "savour", d: "смаковать момент, наслаждаться" },
+          { w: "perspective shift", d: "смена точки зрения, переосмысление" }
+        ]
+      },
+      {
+        en: "What does it mean to be truly present in everyday moments?",
+        ru: "Что значит по-настоящему присутствовать в обычных моментах?",
+        phrases: [
+          "I think presence means… not just…",
+          "The moments I feel most present are when…",
+          "The biggest obstacle to presence in modern life is…",
+          "There's a difference between being there physically and…",
+          "When I manage to be fully present, I notice…"
+        ],
+        vocab: [
+          { w: "mindfulness", d: "осознанность, внимание к настоящему моменту" },
+          { w: "distraction", d: "отвлечение" },
+          { w: "immersion", d: "погружение, состояние полной вовлечённости" },
+          { w: "awareness", d: "осознанность, внимательность к происходящему" },
+          { w: "threshold", d: "порог — точка, после которой что-то меняется" }
+        ]
+      },
+      {
+        en: "To what extent do our habits define who we are?",
+        ru: "В какой мере наши привычки определяют, кто мы есть?",
+        phrases: [
+          "I'd argue that habits are… more than…",
+          "The interesting question is whether habits shape identity or…",
+          "Some habits feel chosen, but others are…",
+          "There's a version of me that… but my habits tell a different story",
+          "If you stripped away all my habits, what would be left is…"
+        ],
+        vocab: [
+          { w: "character", d: "характер, личность" },
+          { w: "automaticity", d: "автоматизм — выполнение без осознанных усилий" },
+          { w: "identity-based habits", d: "привычки, вытекающие из того, кем ты себя считаешь" },
+          { w: "self-concept", d: "представление о себе, самовосприятие" },
+          { w: "ingrained", d: "укоренившийся, глубоко вошедший в привычку" }
+        ]
+      },
+      {
+        en: "How has modern convenience changed simple pleasures?",
+        ru: "Как современные удобства изменили простые радости?",
+        phrases: [
+          "There's an argument that convenience has made things… but also…",
+          "I notice this most when…",
+          "Something I used to look forward to feels different now because…",
+          "The paradox is that having everything instantly means…",
+          "I think we've traded… for…"
+        ],
+        vocab: [
+          { w: "instant gratification", d: "мгновенное удовлетворение желания" },
+          { w: "anticipation", d: "предвкушение, ожидание чего-то приятного" },
+          { w: "abundance", d: "изобилие, избыток" },
+          { w: "friction", d: "трение — усилие, которое нужно приложить" },
+          { w: "novelty", d: "новизна, ощущение чего-то нового" }
+        ]
+      },
+      {
+        en: "What would you give up to have more unstructured time?",
+        ru: "От чего бы ты отказался(ась) ради большего количества свободного времени?",
+        phrases: [
+          "If I'm honest about what I'd sacrifice, it would be…",
+          "I think the real barrier isn't time, it's…",
+          "The last time I had genuinely unstructured time, I…",
+          "There's a fear around doing nothing because…",
+          "What I'd do with that time, realistically, is…"
+        ],
+        vocab: [
+          { w: "trade-off", d: "компромисс, жертва ради чего-то другого" },
+          { w: "idle", d: "праздный, ничем не занятый" },
+          { w: "purposeless vs restful", d: "бесцельный vs восстанавливающий" },
+          { w: "permission", d: "разрешение (себе) — позволить себе что-то" },
+          { w: "resist the urge", d: "сдержать желание, не поддаться порыву" }
+        ]
+      }
+    ]
+  }
+};
+
+const DATA_MEDIUM = {
+  label: "Opinions & Imagination",
+  emoji: "✦",
+  prompts: {
+    beginner: [
+      {
+        en: "What is your favourite season and why?",
+        ru: "Какое у тебя любимое время года и почему?",
+        phrases: [
+          "My favourite season is… because…",
+          "I love it when the weather is… and you can…",
+          "There's something special about… in…",
+          "I'm definitely a… person — I can't imagine living without…",
+          "What I look forward to most in… is…"
+        ],
+        vocab: [
+          { w: "look forward to", d: "ждать с нетерпением, предвкушать" },
+          { w: "cosy", d: "уютный" },
+          { w: "refreshing", d: "освежающий, бодрящий" },
+          { w: "seasonal", d: "сезонный" },
+          { w: "atmosphere", d: "атмосфера" }
+        ]
+      },
+      {
+        en: "Would you rather live in a big city or a small town?",
+        ru: "Ты бы предпочёл(а) жить в большом городе или маленьком городке?",
+        phrases: [
+          "I'd definitely choose… because…",
+          "For me, the most important thing is…",
+          "I've tried living in… and I found that…",
+          "I think the biggest difference is…",
+          "One thing I'd miss about… is…"
+        ],
+        vocab: [
+          { w: "pace of life", d: "темп жизни" },
+          { w: "community", d: "сообщество, местное окружение" },
+          { w: "opportunity", d: "возможность" },
+          { w: "crowded", d: "переполненный, людный" },
+          { w: "peaceful", d: "спокойный, тихий" }
+        ]
+      },
+      {
+        en: "If you could try any food from another country, what would it be?",
+        ru: "Если бы ты мог(ла) попробовать любую еду из другой страны, что бы ты выбрал(а)?",
+        phrases: [
+          "I'd love to try… from… because…",
+          "I've always been curious about… food",
+          "I imagine it would taste like…",
+          "I like the idea of… because…",
+          "I've seen it in photos / videos and it looks…"
+        ],
+        vocab: [
+          { w: "cuisine", d: "кухня (национальная)" },
+          { w: "exotic", d: "экзотический, непривычный" },
+          { w: "spicy", d: "острый" },
+          { w: "ingredients", d: "ингредиенты" },
+          { w: "try something new", d: "попробовать что-то новое" }
+        ]
+      },
+      {
+        en: "What kind of music do you like and why?",
+        ru: "Какую музыку ты любишь и почему?",
+        phrases: [
+          "I mostly listen to… because…",
+          "The kind of music I always come back to is…",
+          "I like it when music makes me feel…",
+          "I don't really like… — it's just not for me",
+          "My taste in music is kind of… I listen to…"
+        ],
+        vocab: [
+          { w: "genre", d: "жанр" },
+          { w: "lyrics", d: "текст песни" },
+          { w: "melody", d: "мелодия" },
+          { w: "mood", d: "настроение" },
+          { w: "vibe", d: "атмосфера, ощущение от музыки" }
+        ]
+      },
+      {
+        en: "If you could have any job in the world, what would it be?",
+        ru: "Если бы ты мог(ла) иметь любую работу в мире, что бы ты выбрал(а)?",
+        phrases: [
+          "My dream job would be… because…",
+          "I've always imagined working as…",
+          "What I'd love about this job is…",
+          "I know it might sound unusual but…",
+          "The most important thing for me in a job is…"
+        ],
+        vocab: [
+          { w: "dream job", d: "работа мечты" },
+          { w: "passion", d: "страсть, любимое дело" },
+          { w: "rewarding", d: "дающий удовлетворение, значимый" },
+          { w: "creative", d: "творческий" },
+          { w: "make a difference", d: "менять что-то к лучшему" }
+        ]
+      },
+      {
+        en: "What is one thing you wish you had learned earlier in life?",
+        ru: "Чему ты хотел(а) бы научиться раньше в жизни?",
+        phrases: [
+          "I really wish I'd learned… earlier because…",
+          "Looking back, I think I wasted a lot of time on…",
+          "If I'd known… when I was younger, I would have…",
+          "It seems obvious now but back then…",
+          "I'd tell my younger self to…"
+        ],
+        vocab: [
+          { w: "in hindsight", d: "оглядываясь назад, с высоты прожитого" },
+          { w: "skill", d: "навык" },
+          { w: "invest in yourself", d: "вкладывать в себя, развиваться" },
+          { w: "regret", d: "сожаление" },
+          { w: "take for granted", d: "воспринимать как должное" }
+        ]
+      },
+      {
+        en: "Describe your perfect day off.",
+        ru: "Опиши свой идеальный выходной день.",
+        phrases: [
+          "My perfect day off would start with…",
+          "I'd spend the morning… and then in the afternoon…",
+          "The most important thing is that there's no…",
+          "I'd probably end the day by…",
+          "For me, a great day off means…"
+        ],
+        vocab: [
+          { w: "day off", d: "выходной день" },
+          { w: "no plans", d: "без планов, в свободном режиме" },
+          { w: "spontaneous", d: "спонтанный, непредсказуемый" },
+          { w: "treat yourself", d: "побаловать себя" },
+          { w: "unwind", d: "расслабиться" }
+        ]
+      },
+      {
+        en: "What is something you are proud of?",
+        ru: "Чем ты гордишься?",
+        phrases: [
+          "Something I'm genuinely proud of is…",
+          "It might not sound big, but for me…",
+          "I worked really hard on… and it paid off",
+          "Looking back, I think the best thing I've done is…",
+          "I'm proud of myself for… because it wasn't easy"
+        ],
+        vocab: [
+          { w: "achievement", d: "достижение" },
+          { w: "overcome", d: "преодолеть что-то" },
+          { w: "perseverance", d: "упорство, настойчивость" },
+          { w: "pay off", d: "окупиться, принести результат" },
+          { w: "milestone", d: "важный этап, веха" }
+        ]
+      }
+    ],
+    intermediate: [
+      {
+        en: "Do you think social media makes people more or less happy?",
+        ru: "Как ты думаешь, социальные сети делают людей счастливее или нет?",
+        phrases: [
+          "I think it's more complicated than a simple yes or no…",
+          "On one hand… but on the other hand…",
+          "From my own experience, social media makes me feel…",
+          "The problem isn't the platforms themselves, it's…",
+          "I think it depends a lot on how you…"
+        ],
+        vocab: [
+          { w: "comparison trap", d: "ловушка сравнения с другими" },
+          { w: "validation", d: "одобрение, подтверждение значимости" },
+          { w: "highlight reel", d: "лучшее из жизни, что показывают напоказ" },
+          { w: "digital wellbeing", d: "цифровое благополучие" },
+          { w: "curate", d: "тщательно отбирать и представлять" }
+        ]
+      },
+      {
+        en: "If you could change one thing about your city, what would it be?",
+        ru: "Если бы ты мог(ла) изменить одну вещь в своём городе, что бы это было?",
+        phrases: [
+          "If I could change one thing, it would definitely be…",
+          "The biggest problem in my city, in my opinion, is…",
+          "I think people here would appreciate it if…",
+          "It's not just about convenience — it's also about…",
+          "Other cities have already done this by…"
+        ],
+        vocab: [
+          { w: "infrastructure", d: "инфраструктура" },
+          { w: "public transport", d: "общественный транспорт" },
+          { w: "urban planning", d: "городское планирование" },
+          { w: "liveable", d: "комфортный для жизни" },
+          { w: "green space", d: "зелёные зоны, парки" }
+        ]
+      },
+      {
+        en: "What skill do you most want to develop in the next year?",
+        ru: "Какой навык ты больше всего хочешь развить в следующем году?",
+        phrases: [
+          "The skill I'm most focused on right now is…",
+          "I want to develop… because in the long run…",
+          "I've been putting it off, but I think now is the right time to…",
+          "What's stopping me is…, but I'm planning to…",
+          "I think mastering… would change the way I…"
+        ],
+        vocab: [
+          { w: "deliberate practice", d: "осознанная практика с конкретной целью" },
+          { w: "plateau", d: "плато — остановка в развитии" },
+          { w: "transferable skill", d: "навык, применимый в разных областях" },
+          { w: "commit to", d: "взять на себя обязательство, посвятить себя чему-то" },
+          { w: "long-term payoff", d: "долгосрочная отдача" }
+        ]
+      },
+      {
+        en: "Is it better to follow your passion or be practical about your career?",
+        ru: "Лучше следовать своей страсти или быть практичным в выборе карьеры?",
+        phrases: [
+          "I think the either/or framing is a bit misleading because…",
+          "From what I've seen, the people who are happiest in their careers…",
+          "The problem with 'follow your passion' is…",
+          "Being practical doesn't mean giving up on what you love — it means…",
+          "I'd argue that passion grows when you…"
+        ],
+        vocab: [
+          { w: "false dichotomy", d: "ложная дихотомия — выбор из двух, но вариантов больше" },
+          { w: "financial stability", d: "финансовая стабильность" },
+          { w: "fulfillment", d: "удовлетворение, ощущение смысла" },
+          { w: "compromise", d: "компромисс" },
+          { w: "niche", d: "ниша — узкая специализация" }
+        ]
+      },
+      {
+        en: "How important is it to have a creative outlet in your life?",
+        ru: "Насколько важно иметь творческое хобби в жизни?",
+        phrases: [
+          "For me personally, creativity is…",
+          "I think everyone needs some way to…",
+          "My creative outlet right now is… and it helps me…",
+          "Some people say they're not creative, but I think…",
+          "Without some kind of creative expression, I notice that I…"
+        ],
+        vocab: [
+          { w: "outlet", d: "выход для эмоций, способ выразить себя" },
+          { w: "self-expression", d: "самовыражение" },
+          { w: "flow state", d: "состояние потока — полная погружённость в процесс" },
+          { w: "therapeutic", d: "терапевтический, исцеляющий" },
+          { w: "tap into", d: "задействовать, обратиться к (внутреннему ресурсу)" }
+        ]
+      },
+      {
+        en: "If you could live in any decade of the past, when would you choose?",
+        ru: "Если бы ты мог(ла) жить в любом десятилетии прошлого, когда бы это было?",
+        phrases: [
+          "I'd probably choose the… because…",
+          "What appeals to me about that era is…",
+          "Though I have to be honest — one thing I'd miss is…",
+          "There's something romantic about the idea of… even if in reality…",
+          "I think I romanticise it, but the truth is…"
+        ],
+        vocab: [
+          { w: "era", d: "эпоха" },
+          { w: "romanticise", d: "романтизировать, идеализировать" },
+          { w: "nostalgia", d: "ностальгия" },
+          { w: "trade-off", d: "компромисс, то, что пришлось бы отдать взамен" },
+          { w: "in hindsight", d: "оглядываясь назад" }
+        ]
+      },
+      {
+        en: "Do you think it's important to keep up with the news? Why or why not?",
+        ru: "Как ты думаешь, важно ли следить за новостями? Почему?",
+        phrases: [
+          "I have a complicated relationship with the news because…",
+          "On one hand, being informed is important because…",
+          "But I've also noticed that too much news makes me…",
+          "I think there's a difference between staying informed and…",
+          "The way I try to manage it now is…"
+        ],
+        vocab: [
+          { w: "news fatigue", d: "усталость от новостей" },
+          { w: "informed citizen", d: "информированный гражданин" },
+          { w: "media literacy", d: "медиаграмотность" },
+          { w: "overwhelming", d: "подавляющий, слишком много всего" },
+          { w: "filter bubble", d: "информационный пузырь" }
+        ]
+      },
+      {
+        en: "What's something that used to scare you but doesn't anymore?",
+        ru: "Чего ты раньше боялся(ась), но уже нет?",
+        phrases: [
+          "Something I was really afraid of was…",
+          "I'm not sure when exactly that changed, but…",
+          "What helped me get over it was…",
+          "I think fear is often about… rather than…",
+          "Looking back, I realise that the fear was really about…"
+        ],
+        vocab: [
+          { w: "face your fears", d: "встретиться лицом к лицу со своими страхами" },
+          { w: "gradual exposure", d: "постепенное привыкание к пугающему" },
+          { w: "irrational", d: "иррациональный, необоснованный" },
+          { w: "turn a corner", d: "преодолеть переломный момент" },
+          { w: "vulnerability", d: "уязвимость, незащищённость" }
+        ]
+      }
+    ],
+    advanced: [
+      {
+        en: "Is optimism a choice or a personality trait?",
+        ru: "Оптимизм — это выбор или черта личности?",
+        phrases: [
+          "I think the question itself reveals a tension between…",
+          "From a psychological standpoint, research suggests…",
+          "My instinct is that it's both — but in different proportions…",
+          "The problem with framing it as a choice is…",
+          "What I've noticed in people I'd call genuinely optimistic is…"
+        ],
+        vocab: [
+          { w: "disposition", d: "склонность, темперамент" },
+          { w: "cognitive reframing", d: "переосмысление ситуации, изменение угла зрения" },
+          { w: "learned helplessness", d: "выученная беспомощность" },
+          { w: "agency", d: "способность влиять на свою жизнь" },
+          { w: "baseline", d: "исходный уровень, точка отсчёта" }
+        ]
+      },
+      {
+        en: "What does success mean to you, and has that definition changed?",
+        ru: "Что для тебя значит успех и изменялось ли это определение?",
+        phrases: [
+          "My current definition of success is… which is quite different from…",
+          "I think I used to equate success with… but now I see it as…",
+          "The shift happened when I realised that…",
+          "Success is tricky to define because it's so…",
+          "If I'm honest, there's still a part of me that measures success by…"
+        ],
+        vocab: [
+          { w: "external validation", d: "внешнее одобрение, признание со стороны" },
+          { w: "intrinsic motivation", d: "внутренняя мотивация" },
+          { w: "redefine", d: "переопределить, изменить понимание" },
+          { w: "societal expectations", d: "общественные ожидания" },
+          { w: "benchmark", d: "ориентир, мерило" }
+        ]
+      },
+      {
+        en: "To what extent should art challenge its audience?",
+        ru: "В какой мере искусство должно бросать вызов аудитории?",
+        phrases: [
+          "I think there's a spectrum — from art that simply reflects to art that…",
+          "The most powerful works I've encountered…",
+          "There's a difference between challenging and alienating…",
+          "I'd argue that the role of art is not to comfort but to…",
+          "The tension I see is between accessibility and…"
+        ],
+        vocab: [
+          { w: "provoke", d: "провоцировать, вызывать реакцию" },
+          { w: "discomfort", d: "дискомфорт, неудобство" },
+          { w: "accessible", d: "доступный, понятный широкой аудитории" },
+          { w: "subversive", d: "подрывной, идущий вразрез с нормами" },
+          { w: "catharsis", d: "катарсис — эмоциональное очищение через искусство" }
+        ]
+      },
+      {
+        en: "How do you think about the role of failure in personal growth?",
+        ru: "Как ты думаешь о роли неудачи в личностном росте?",
+        phrases: [
+          "I think we have a complicated relationship with failure because…",
+          "The failures that taught me the most were the ones where…",
+          "There's a difference between failing and…",
+          "I've noticed that people who handle failure well tend to…",
+          "The cultural narrative around failure is… but in reality…"
+        ],
+        vocab: [
+          { w: "resilience", d: "устойчивость, способность восстанавливаться" },
+          { w: "post-traumatic growth", d: "рост после травмирующего опыта" },
+          { w: "growth mindset", d: "установка на рост" },
+          { w: "reframe", d: "переосмыслить, посмотреть под другим углом" },
+          { w: "stigma", d: "стигма, социальное клеймо" }
+        ]
+      },
+      {
+        en: "Is it possible to be truly objective about yourself?",
+        ru: "Можно ли быть по-настоящему объективным к себе?",
+        phrases: [
+          "I'd argue that complete objectivity is probably impossible because…",
+          "The best we can do, I think, is…",
+          "There's a paradox here — the harder you try to be objective, the more…",
+          "From what I know about psychology, we all have…",
+          "The people who seem most self-aware tend to…"
+        ],
+        vocab: [
+          { w: "cognitive bias", d: "когнитивное искажение" },
+          { w: "blind spot", d: "слепое пятно — то, чего мы не замечаем в себе" },
+          { w: "self-awareness", d: "самосознание, осознанность" },
+          { w: "introspection", d: "интроспекция, самоанализ" },
+          { w: "ego", d: "эго, самолюбие" }
+        ]
+      },
+      {
+        en: "What is the relationship between freedom and responsibility?",
+        ru: "Какова связь между свободой и ответственностью?",
+        phrases: [
+          "I think they're inseparable — you can't have one without…",
+          "The more freedom you have, the more you're confronted with…",
+          "What I find interesting is that people often want freedom but resist…",
+          "There's a philosophical tension here between…",
+          "In practice, this plays out in my own life when…"
+        ],
+        vocab: [
+          { w: "accountability", d: "подотчётность, ответственность за действия" },
+          { w: "autonomy", d: "автономия, самостоятельность" },
+          { w: "constraint", d: "ограничение" },
+          { w: "paradox of choice", d: "парадокс выбора — больше вариантов = больше тревоги" },
+          { w: "existential", d: "экзистенциальный, касающийся смысла существования" }
+        ]
+      },
+      {
+        en: "If you could redesign one aspect of modern education, what would it be?",
+        ru: "Если бы ты мог(ла) изменить один аспект современного образования, что бы ты выбрал(а)?",
+        phrases: [
+          "The thing I'd change first is… because I think it's fundamentally…",
+          "Current education tends to reward… but largely ignores…",
+          "What I'd want students to leave school knowing is…",
+          "The system is built around a model that made sense in… but today…",
+          "I'd argue that the purpose of education should be… not just…"
+        ],
+        vocab: [
+          { w: "critical thinking", d: "критическое мышление" },
+          { w: "standardised testing", d: "стандартизированное тестирование" },
+          { w: "intrinsic curiosity", d: "внутренняя любознательность" },
+          { w: "curriculum", d: "учебная программа" },
+          { w: "rote learning", d: "зубрёжка, механическое запоминание" }
+        ]
+      },
+      {
+        en: "Do you think humans are fundamentally good or self-interested?",
+        ru: "Как ты думаешь, люди фундаментально добры или эгоистичны?",
+        phrases: [
+          "I think the question is a false binary because…",
+          "What the research seems to suggest is…",
+          "I've seen evidence on both sides — for example…",
+          "My instinct is that context matters more than nature, because…",
+          "What I find interesting is that even selfish behaviour often…"
+        ],
+        vocab: [
+          { w: "altruism", d: "альтруизм, бескорыстие" },
+          { w: "self-interest", d: "корысть, личная выгода" },
+          { w: "social contract", d: "общественный договор" },
+          { w: "nature vs nurture", d: "природа vs воспитание" },
+          { w: "moral intuition", d: "нравственная интуиция" }
+        ]
+      }
+    ]
+  }
+};
+
+const DATA_SPICY = {
+  label: "Debate & Defend",
+  emoji: "🔥",
+  prompts: {
+    beginner: [
+      {
+        en: "Is it okay to lie to protect someone's feelings?",
+        ru: "Допустимо ли лгать, чтобы защитить чьи-то чувства?",
+        phrases: [
+          "I think it depends on the situation — for example…",
+          "In my opinion, a small lie is okay when…",
+          "Personally, I prefer honesty because…",
+          "There's a difference between being honest and being cruel…",
+          "I'd feel better if someone told me the truth, even if…"
+        ],
+        vocab: [
+          { w: "white lie", d: "ложь во спасение, маленькая безвредная ложь" },
+          { w: "honest", d: "честный" },
+          { w: "hurt someone's feelings", d: "задеть чьи-то чувства" },
+          { w: "good intentions", d: "добрые намерения" },
+          { w: "trust", d: "доверие" }
+        ]
+      },
+      {
+        en: "Should students have to wear school uniforms?",
+        ru: "Должны ли ученики носить школьную форму?",
+        phrases: [
+          "I think uniforms are a good / bad idea because…",
+          "On one hand, they can help with…",
+          "But on the other hand, students should be able to…",
+          "From my own experience at school…",
+          "I think the most important thing for schools is…"
+        ],
+        vocab: [
+          { w: "self-expression", d: "самовыражение" },
+          { w: "equality", d: "равенство" },
+          { w: "discipline", d: "дисциплина" },
+          { w: "distraction", d: "отвлечение" },
+          { w: "identity", d: "идентичность, самоощущение" }
+        ]
+      },
+      {
+        en: "Is it better to have many friends or a few close ones?",
+        ru: "Лучше иметь много друзей или нескольких близких?",
+        phrases: [
+          "For me personally, I'd rather have…",
+          "I think quality is more important than…",
+          "But some people need a wide social circle because…",
+          "From my own experience, I've found that…",
+          "A close friend is someone who…"
+        ],
+        vocab: [
+          { w: "close friend", d: "близкий друг" },
+          { w: "acquaintance", d: "знакомый, не очень близкий человек" },
+          { w: "social circle", d: "круг общения" },
+          { w: "quality over quantity", d: "качество важнее количества" },
+          { w: "support", d: "поддержка" }
+        ]
+      },
+      {
+        en: "Should people be allowed to use their phones in restaurants?",
+        ru: "Должны ли люди использовать телефоны в ресторанах?",
+        phrases: [
+          "I think it's fine as long as…",
+          "Personally, I find it a bit rude when…",
+          "There's a difference between a quick check and…",
+          "Restaurants are a place for…, and phones can…",
+          "I'd say the rule should be…"
+        ],
+        vocab: [
+          { w: "etiquette", d: "этикет, правила хорошего тона" },
+          { w: "distraction", d: "отвлечение" },
+          { w: "present", d: "присутствующий, внимательный" },
+          { w: "ban", d: "запрет" },
+          { w: "reasonable", d: "разумный, умеренный" }
+        ]
+      },
+      {
+        en: "Is it important to learn to cook, or is it okay to always order food?",
+        ru: "Важно ли учиться готовить или нормально всегда заказывать еду?",
+        phrases: [
+          "I think knowing how to cook is important because…",
+          "But I also understand that in modern life…",
+          "Cooking at home vs ordering is really about…",
+          "For me, the balance I try to keep is…",
+          "I think the skill of cooking matters because…"
+        ],
+        vocab: [
+          { w: "home-cooked", d: "приготовленный дома" },
+          { w: "convenience", d: "удобство" },
+          { w: "independence", d: "независимость, самостоятельность" },
+          { w: "nutritious", d: "питательный, полезный" },
+          { w: "life skill", d: "жизненный навык" }
+        ]
+      },
+      {
+        en: "Do you think it's okay to cancel plans at the last minute?",
+        ru: "Как ты думаешь, нормально ли отменять планы в последний момент?",
+        phrases: [
+          "I think it really depends on the reason — for example…",
+          "Personally, I try not to cancel plans because…",
+          "There's a difference between a real emergency and…",
+          "I've been on both sides — sometimes I've needed to cancel and…",
+          "I think it's respectful to…"
+        ],
+        vocab: [
+          { w: "cancel plans", d: "отменить планы" },
+          { w: "let someone down", d: "подвести кого-то" },
+          { w: "commitment", d: "обязательство" },
+          { w: "emergency", d: "экстренная ситуация" },
+          { w: "considerate", d: "внимательный к другим, тактичный" }
+        ]
+      },
+      {
+        en: "Is it rude to ask someone how much money they earn?",
+        ru: "Грубо ли спрашивать, сколько кто-то зарабатывает?",
+        phrases: [
+          "In my culture, it's generally considered…",
+          "I think the answer depends on how close you are to…",
+          "Personally, I don't mind / would feel uncomfortable if…",
+          "Some people argue that talking about money openly is…",
+          "The reason people avoid this topic is often…"
+        ],
+        vocab: [
+          { w: "taboo", d: "табу, запретная тема" },
+          { w: "personal", d: "личный, интимный" },
+          { w: "salary", d: "зарплата" },
+          { w: "nosy", d: "любопытный, суёт нос не в своё дело" },
+          { w: "transparency", d: "прозрачность, открытость" }
+        ]
+      },
+      {
+        en: "Should famous people have less privacy than ordinary people?",
+        ru: "Должны ли известные люди иметь меньше приватности, чем обычные?",
+        phrases: [
+          "I think famous people give up some privacy when they…",
+          "But there's a limit — for example, their… should still be private",
+          "The difference between public life and private life is…",
+          "I think the media often goes too far when…",
+          "If I were famous, I'd want people to respect…"
+        ],
+        vocab: [
+          { w: "public figure", d: "публичная персона" },
+          { w: "privacy", d: "приватность, личное пространство" },
+          { w: "celebrity", d: "знаменитость" },
+          { w: "intrusive", d: "навязчивый, вторгающийся в частную жизнь" },
+          { w: "boundary", d: "граница, черта" }
+        ]
+      }
+    ],
+    intermediate: [
+      {
+        en: "Is it ever justified to break the rules for a good cause?",
+        ru: "Оправдано ли нарушать правила ради благого дела?",
+        phrases: [
+          "I think this depends entirely on what the rule is and what's at stake…",
+          "History gives us examples where breaking the rules led to…",
+          "The problem with saying 'it's okay to break rules' is…",
+          "I'd distinguish between rules that are unjust and…",
+          "My instinct is that the ends don't always justify the means, because…"
+        ],
+        vocab: [
+          { w: "civil disobedience", d: "гражданское неповиновение" },
+          { w: "justify", d: "оправдывать" },
+          { w: "moral obligation", d: "моральный долг" },
+          { w: "consequence", d: "последствие" },
+          { w: "greater good", d: "общее благо, польза для всех" }
+        ]
+      },
+      {
+        en: "Should social media companies be responsible for the content users post?",
+        ru: "Должны ли компании социальных сетей отвечать за контент пользователей?",
+        phrases: [
+          "This is a really tricky question because on one hand…",
+          "The argument for holding platforms responsible is…",
+          "But if you make platforms liable for everything, then…",
+          "I think there's a middle ground where…",
+          "The real question is where the line should be drawn between…"
+        ],
+        vocab: [
+          { w: "liability", d: "юридическая ответственность" },
+          { w: "moderation", d: "модерация контента" },
+          { w: "free speech", d: "свобода слова" },
+          { w: "algorithm", d: "алгоритм" },
+          { w: "misinformation", d: "дезинформация" }
+        ]
+      },
+      {
+        en: "Is it fair that athletes earn more money than teachers?",
+        ru: "Справедливо ли, что спортсмены зарабатывают больше учителей?",
+        phrases: [
+          "The market argument would say that athletes earn more because…",
+          "But from an ethical standpoint, it feels wrong when…",
+          "I think the problem isn't what athletes earn, it's…",
+          "If we valued education the way we value entertainment…",
+          "The honest answer is that 'fair' and 'market-driven' aren't the same thing…"
+        ],
+        vocab: [
+          { w: "supply and demand", d: "спрос и предложение" },
+          { w: "social value", d: "социальная ценность" },
+          { w: "merit", d: "заслуга, достоинство" },
+          { w: "disparity", d: "неравенство, разрыв" },
+          { w: "systemic", d: "системный, затрагивающий всю систему" }
+        ]
+      },
+      {
+        en: "Do people have a moral duty to help strangers in need?",
+        ru: "Есть ли у людей моральный долг помогать незнакомцам в беде?",
+        phrases: [
+          "I think most people would agree in theory, but in practice…",
+          "The classic philosophical argument is…",
+          "What stops people from helping is often not selfishness but…",
+          "I'd draw a distinction between a moral obligation and a legal one…",
+          "The question I always ask myself is: if I were in that position…"
+        ],
+        vocab: [
+          { w: "bystander effect", d: "эффект свидетеля — никто не помогает, если все смотрят" },
+          { w: "moral duty", d: "моральный долг" },
+          { w: "empathy", d: "эмпатия, сочувствие" },
+          { w: "diffusion of responsibility", d: "размывание ответственности" },
+          { w: "intervene", d: "вмешаться, прийти на помощь" }
+        ]
+      },
+      {
+        en: "Is it okay to judge people by their appearance?",
+        ru: "Нормально ли судить людей по внешности?",
+        phrases: [
+          "We all do it to some extent — the question is…",
+          "There's a difference between a quick first impression and…",
+          "The research shows that snap judgements are often…",
+          "I think the problem is when appearance-based judgements lead to…",
+          "What I try to do is notice when I'm making assumptions and…"
+        ],
+        vocab: [
+          { w: "first impression", d: "первое впечатление" },
+          { w: "unconscious bias", d: "неосознанная предвзятость" },
+          { w: "stereotype", d: "стереотип" },
+          { w: "superficial", d: "поверхностный" },
+          { w: "judge a book by its cover", d: "судить по обложке, по внешнему виду" }
+        ]
+      },
+      {
+        en: "Should voting be mandatory?",
+        ru: "Должно ли голосование быть обязательным?",
+        phrases: [
+          "The argument for mandatory voting is that…",
+          "But I have concerns about forcing people to vote because…",
+          "Countries that have tried this found that…",
+          "I think the deeper problem isn't turnout, it's…",
+          "There's a tension between civic duty and…"
+        ],
+        vocab: [
+          { w: "civic duty", d: "гражданский долг" },
+          { w: "voter turnout", d: "явка избирателей" },
+          { w: "compulsory", d: "обязательный, принудительный" },
+          { w: "democracy", d: "демократия" },
+          { w: "disengagement", d: "апатия, отстранённость от политики" }
+        ]
+      },
+      {
+        en: "Is cancel culture a force for justice or a form of bullying?",
+        ru: "Культура отмены — это справедливость или форма буллинга?",
+        phrases: [
+          "I think it can be both, depending on the case — for example…",
+          "There's a difference between holding people accountable and…",
+          "What makes me uncomfortable about cancel culture is…",
+          "On the other hand, it has given a voice to people who…",
+          "The problem is that social media removes the possibility of…"
+        ],
+        vocab: [
+          { w: "accountability", d: "ответственность за свои слова и действия" },
+          { w: "mob mentality", d: "стадный инстинкт, групповая агрессия" },
+          { w: "redemption", d: "искупление, возможность исправиться" },
+          { w: "proportionate", d: "соразмерный, пропорциональный" },
+          { w: "public shaming", d: "публичное осуждение и позор" }
+        ]
+      },
+      {
+        en: "Do we have too many choices in modern life?",
+        ru: "Слишком ли много выбора в современной жизни?",
+        phrases: [
+          "The paradox of choice suggests that more options actually make us…",
+          "I notice this most when…",
+          "There's a difference between meaningful choice and…",
+          "I think choice is a privilege — the problem is…",
+          "What I'd actually want is fewer options, but better ones, because…"
+        ],
+        vocab: [
+          { w: "decision fatigue", d: "усталость от принятия решений" },
+          { w: "overwhelm", d: "перегруженность, ощущение, что всего слишком много" },
+          { w: "default option", d: "вариант по умолчанию" },
+          { w: "opportunity cost", d: "цена упущенных возможностей" },
+          { w: "paralysis", d: "паралич выбора" }
+        ]
+      }
+    ],
+    advanced: [
+      {
+        en: "Is privacy dead in the digital age, and should we mourn it?",
+        ru: "Умерла ли приватность в цифровую эпоху и стоит ли её оплакивать?",
+        phrases: [
+          "I think privacy hasn't disappeared — it's been redefined as…",
+          "The generation growing up now has a very different relationship with…",
+          "What concerns me most isn't the data itself, it's…",
+          "There's a distinction between surveillance that's opted into and…",
+          "The argument that 'if you have nothing to hide' misses the point because…"
+        ],
+        vocab: [
+          { w: "surveillance capitalism", d: "капитализм слежки — монетизация личных данных" },
+          { w: "data sovereignty", d: "право человека контролировать свои данные" },
+          { w: "opt-in vs opt-out", d: "согласие vs отказ по умолчанию" },
+          { w: "chilling effect", d: "сдерживающий эффект — люди боятся и меняют поведение" },
+          { w: "anonymity", d: "анонимность" }
+        ]
+      },
+      {
+        en: "Can art be separated from the artist's personal morality?",
+        ru: "Можно ли отделить искусство от личной морали художника?",
+        phrases: [
+          "This is one of those questions I genuinely find difficult because…",
+          "The 'death of the author' argument suggests that…",
+          "But I think there's a practical dimension that the theory ignores…",
+          "I'd distinguish between appreciating the work and…",
+          "What changes my thinking is when the harm is…"
+        ],
+        vocab: [
+          { w: "death of the author", d: "«смерть автора» — концепция независимости текста от создателя" },
+          { w: "complicity", d: "соучастие, причастность" },
+          { w: "legacy", d: "наследие, след в истории" },
+          { w: "moral weight", d: "моральная значимость" },
+          { w: "separate", d: "отделять, разграничивать" }
+        ]
+      },
+      {
+        en: "Is radical honesty a virtue or a social weapon?",
+        ru: "Радикальная честность — это добродетель или социальное оружие?",
+        phrases: [
+          "I think what people call 'radical honesty' often serves the speaker more than…",
+          "There's a version of honesty that's courageous, and another that's…",
+          "The question I always ask is: who benefits from this truth being said?",
+          "I'd argue that the duty to be honest doesn't override the duty to…",
+          "What radical honesty gets right is… but what it misses is…"
+        ],
+        vocab: [
+          { w: "tact", d: "тактичность, умение говорить деликатно" },
+          { w: "weaponise", d: "превращать в оружие, использовать против кого-то" },
+          { w: "intention vs impact", d: "намерение vs реальный эффект" },
+          { w: "virtue", d: "добродетель" },
+          { w: "social lubricant", d: "социальная смазка — то, что помогает общению" }
+        ]
+      },
+      {
+        en: "Should we hold historical figures to modern moral standards?",
+        ru: "Должны ли мы судить исторических деятелей по современным моральным стандартам?",
+        phrases: [
+          "The presentism debate is genuinely complex because on one side…",
+          "I'd argue there's a difference between understanding someone in context and…",
+          "The problem with full moral relativism is…",
+          "What I think we can fairly ask of people in any era is…",
+          "The monuments question makes this practical — when we celebrate someone, we're not just saying they existed, we're saying…"
+        ],
+        vocab: [
+          { w: "moral relativism", d: "моральный релятивизм — нет универсальных норм" },
+          { w: "presentism", d: "суждение о прошлом через призму настоящего" },
+          { w: "context", d: "контекст" },
+          { w: "nuance", d: "нюанс, тонкость" },
+          { w: "commemorate", d: "увековечивать память, отдавать дань уважения" }
+        ]
+      },
+      {
+        en: "Is the concept of meritocracy a myth?",
+        ru: "Является ли концепция меритократии мифом?",
+        phrases: [
+          "The ideal of meritocracy is appealing, but the evidence suggests…",
+          "What meritocracy ignores is the role of…",
+          "I'd distinguish between equality of opportunity and equality of outcome…",
+          "The problem is that we tend to attribute success to merit and failure to…",
+          "What meritocracy gets dangerously wrong is the implication that those who fail…"
+        ],
+        vocab: [
+          { w: "meritocracy", d: "меритократия — система, где успех = способности + труд" },
+          { w: "structural inequality", d: "структурное неравенство" },
+          { w: "privilege", d: "привилегия" },
+          { w: "attribution bias", d: "предвзятость атрибуции — кому мы приписываем успех" },
+          { w: "social mobility", d: "социальная мобильность" }
+        ]
+      },
+      {
+        en: "Should we prioritise the rights of individuals or the needs of society?",
+        ru: "Должны ли мы отдавать приоритет правам личности или нуждам общества?",
+        phrases: [
+          "I don't think this is an either/or — but the tension becomes real when…",
+          "Liberal philosophy would say individual rights are foundational because…",
+          "But there are cases where the collective interest clearly outweighs…",
+          "The hardest cases are the ones where both sides have a point — like…",
+          "I'd argue the answer depends not on abstract principle but on…"
+        ],
+        vocab: [
+          { w: "collective good", d: "общественное благо" },
+          { w: "individual liberty", d: "личная свобода" },
+          { w: "social contract", d: "общественный договор" },
+          { w: "infringe", d: "нарушать (права)" },
+          { w: "trade-off", d: "компромисс" }
+        ]
+      },
+      {
+        en: "Does technology make us more or less human?",
+        ru: "Делают ли нас технологии более или менее человечными?",
+        phrases: [
+          "I think the question assumes a fixed definition of 'human', but…",
+          "What strikes me is that technology amplifies both our best and worst…",
+          "The traits we associate with being human — empathy, creativity… — technology seems to…",
+          "My concern isn't the tools themselves, it's…",
+          "There's a difference between technology that extends us and technology that…"
+        ],
+        vocab: [
+          { w: "augment", d: "усиливать, расширять возможности" },
+          { w: "dehumanise", d: "дегуманизировать, лишать человечности" },
+          { w: "empathy", d: "эмпатия" },
+          { w: "mediated experience", d: "опосредованный опыт — через экран, не напрямую" },
+          { w: "friction", d: "трение, усилие — важное для формирования смысла" }
+        ]
+      },
+      {
+        en: "Is it ethical to bring children into the world as it is today?",
+        ru: "Этично ли сегодня приводить детей в этот мир?",
+        phrases: [
+          "This is one of the more genuinely difficult questions because…",
+          "The antinatalist argument takes seriously something that most people…",
+          "My instinct is that… but I understand why someone would feel differently",
+          "What I think changes the calculus is…",
+          "I'd distinguish between a philosophical argument and…"
+        ],
+        vocab: [
+          { w: "antinatalism", d: "антинатализм — этическая позиция против деторождения" },
+          { w: "consent", d: "согласие" },
+          { w: "existential risk", d: "экзистенциальный риск" },
+          { w: "obligation", d: "обязательство" },
+          { w: "optimism bias", d: "предвзятость к оптимизму — переоценка положительного будущего" }
+        ]
+      }
+    ]
+  }
+};
+
+const DATA_TRAVEL = {
+  label: "Trips & Places",
+  emoji: "✈️",
+  prompts: {
+    beginner: [
+      {
+        en: "Describe a place you've visited that you really liked.",
+        ru: "Опиши место, которое ты посещал(а) и которое тебе очень понравилось.",
+        phrases: [
+          "One place I loved visiting was… because…",
+          "When I arrived there, the first thing I noticed was…",
+          "What made it special for me was…",
+          "I'd definitely go back because…",
+          "If you ever get the chance, you should visit… because…"
+        ],
+        vocab: [
+          { w: "stunning", d: "потрясающий, захватывающий дух" },
+          { w: "atmosphere", d: "атмосфера" },
+          { w: "locals", d: "местные жители" },
+          { w: "scenery", d: "пейзаж, вид" },
+          { w: "memorable", d: "незабываемый" }
+        ]
+      },
+      {
+        en: "What do you always pack when you travel?",
+        ru: "Что ты всегда берёшь с собой в путешествие?",
+        phrases: [
+          "There are a few things I never travel without…",
+          "The most important thing in my bag is always…",
+          "I learned the hard way that you should always pack…",
+          "Some people think I overpack but I always bring…",
+          "My travel bag always has… because…"
+        ],
+        vocab: [
+          { w: "essential", d: "необходимый, обязательный" },
+          { w: "overpack", d: "взять слишком много вещей" },
+          { w: "carry-on", d: "ручная кладь" },
+          { w: "first aid kit", d: "аптечка первой помощи" },
+          { w: "adaptor", d: "переходник для розетки" }
+        ]
+      },
+      {
+        en: "Would you prefer a beach holiday or a city trip?",
+        ru: "Ты бы предпочёл(а) отдых на пляже или поездку в город?",
+        phrases: [
+          "I'd definitely choose… because…",
+          "For me, the perfect holiday involves…",
+          "What I love about… holidays is…",
+          "I get bored on the beach after… days because…",
+          "Cities are exciting but after a while I start to…"
+        ],
+        vocab: [
+          { w: "relaxing", d: "расслабляющий" },
+          { w: "explore", d: "исследовать, изучать" },
+          { w: "cultural", d: "культурный" },
+          { w: "resort", d: "курорт" },
+          { w: "sightseeing", d: "осмотр достопримечательностей" }
+        ]
+      },
+      {
+        en: "What is the most interesting thing you've tried eating abroad?",
+        ru: "Что самое интересное ты пробовал(а) за границей?",
+        phrases: [
+          "The most unusual thing I tried was… in…",
+          "I wasn't sure about it at first but then…",
+          "It tasted like… mixed with…",
+          "I'd definitely try it again because…",
+          "The locals recommended it and I'm glad I…"
+        ],
+        vocab: [
+          { w: "adventurous eater", d: "человек, готовый пробовать новую необычную еду" },
+          { w: "local delicacy", d: "местный деликатес" },
+          { w: "acquired taste", d: "вкус, к которому нужно привыкнуть" },
+          { w: "street food", d: "уличная еда" },
+          { w: "authentic", d: "настоящий, аутентичный" }
+        ]
+      },
+      {
+        en: "Describe the best journey you've ever taken.",
+        ru: "Опиши лучшую поездку в своей жизни.",
+        phrases: [
+          "The best journey I've ever taken was…",
+          "What made it unforgettable was…",
+          "From the moment we arrived…",
+          "One moment I'll never forget is…",
+          "That trip changed the way I think about…"
+        ],
+        vocab: [
+          { w: "unforgettable", d: "незабываемый" },
+          { w: "spontaneous", d: "спонтанный, незапланированный" },
+          { w: "adventure", d: "приключение" },
+          { w: "journey", d: "путешествие, поездка" },
+          { w: "highlight", d: "самый яркий момент" }
+        ]
+      },
+      {
+        en: "What country would you most like to visit and why?",
+        ru: "Какую страну ты больше всего хотел(а) бы посетить и почему?",
+        phrases: [
+          "The country I most want to visit is… because…",
+          "I've always been fascinated by…",
+          "What draws me there is…",
+          "I'd love to experience… for the first time",
+          "I've heard so much about… and I'd love to see for myself…"
+        ],
+        vocab: [
+          { w: "fascinated by", d: "заворожённый, сильно интересующийся" },
+          { w: "bucket list", d: "список желаний на всю жизнь" },
+          { w: "culture shock", d: "культурный шок" },
+          { w: "landmark", d: "достопримечательность, знаковое место" },
+          { w: "immerse yourself", d: "полностью погрузиться в что-то" }
+        ]
+      },
+      {
+        en: "Do you prefer travelling alone or with others?",
+        ru: "Ты предпочитаешь путешествовать один(одна) или с другими?",
+        phrases: [
+          "I prefer… because…",
+          "When I travel alone, I can…",
+          "Travelling with others means that…",
+          "The best trip I took with… was…",
+          "The challenge of travelling alone is… but the benefit is…"
+        ],
+        vocab: [
+          { w: "independence", d: "независимость" },
+          { w: "compromise", d: "идти на компромисс" },
+          { w: "solo travel", d: "одиночное путешествие" },
+          { w: "shared experience", d: "совместный опыт" },
+          { w: "spontaneous", d: "спонтанный" }
+        ]
+      },
+      {
+        en: "Describe a moment when something went wrong while travelling.",
+        ru: "Опиши момент, когда что-то пошло не так во время путешествия.",
+        phrases: [
+          "One time when things went wrong was…",
+          "At first I panicked because…",
+          "In the end it turned out okay because…",
+          "Looking back, it was actually funny / a good lesson because…",
+          "That experience taught me to always…"
+        ],
+        vocab: [
+          { w: "missed a flight", d: "опоздать на рейс" },
+          { w: "get lost", d: "заблудиться" },
+          { w: "deal with it", d: "справиться с ситуацией" },
+          { w: "turn it around", d: "исправить ситуацию, найти выход" },
+          { w: "in retrospect", d: "оглядываясь назад" }
+        ]
+      }
+    ],
+    intermediate: [
+      {
+        en: "How has travel changed the way you see your home country?",
+        ru: "Как путешествия изменили твой взгляд на родную страну?",
+        phrases: [
+          "Before I travelled, I assumed that… but then I discovered…",
+          "Coming home after a long trip, I started to notice…",
+          "I think travel gave me a kind of distance that let me see…",
+          "What surprised me was how… compared to what I'd seen abroad",
+          "There are things I now appreciate about home that I used to take for granted…"
+        ],
+        vocab: [
+          { w: "perspective", d: "точка зрения, угол зрения" },
+          { w: "take for granted", d: "воспринимать как должное" },
+          { w: "contrast", d: "контраст, противопоставление" },
+          { w: "cultural lens", d: "культурная призма, через которую мы смотрим на мир" },
+          { w: "outsider's eye", d: "взгляд постороннего" }
+        ]
+      },
+      {
+        en: "What's the difference between being a tourist and being a traveller?",
+        ru: "В чём разница между туристом и путешественником?",
+        phrases: [
+          "The way I see it, a tourist… while a traveller…",
+          "It's not just about where you go — it's about how you…",
+          "I've been both at different times — for example, in… I was…",
+          "Some people look down on tourists, but I think…",
+          "What makes travel meaningful, I think, is…"
+        ],
+        vocab: [
+          { w: "off the beaten path", d: "вдали от туристических маршрутов" },
+          { w: "authentic experience", d: "настоящий, подлинный опыт" },
+          { w: "overtourism", d: "перетуризм, слишком много туристов" },
+          { w: "immerse", d: "погружаться" },
+          { w: "package holiday", d: "организованный тур «всё включено»" }
+        ]
+      },
+      {
+        en: "Describe a place that didn't meet your expectations.",
+        ru: "Опиши место, которое не оправдало твоих ожиданий.",
+        phrases: [
+          "I'd expected… based on…, but when I got there…",
+          "The reality was quite different because…",
+          "I think my expectations were shaped by… which wasn't realistic",
+          "That said, I did find something unexpected that I liked…",
+          "It taught me that the gap between expectation and reality is often about…"
+        ],
+        vocab: [
+          { w: "overhyped", d: "слишком разрекламированный" },
+          { w: "expectation gap", d: "разрыв между ожиданием и реальностью" },
+          { w: "disappointed", d: "разочарованный" },
+          { w: "crowded", d: "переполненный" },
+          { w: "silver lining", d: "светлая сторона в неприятной ситуации" }
+        ]
+      },
+      {
+        en: "How do you think tourism affects local communities?",
+        ru: "Как ты думаешь, как туризм влияет на местные сообщества?",
+        phrases: [
+          "Tourism brings obvious economic benefits, but it also…",
+          "What worries me is when local culture becomes…",
+          "The communities most affected are often the ones that…",
+          "I've seen both sides — in… tourism seemed to help, but in…",
+          "Responsible travel, to me, means…"
+        ],
+        vocab: [
+          { w: "gentrification", d: "джентрификация — вытеснение местных жителей" },
+          { w: "commodification", d: "коммодификация культуры — превращение в товар" },
+          { w: "sustainable tourism", d: "устойчивый туризм" },
+          { w: "economic dependence", d: "экономическая зависимость от туризма" },
+          { w: "cultural exchange", d: "культурный обмен" }
+        ]
+      },
+      {
+        en: "What's the most useful thing you've learned from travelling?",
+        ru: "Что самое полезное ты узнал(а) из путешествий?",
+        phrases: [
+          "The most useful thing travel taught me was…",
+          "Before I started travelling, I thought… but now I know that…",
+          "There's one skill travel develops that nothing else can…",
+          "The lesson that's stayed with me the most is…",
+          "You learn things on the road that you just can't learn from…"
+        ],
+        vocab: [
+          { w: "adaptability", d: "адаптивность, умение приспосабливаться" },
+          { w: "problem-solving", d: "решение проблем" },
+          { w: "open-mindedness", d: "открытость, непредвзятость" },
+          { w: "resourcefulness", d: "находчивость, умение справляться с трудностями" },
+          { w: "comfort zone", d: "зона комфорта" }
+        ]
+      },
+      {
+        en: "Is it possible to really understand a culture as an outsider?",
+        ru: "Может ли посторонний по-настоящему понять чужую культуру?",
+        phrases: [
+          "I think you can get close, but there are always layers that…",
+          "The deeper you go — learning the language, spending more time — the more you…",
+          "What tourists often miss is…",
+          "There's a difference between observing a culture and…",
+          "I've felt like an outsider even in places I thought I understood, when…"
+        ],
+        vocab: [
+          { w: "cultural nuance", d: "культурный нюанс, тонкость" },
+          { w: "insider knowledge", d: "знание изнутри" },
+          { w: "superficial", d: "поверхностный" },
+          { w: "empathy", d: "эмпатия" },
+          { w: "interpretation", d: "интерпретация, понимание через призму своего опыта" }
+        ]
+      },
+      {
+        en: "How do you decide where to travel next?",
+        ru: "Как ты решаешь, куда поехать в следующий раз?",
+        phrases: [
+          "My decision usually starts with…",
+          "I tend to be drawn to places that…",
+          "Sometimes it's practical — like price or distance — but mostly it's about…",
+          "The last time I chose a destination, it was because…",
+          "I'm the kind of traveller who prefers… over…"
+        ],
+        vocab: [
+          { w: "itinerary", d: "маршрут, план поездки" },
+          { w: "spontaneous", d: "спонтанный" },
+          { w: "recommendation", d: "рекомендация" },
+          { w: "off-season", d: "не сезон" },
+          { w: "budget", d: "бюджет" }
+        ]
+      },
+      {
+        en: "Talk about a time when you connected with someone from a very different background while travelling.",
+        ru: "Расскажи о моменте, когда ты нашёл(а) общий язык с человеком из совершенно другой среды во время путешествия.",
+        phrases: [
+          "I met someone in… and even though we came from very different…",
+          "What surprised me was how quickly we found common ground through…",
+          "Despite the language barrier, we managed to…",
+          "It made me realise that people everywhere…",
+          "That encounter changed how I think about…"
+        ],
+        vocab: [
+          { w: "common ground", d: "общая почва, точки соприкосновения" },
+          { w: "language barrier", d: "языковой барьер" },
+          { w: "genuine connection", d: "настоящий, искренний контакт" },
+          { w: "universal", d: "универсальный, понятный всем" },
+          { w: "host", d: "хозяин, принимающая сторона" }
+        ]
+      }
+    ],
+    advanced: [
+      {
+        en: "Is travel a privilege, and does that come with responsibilities?",
+        ru: "Является ли путешествие привилегией и влечёт ли это за собой ответственность?",
+        phrases: [
+          "Travel is clearly a privilege — not just financially but also in terms of…",
+          "The passport you hold determines so much about…",
+          "I've become more conscious of this when I think about…",
+          "I think that privilege does come with a responsibility to…",
+          "The ethical question I sit with is whether my presence in… actually…"
+        ],
+        vocab: [
+          { w: "passport privilege", d: "привилегия паспорта — лёгкость получения виз" },
+          { w: "ethical travel", d: "этичный туризм" },
+          { w: "carbon footprint", d: "углеродный след" },
+          { w: "extractive", d: "потребительский, берущий, не отдающий" },
+          { w: "reciprocity", d: "взаимность, взаимообмен" }
+        ]
+      },
+      {
+        en: "How has the rise of social media changed the experience of travel?",
+        ru: "Как развитие социальных сетей изменило опыт путешествий?",
+        phrases: [
+          "The most obvious change is how we document travel — but what's less obvious is…",
+          "I've noticed in myself a tendency to…, which I find troubling",
+          "There's a kind of performance to travel now that didn't used to be…",
+          "On the other hand, social media has made it easier to…",
+          "The deeper question is whether we travel for the experience or…"
+        ],
+        vocab: [
+          { w: "performative", d: "напоказ, ради демонстрации другим" },
+          { w: "curated experience", d: "тщательно отобранный образ путешествия" },
+          { w: "authenticity", d: "подлинность, аутентичность" },
+          { w: "FOMO", d: "страх упустить что-то (Fear Of Missing Out)" },
+          { w: "homogenisation", d: "гомогенизация — места становятся похожими друг на друга" }
+        ]
+      },
+      {
+        en: "Does travel actually broaden the mind, or do we bring our biases with us?",
+        ru: "Расширяет ли путешествие кругозор на самом деле или мы везём с собой свои предубеждения?",
+        phrases: [
+          "I think it depends entirely on how you travel and whether you…",
+          "The research suggests that travel changes attitudes only when…",
+          "I've met people who've travelled extensively and remain completely…",
+          "What travel actually requires for it to change you is…",
+          "The idea that travel automatically broadens the mind is a kind of…"
+        ],
+        vocab: [
+          { w: "confirmation bias", d: "предвзятость подтверждения — ищем то, что уже думаем" },
+          { w: "cognitive dissonance", d: "когнитивный диссонанс" },
+          { w: "discomfort", d: "дискомфорт — необходимый для изменений" },
+          { w: "preconception", d: "предвзятое мнение, предубеждение" },
+          { w: "encounter", d: "встреча, контакт с чем-то непривычным" }
+        ]
+      },
+      {
+        en: "What does 'home' mean when you've lived or travelled extensively?",
+        ru: "Что значит «дом», когда ты много жил(а) или путешествовал(а)?",
+        phrases: [
+          "The more I've travelled, the harder it's become to answer the question…",
+          "Home used to mean… but now I think of it more as…",
+          "There's a concept called 'third culture' that resonates with me because…",
+          "I've felt most at home in places where…",
+          "What I've realised is that home might be less a place and more…"
+        ],
+        vocab: [
+          { w: "belonging", d: "ощущение принадлежности, своего места" },
+          { w: "third culture", d: "третья культура — идентичность между двух культур" },
+          { w: "rootlessness", d: "безродность, отсутствие корней" },
+          { w: "anchor", d: "якорь — то, что держит, даёт стабильность" },
+          { w: "transient", d: "временный, проходящий" }
+        ]
+      },
+      {
+        en: "Is slow travel a more ethical form of tourism?",
+        ru: "Является ли медленное путешествие более этичной формой туризма?",
+        phrases: [
+          "The case for slow travel is partly environmental, but also…",
+          "What slow travel offers that mass tourism doesn't is…",
+          "I find myself drawn to the idea but also challenged by…",
+          "The tension is between the depth it offers and the access it requires…",
+          "I'd argue that slow travel is more ethical when it comes to… but not necessarily when…"
+        ],
+        vocab: [
+          { w: "slow travel", d: "медленный туризм — жить в одном месте, а не переезжать быстро" },
+          { w: "immersion", d: "погружение" },
+          { w: "environmental cost", d: "экологическая цена" },
+          { w: "intentional", d: "осознанный, намеренный" },
+          { w: "mass tourism", d: "массовый туризм" }
+        ]
+      },
+      {
+        en: "How do geopolitics shape our experience of travel?",
+        ru: "Как геополитика влияет на наш опыт путешествий?",
+        phrases: [
+          "The obvious way is through visas and borders, but it goes deeper than that…",
+          "Where I can travel — and how I'm received — depends partly on…",
+          "I think travellers from powerful nations often underestimate…",
+          "The geopolitical dimension becomes most visible when you try to…",
+          "What strikes me is that the same country can feel very different depending on…"
+        ],
+        vocab: [
+          { w: "border politics", d: "пограничная политика" },
+          { w: "soft power", d: "мягкая сила — влияние через культуру и образ" },
+          { w: "perception", d: "восприятие, то, как тебя воспринимают" },
+          { w: "nationality", d: "гражданство, национальность" },
+          { w: "diplomatic relations", d: "дипломатические отношения" }
+        ]
+      },
+      {
+        en: "Can a place be 'ruined' by too many visitors?",
+        ru: "Может ли место быть «испорчено» слишком большим количеством посетителей?",
+        phrases: [
+          "Yes — and I think the clearest examples are places like…",
+          "What makes a place special is often fragile because…",
+          "There's a paradox: the desire to experience something authentic can destroy…",
+          "I've seen this in a small way when I visited… and felt like…",
+          "The question of who decides a place is 'ruined' is worth asking because…"
+        ],
+        vocab: [
+          { w: "overtourism", d: "перетуризм" },
+          { w: "fragile ecosystem", d: "хрупкая экосистема" },
+          { w: "carrying capacity", d: "пропускная способность — сколько людей место может принять" },
+          { w: "irreversible damage", d: "необратимый ущерб" },
+          { w: "tourist gaze", d: "туристический взгляд — как смотрит приезжий" }
+        ]
+      },
+      {
+        en: "What does encountering real poverty while travelling do to you?",
+        ru: "Что происходит с тобой, когда во время путешествия ты сталкиваешься с настоящей бедностью?",
+        phrases: [
+          "I think most travellers encounter this and then have to decide what to do with…",
+          "The first reaction for me is often…, followed by a more uncomfortable feeling of…",
+          "There's a risk of what people call 'poverty tourism', where…",
+          "I've wrestled with whether giving money directly helps or…",
+          "What stays with me is not the image but the question of…"
+        ],
+        vocab: [
+          { w: "poverty tourism", d: "туризм бедности — поездки ради наблюдения за нищетой" },
+          { w: "guilt", d: "вина" },
+          { w: "structural causes", d: "структурные причины — системные, а не личные" },
+          { w: "solidarity", d: "солидарность" },
+          { w: "discomfort", d: "дискомфорт" }
+        ]
+      }
+    ]
+  }
+};
+
+const DATA_DEEP = {
+  label: "Personal & Meaningful",
+  emoji: "💛",
+  prompts: {
+    beginner: [
+      {
+        en: "Who is the most important person in your life and why?",
+        ru: "Кто самый важный человек в твоей жизни и почему?",
+        phrases: [
+          "The most important person in my life is… because…",
+          "What makes them so special to me is…",
+          "They have always been there for me when…",
+          "I can't imagine my life without… because…",
+          "One thing they taught me that I'll never forget is…"
+        ],
+        vocab: [
+          { w: "unconditional", d: "безусловный, без условий и ожиданий" },
+          { w: "support", d: "поддержка" },
+          { w: "role model", d: "образец для подражания" },
+          { w: "influence", d: "влияние" },
+          { w: "cherish", d: "дорожить, ценить" }
+        ]
+      },
+      {
+        en: "What is something you're grateful for today?",
+        ru: "За что ты благодарен(на) сегодня?",
+        phrases: [
+          "Today I'm grateful for… because…",
+          "It might seem small but I really appreciate…",
+          "Something I often take for granted but am grateful for is…",
+          "When I think about my life, I feel lucky to have…",
+          "Recently I've been noticing how grateful I am for…"
+        ],
+        vocab: [
+          { w: "grateful", d: "благодарный" },
+          { w: "appreciate", d: "ценить, быть благодарным" },
+          { w: "take for granted", d: "воспринимать как должное" },
+          { w: "blessing", d: "благословение, дар, удача" },
+          { w: "notice", d: "замечать, обращать внимание" }
+        ]
+      },
+      {
+        en: "What does friendship mean to you?",
+        ru: "Что для тебя значит дружба?",
+        phrases: [
+          "For me, a real friendship means…",
+          "I think the most important thing in a friendship is…",
+          "A good friend is someone who…",
+          "I've learned what friendship really means when…",
+          "The friendships I value most are ones where…"
+        ],
+        vocab: [
+          { w: "loyalty", d: "лояльность, верность" },
+          { w: "trust", d: "доверие" },
+          { w: "mutual", d: "взаимный" },
+          { w: "genuine", d: "искренний, настоящий" },
+          { w: "there for someone", d: "быть рядом с кем-то, поддерживать" }
+        ]
+      },
+      {
+        en: "What is one thing you'd like to change about yourself?",
+        ru: "Что одно ты хотел(а) бы изменить в себе?",
+        phrases: [
+          "If I could change one thing about myself, it would be…",
+          "I've been working on… because I know it holds me back",
+          "I think my biggest weakness is… and it affects me when…",
+          "Something I'd like to improve is… because…",
+          "I know I need to be better at… even though it's hard because…"
+        ],
+        vocab: [
+          { w: "self-improvement", d: "саморазвитие, работа над собой" },
+          { w: "weakness", d: "слабость, недостаток" },
+          { w: "hold back", d: "сдерживать, не давать двигаться вперёд" },
+          { w: "patient", d: "терпеливый" },
+          { w: "overcome", d: "преодолеть" }
+        ]
+      },
+      {
+        en: "What makes you feel happy?",
+        ru: "Что тебя делает счастливым(ой)?",
+        phrases: [
+          "The things that make me genuinely happy are…",
+          "I feel most happy when I'm…",
+          "Simple things that bring me joy include…",
+          "Happiness for me isn't about… it's more about…",
+          "One moment that made me really happy recently was…"
+        ],
+        vocab: [
+          { w: "joy", d: "радость" },
+          { w: "content", d: "довольный, удовлетворённый" },
+          { w: "meaningful", d: "значимый, наполненный смыслом" },
+          { w: "connection", d: "связь, контакт с людьми" },
+          { w: "simple pleasure", d: "простая радость" }
+        ]
+      },
+      {
+        en: "Talk about a time someone helped you when you really needed it.",
+        ru: "Расскажи о моменте, когда кто-то помог тебе, когда это было очень нужно.",
+        phrases: [
+          "There was a time when I was going through… and someone…",
+          "I'll never forget when… helped me by…",
+          "At the time I didn't know how to ask for help, but…",
+          "What they did wasn't big, but it meant everything because…",
+          "That experience made me want to…"
+        ],
+        vocab: [
+          { w: "kindness", d: "доброта" },
+          { w: "reach out", d: "протянуть руку помощи, обратиться к кому-то" },
+          { w: "support", d: "поддержка" },
+          { w: "grateful", d: "благодарный" },
+          { w: "unexpected", d: "неожиданный" }
+        ]
+      },
+      {
+        en: "What is a goal you're working towards right now?",
+        ru: "Над достижением какой цели ты сейчас работаешь?",
+        phrases: [
+          "Right now I'm working towards…",
+          "My main goal at the moment is… because…",
+          "I've been making progress by…",
+          "The hardest part has been… but I'm motivated because…",
+          "When I reach this goal, I think I'll feel…"
+        ],
+        vocab: [
+          { w: "goal", d: "цель" },
+          { w: "progress", d: "прогресс, продвижение вперёд" },
+          { w: "motivated", d: "мотивированный" },
+          { w: "step by step", d: "шаг за шагом" },
+          { w: "commitment", d: "преданность делу, обязательство" }
+        ]
+      },
+      {
+        en: "What do you do when you feel stressed or overwhelmed?",
+        ru: "Что ты делаешь, когда чувствуешь стресс или перегруженность?",
+        phrases: [
+          "When I'm stressed, the first thing I do is…",
+          "I've found that the best thing for me is…",
+          "Some people go for a run, but I prefer to…",
+          "I used to handle stress badly by…, but now I try to…",
+          "The thing that helps me most when I'm overwhelmed is…"
+        ],
+        vocab: [
+          { w: "cope with", d: "справляться с (трудностью)" },
+          { w: "overwhelmed", d: "подавленный, перегруженный" },
+          { w: "decompress", d: "расслабиться, сбросить напряжение" },
+          { w: "breathe", d: "дышать (глубоко, чтобы успокоиться)" },
+          { w: "take a step back", d: "отступить, взять паузу" }
+        ]
+      }
+    ],
+    intermediate: [
+      {
+        en: "How have your values changed over the past few years?",
+        ru: "Как изменились твои ценности за последние несколько лет?",
+        phrases: [
+          "Looking back, I can see that what I valued a few years ago was…",
+          "The shift really happened when…",
+          "I used to think… was really important, but now I care more about…",
+          "What changed my perspective was…",
+          "I'm not sure if my values changed or if I just became more honest about…"
+        ],
+        vocab: [
+          { w: "core values", d: "основные ценности" },
+          { w: "shift", d: "сдвиг, изменение" },
+          { w: "maturity", d: "зрелость" },
+          { w: "re-evaluate", d: "переосмыслить, пересмотреть" },
+          { w: "lived experience", d: "прожитый опыт" }
+        ]
+      },
+      {
+        en: "Describe a relationship that has shaped who you are.",
+        ru: "Опиши отношения, которые сформировали тебя как личность.",
+        phrases: [
+          "One relationship that really shaped me was…",
+          "What made this person different from others in my life was…",
+          "Through this relationship I learned…",
+          "It wasn't always easy — there were times when…",
+          "Who I am today is partly because of how they…"
+        ],
+        vocab: [
+          { w: "formative", d: "формирующий, влияющий на становление личности" },
+          { w: "shape", d: "формировать, лепить" },
+          { w: "challenge", d: "вызов, испытание" },
+          { w: "dynamic", d: "динамика (отношений)" },
+          { w: "influence", d: "влияние" }
+        ]
+      },
+      {
+        en: "What does it mean to live a good life?",
+        ru: "Что значит жить хорошей жизнью?",
+        phrases: [
+          "I think a good life involves…, but also…",
+          "For me personally, the most important ingredient is…",
+          "What I've stopped believing is that a good life requires…",
+          "I think the question itself is important — most people never stop to…",
+          "The people I know who seem to live well tend to…"
+        ],
+        vocab: [
+          { w: "flourishing", d: "процветание, расцвет — жизнь в полной мере" },
+          { w: "meaning", d: "смысл" },
+          { w: "contentment", d: "удовлетворённость, внутренний покой" },
+          { w: "contribution", d: "вклад" },
+          { w: "authentic", d: "аутентичный, верный себе" }
+        ]
+      },
+      {
+        en: "How do you handle failure and disappointment?",
+        ru: "Как ты справляешься с неудачами и разочарованиями?",
+        phrases: [
+          "My honest reaction to failure is usually…",
+          "I've gotten better at handling it by…",
+          "What I try not to do is… even though it's tempting",
+          "The most useful thing I've learned about failure is…",
+          "There's a failure I experienced that I'm actually grateful for now…"
+        ],
+        vocab: [
+          { w: "resilience", d: "устойчивость, способность восстанавливаться" },
+          { w: "self-compassion", d: "сострадание к себе" },
+          { w: "bounce back", d: "отойти, оправиться после неудачи" },
+          { w: "internalise", d: "принять внутрь, воспринять как личное" },
+          { w: "perspective", d: "перспектива, широкий взгляд" }
+        ]
+      },
+      {
+        en: "What's something you believe that most people around you don't?",
+        ru: "Во что ты веришь, во что большинство окружающих — нет?",
+        phrases: [
+          "One thing I believe that's a bit unconventional is…",
+          "I don't always say this out loud because…",
+          "My experience has led me to think… even though most people around me…",
+          "I've tested this belief by… and found that…",
+          "What I'd say to someone who disagrees is…"
+        ],
+        vocab: [
+          { w: "unconventional", d: "нестандартный, нетрадиционный" },
+          { w: "conviction", d: "убеждение, твёрдая вера" },
+          { w: "minority view", d: "взгляд меньшинства" },
+          { w: "social pressure", d: "социальное давление" },
+          { w: "stand by", d: "придерживаться, стоять на своём" }
+        ]
+      },
+      {
+        en: "Describe a moment that changed the direction of your life.",
+        ru: "Опиши момент, который изменил направление твоей жизни.",
+        phrases: [
+          "Looking back, I can see that everything changed when…",
+          "At the time I didn't realise how significant it was, but…",
+          "Before that moment, I was heading towards…",
+          "What made it a turning point was…",
+          "I'm not sure if I'd make the same decision again, but what I know is…"
+        ],
+        vocab: [
+          { w: "turning point", d: "поворотный момент" },
+          { w: "pivotal", d: "ключевой, решающий" },
+          { w: "trajectory", d: "траектория, путь" },
+          { w: "unintended", d: "непреднамеренный, неожиданный" },
+          { w: "ripple effect", d: "эффект домино, последствия" }
+        ]
+      },
+      {
+        en: "How do you know when to hold on and when to let go?",
+        ru: "Как ты понимаешь, когда нужно держаться, а когда — отпустить?",
+        phrases: [
+          "I think the difference often comes down to…",
+          "I've held on too long before, when…",
+          "And there have been times I let go too early, when…",
+          "The question I ask myself now is…",
+          "What I've learned is that letting go isn't giving up — it's…"
+        ],
+        vocab: [
+          { w: "sunk cost", d: "невозвратные вложения — прошлые усилия, которые удерживают" },
+          { w: "attachment", d: "привязанность" },
+          { w: "release", d: "отпустить" },
+          { w: "intuition", d: "интуиция" },
+          { w: "acceptance", d: "принятие" }
+        ]
+      },
+      {
+        en: "What do you want people to remember about you?",
+        ru: "Каким тебя хочется остаться в памяти людей?",
+        phrases: [
+          "I'd want people to remember me as someone who…",
+          "More than anything, I hope people feel… when they think of me",
+          "I'm not sure the big achievements matter as much as…",
+          "There's a gap between who I want to be remembered as and who I actually am — for example…",
+          "What I think really lasts in people's memories is…"
+        ],
+        vocab: [
+          { w: "legacy", d: "наследие, след, оставленный в жизни людей" },
+          { w: "impact", d: "влияние, воздействие" },
+          { w: "character", d: "характер, личность" },
+          { w: "eulogy virtues", d: "достоинства, которые говорят на похоронах — не в резюме" },
+          { w: "presence", d: "присутствие, способность быть рядом" }
+        ]
+      }
+    ],
+    advanced: [
+      {
+        en: "To what extent are we the authors of our own lives?",
+        ru: "В какой мере мы являемся авторами собственной жизни?",
+        phrases: [
+          "The question of agency is one I find genuinely hard because…",
+          "On one level, the choices I make clearly shape…",
+          "But the circumstances I was born into — including… — were not chosen",
+          "I think the honest answer lies somewhere between full autonomy and…",
+          "What I've found meaningful in this question is asking not whether I'm free, but…"
+        ],
+        vocab: [
+          { w: "agency", d: "свобода воли, способность действовать самостоятельно" },
+          { w: "determinism", d: "детерминизм — всё предопределено" },
+          { w: "narrative self", d: "нарративное «я» — история, которую мы рассказываем о себе" },
+          { w: "circumstance", d: "обстоятельство, условие" },
+          { w: "author", d: "автор (своей жизни)" }
+        ]
+      },
+      {
+        en: "How do you find meaning in ordinary life?",
+        ru: "Как ты находишь смысл в обычной жизни?",
+        phrases: [
+          "I've moved away from the idea that meaning has to be grand…",
+          "What I've found is that meaning tends to live in…",
+          "The philosopher… argued that… and that resonates with me because…",
+          "There are days when everything feels meaningless, and what I do then is…",
+          "I think meaning is often made rather than found — by the way you…"
+        ],
+        vocab: [
+          { w: "existential", d: "экзистенциальный, касающийся смысла жизни" },
+          { w: "transcendence", d: "трансцендентность — выход за пределы обыденного" },
+          { w: "absorption", d: "поглощённость, полное погружение в момент" },
+          { w: "contribution", d: "вклад, участие" },
+          { w: "coherence", d: "связность — ощущение, что жизнь имеет смысл и порядок" }
+        ]
+      },
+      {
+        en: "What does it mean to truly know yourself?",
+        ru: "Что значит по-настоящему знать себя?",
+        phrases: [
+          "I think self-knowledge is less a destination and more…",
+          "The version of myself I present to the world is different from…",
+          "What I've found most illuminating about knowing myself is…",
+          "The paradox is that the 'self' we're trying to know keeps…",
+          "What makes this question difficult is the gap between who I think I am and…"
+        ],
+        vocab: [
+          { w: "introspection", d: "интроспекция, самоанализ" },
+          { w: "blind spot", d: "слепое пятно — то, чего мы не видим в себе" },
+          { w: "authentic self", d: "подлинное «я»" },
+          { w: "constructed identity", d: "сконструированная идентичность" },
+          { w: "feedback", d: "обратная связь от других людей" }
+        ]
+      },
+      {
+        en: "How do you hold grief and joy at the same time?",
+        ru: "Как ты удерживаешь горе и радость одновременно?",
+        phrases: [
+          "I think the question assumes they're opposites — but I've found they're more like…",
+          "The moments where I feel both most acutely are…",
+          "There's a concept called 'bittersweet' that…",
+          "I've stopped trying to resolve the tension between them because…",
+          "What helps me is not trying to fix the feeling but…"
+        ],
+        vocab: [
+          { w: "bittersweet", d: "горько-сладкий — одновременно радость и грусть" },
+          { w: "ambivalence", d: "амбивалентность — противоречивые чувства одновременно" },
+          { w: "grief", d: "горе, скорбь" },
+          { w: "integration", d: "интеграция — принятие противоречий как части целого" },
+          { w: "impermanence", d: "непостоянство, преходящесть" }
+        ]
+      },
+      {
+        en: "What has loneliness taught you?",
+        ru: "Чему тебя научило одиночество?",
+        phrases: [
+          "I think loneliness is one of the most honest feelings because…",
+          "What I've learned from it is that it's not the same as being alone — it's…",
+          "My own experience of loneliness has shown me…",
+          "The useful thing about loneliness, if there is one, is that…",
+          "I've come to think that loneliness points towards something we need, which is…"
+        ],
+        vocab: [
+          { w: "solitude", d: "уединение — желанное, в отличие от одиночества" },
+          { w: "loneliness", d: "одиночество — нежеланное, болезненное" },
+          { w: "connection", d: "связь, контакт" },
+          { w: "self-sufficient", d: "самодостаточный" },
+          { w: "vulnerability", d: "уязвимость" }
+        ]
+      },
+      {
+        en: "How do you make peace with uncertainty?",
+        ru: "Как ты миришься с неопределённостью?",
+        phrases: [
+          "I think the desire for certainty is deeply human, which is why…",
+          "What I've worked on is distinguishing between uncertainty I can reduce and…",
+          "The practices that help me most with uncertainty are…",
+          "I've noticed that the most anxious I get is not when things are uncertain but when…",
+          "What I try to remind myself is that uncertainty also means…"
+        ],
+        vocab: [
+          { w: "tolerance of ambiguity", d: "устойчивость к неопределённости" },
+          { w: "control", d: "контроль" },
+          { w: "acceptance", d: "принятие" },
+          { w: "contingency", d: "случайность, непредвиденное" },
+          { w: "anchor", d: "якорь — то, что даёт стабильность в хаосе" }
+        ]
+      },
+      {
+        en: "What do you owe the people who raised you?",
+        ru: "Что ты должен(а) тем, кто тебя вырастил?",
+        phrases: [
+          "This is a question I find genuinely difficult because…",
+          "I think there's a difference between gratitude and obligation…",
+          "What I do feel I owe them is…, but I draw the line at…",
+          "The cultural expectations around this are very strong, and I…",
+          "What complicates this for me personally is…"
+        ],
+        vocab: [
+          { w: "filial duty", d: "сыновний/дочерний долг" },
+          { w: "reciprocity", d: "взаимность" },
+          { w: "unconditional", d: "безусловный" },
+          { w: "autonomy", d: "автономия, независимость" },
+          { w: "obligation vs choice", d: "долг vs свободный выбор" }
+        ]
+      },
+      {
+        en: "How do you think about your own mortality?",
+        ru: "Как ты думаешь о своей смертности?",
+        phrases: [
+          "I think most people avoid this — and I understand why, but I've found that…",
+          "When I do sit with the reality of it, what comes up for me is…",
+          "Rather than being paralysing, thinking about mortality has…",
+          "The Stoic idea of memento mori — remembering death — is useful to me because…",
+          "What I want my relationship with mortality to be is… not…"
+        ],
+        vocab: [
+          { w: "memento mori", d: "«помни о смерти» — практика осознания конечности жизни" },
+          { w: "finite", d: "конечный, ограниченный" },
+          { w: "legacy", d: "наследие" },
+          { w: "urgency", d: "ощущение ценности времени" },
+          { w: "equanimity", d: "невозмутимость, душевное равновесие" }
+        ]
+      }
+    ]
+  }
+};
+
+const DATA_CINEMA = {
+  label: "Cinema & Culture",
+  emoji: "🎬",
+  prompts: {
+    beginner: [
+      {
+        en: "What is your favourite film and why do you like it?",
+        ru: "Какой твой любимый фильм и почему он тебе нравится?",
+        phrases: [
+          "My favourite film is… because…",
+          "The first time I watched it, I felt…",
+          "What makes it special is…",
+          "I'd recommend it to anyone who…",
+          "I've probably watched it… times and every time I notice something new"
+        ],
+        vocab: [
+          { w: "plot", d: "сюжет" },
+          { w: "cast", d: "актёрский состав" },
+          { w: "directed by", d: "снятый режиссёром" },
+          { w: "scene", d: "сцена" },
+          { w: "recommend", d: "рекомендовать" }
+        ]
+      },
+      {
+        en: "Do you prefer watching films at home or at the cinema?",
+        ru: "Ты предпочитаешь смотреть фильмы дома или в кино?",
+        phrases: [
+          "I prefer watching at… because…",
+          "There's something special about the cinema experience — for example…",
+          "But at home I can…, which I love",
+          "The last time I went to the cinema was… and it was…",
+          "I think the type of film matters — for…, the cinema is better, but for…"
+        ],
+        vocab: [
+          { w: "big screen", d: "большой экран" },
+          { w: "streaming", d: "стриминг, онлайн-просмотр" },
+          { w: "atmosphere", d: "атмосфера" },
+          { w: "pause", d: "пауза (остановить фильм)" },
+          { w: "distraction", d: "отвлечение" }
+        ]
+      },
+      {
+        en: "Describe a song that always makes you feel something.",
+        ru: "Опиши песню, которая всегда вызывает у тебя чувства.",
+        phrases: [
+          "There's one song that always makes me feel…",
+          "Every time I hear it, I think of…",
+          "The first time I heard it was…",
+          "What gets me is the… — especially when…",
+          "I can't explain why exactly, but this song just…"
+        ],
+        vocab: [
+          { w: "nostalgic", d: "ностальгический, вызывающий воспоминания" },
+          { w: "lyrics", d: "текст песни" },
+          { w: "melody", d: "мелодия" },
+          { w: "emotional", d: "эмоциональный" },
+          { w: "goosebumps", d: "мурашки по коже" }
+        ]
+      },
+      {
+        en: "What kind of books do you enjoy reading?",
+        ru: "Какие книги тебе нравится читать?",
+        phrases: [
+          "I mostly read… because…",
+          "My favourite genre is… — I like it when a book…",
+          "The last book I really enjoyed was…",
+          "I tend to read when… and I prefer books that…",
+          "I'd recommend… to anyone who likes…"
+        ],
+        vocab: [
+          { w: "genre", d: "жанр" },
+          { w: "fiction", d: "художественная литература" },
+          { w: "non-fiction", d: "документальная, научно-популярная литература" },
+          { w: "page-turner", d: "книга, от которой невозможно оторваться" },
+          { w: "author", d: "автор" }
+        ]
+      },
+      {
+        en: "What TV show are you watching right now (or recently finished)?",
+        ru: "Какой сериал ты сейчас смотришь (или недавно досмотрел(а))?",
+        phrases: [
+          "Right now I'm watching… and I'm really into it because…",
+          "I just finished… and honestly I thought it was…",
+          "What I like about this show is…",
+          "The main character is… and what makes them interesting is…",
+          "I'd describe it as… — perfect if you like…"
+        ],
+        vocab: [
+          { w: "binge-watch", d: "смотреть взапой, серию за серией" },
+          { w: "episode", d: "эпизод, серия" },
+          { w: "cliffhanger", d: "напряжённый момент в конце эпизода" },
+          { w: "season", d: "сезон" },
+          { w: "plot twist", d: "неожиданный поворот сюжета" }
+        ]
+      },
+      {
+        en: "If your life were a film, what genre would it be?",
+        ru: "Если бы твоя жизнь была фильмом, в каком жанре?",
+        phrases: [
+          "I think my life would probably be a…",
+          "There's definitely a… element to it because…",
+          "Some parts of my life are more like… and other parts are like…",
+          "The main character — me — would probably be described as…",
+          "The soundtrack would definitely include…"
+        ],
+        vocab: [
+          { w: "comedy", d: "комедия" },
+          { w: "drama", d: "драма" },
+          { w: "coming-of-age", d: "фильм о взрослении" },
+          { w: "genre", d: "жанр" },
+          { w: "protagonist", d: "главный герой" }
+        ]
+      },
+      {
+        en: "Talk about an actor or musician you admire.",
+        ru: "Расскажи об актёре или музыканте, которым ты восхищаешься.",
+        phrases: [
+          "Someone I really admire is… because…",
+          "What sets them apart from others is…",
+          "I've followed their work since…",
+          "The thing that impressed me most was when they…",
+          "Beyond their talent, what I respect about them is…"
+        ],
+        vocab: [
+          { w: "talent", d: "талант" },
+          { w: "admire", d: "восхищаться" },
+          { w: "influence", d: "влияние" },
+          { w: "iconic", d: "культовый, знаковый" },
+          { w: "career", d: "карьера" }
+        ]
+      },
+      {
+        en: "What is one film or book that changed how you see the world?",
+        ru: "Назови один фильм или книгу, которые изменили твой взгляд на мир.",
+        phrases: [
+          "A film/book that really changed me was…",
+          "Before I read/watched it, I thought…",
+          "What it made me realise was…",
+          "The idea that stuck with me most was…",
+          "I'd give it to anyone who is going through… because…"
+        ],
+        vocab: [
+          { w: "perspective", d: "точка зрения, взгляд на мир" },
+          { w: "powerful", d: "мощный, производящий сильное впечатление" },
+          { w: "message", d: "посыл, идея произведения" },
+          { w: "challenge", d: "бросать вызов взглядам, заставлять думать" },
+          { w: "resonate", d: "резонировать, находить отклик" }
+        ]
+      }
+    ],
+    intermediate: [
+      {
+        en: "Why do you think certain stories stay with us for a lifetime?",
+        ru: "Почему, как ты думаешь, определённые истории остаются с нами на всю жизнь?",
+        phrases: [
+          "I think a story stays with you when it touches something…",
+          "The stories I've never forgotten tend to have in common…",
+          "What makes a narrative stick isn't always the plot — it's often…",
+          "I think we hold on to stories that reflect something true about…",
+          "There's a difference between enjoying a story and being changed by one…"
+        ],
+        vocab: [
+          { w: "resonate", d: "находить отклик, задевать струну" },
+          { w: "universal theme", d: "универсальная тема, понятная всем" },
+          { w: "narrative", d: "нарратив, история" },
+          { w: "emotional truth", d: "эмоциональная правда" },
+          { w: "linger", d: "задерживаться, долго оставаться в памяти" }
+        ]
+      },
+      {
+        en: "How does music affect your emotional state?",
+        ru: "Как музыка влияет на твоё эмоциональное состояние?",
+        phrases: [
+          "Music has a very direct effect on me — for example, when I listen to…",
+          "I've noticed that different genres do very different things to my mood…",
+          "There are songs I can't listen to anymore because they're too tied to…",
+          "I use music intentionally when…",
+          "The relationship between music and emotion is strange because…"
+        ],
+        vocab: [
+          { w: "mood regulation", d: "регуляция настроения" },
+          { w: "trigger", d: "триггер, вызывающий воспоминания или чувства" },
+          { w: "tempo", d: "темп" },
+          { w: "immersive", d: "погружающий, захватывающий" },
+          { w: "cathartic", d: "катарсический, очищающий эмоционально" }
+        ]
+      },
+      {
+        en: "What makes a film or book truly great, in your opinion?",
+        ru: "Что, по-твоему, делает фильм или книгу по-настоящему великими?",
+        phrases: [
+          "I think greatness in a film/book requires…",
+          "It's not just about technical skill — what I look for is…",
+          "The works I consider great all have in common…",
+          "What separates a good story from a great one is…",
+          "I've changed my definition of greatness over the years — I used to think…, but now…"
+        ],
+        vocab: [
+          { w: "craft", d: "мастерство, ремесло" },
+          { w: "depth", d: "глубина" },
+          { w: "originality", d: "оригинальность" },
+          { w: "emotional impact", d: "эмоциональное воздействие" },
+          { w: "timeless", d: "вневременной, не устаревающий" }
+        ]
+      },
+      {
+        en: "How has streaming changed the way we consume culture?",
+        ru: "Как стриминг изменил то, как мы потребляем культуру?",
+        phrases: [
+          "The most obvious change is access — now you can…",
+          "But what I find more interesting is how it's changed our attention…",
+          "I've noticed in myself a kind of… when I have too many options",
+          "The ritual of going to the cinema or buying an album meant something that…",
+          "On the other hand, streaming has democratised culture by…"
+        ],
+        vocab: [
+          { w: "algorithm", d: "алгоритм рекомендаций" },
+          { w: "binge culture", d: "культура «всё сразу»" },
+          { w: "democratise", d: "демократизировать, сделать доступным для всех" },
+          { w: "attention span", d: "способность удерживать внимание" },
+          { w: "gatekeeping", d: "контроль доступа к культуре" }
+        ]
+      },
+      {
+        en: "Can a film or book be both entertaining and meaningful?",
+        ru: "Может ли фильм или книга быть одновременно развлекательными и значимыми?",
+        phrases: [
+          "I think the best work does both — and actually…",
+          "There's a false dichotomy between entertainment and meaning…",
+          "What I find patronising is the idea that popular means shallow…",
+          "The films that stay with me longest tend to be ones that…",
+          "I'd argue that reaching a wide audience and having something to say are…"
+        ],
+        vocab: [
+          { w: "accessible", d: "доступный, понятный широкой аудитории" },
+          { w: "populist", d: "популистский, рассчитанный на массы" },
+          { w: "substance", d: "содержание, суть, смысл" },
+          { w: "genre fiction", d: "жанровая литература" },
+          { w: "literary merit", d: "литературные достоинства" }
+        ]
+      },
+      {
+        en: "Talk about a cultural tradition or festival that means something to you.",
+        ru: "Расскажи о культурной традиции или празднике, который для тебя важен.",
+        phrases: [
+          "One tradition that means a lot to me is…",
+          "What I love about it is not just the event itself, but…",
+          "Growing up, this was always…",
+          "What it represents for me, beyond the surface, is…",
+          "Even though some things have changed over the years, the core of it is still…"
+        ],
+        vocab: [
+          { w: "ritual", d: "ритуал" },
+          { w: "collective memory", d: "коллективная память" },
+          { w: "heritage", d: "наследие, культурное достояние" },
+          { w: "preserve", d: "сохранять, хранить" },
+          { w: "intangible", d: "нематериальный, неосязаемый" }
+        ]
+      },
+      {
+        en: "How do you think technology has changed the way we create and share art?",
+        ru: "Как ты думаешь, как технологии изменили то, как мы создаём и делимся искусством?",
+        phrases: [
+          "Technology has lowered the barrier to…, which means…",
+          "What's been lost, I think, is…",
+          "The relationship between creator and audience is now…",
+          "I find it fascinating that…, but also a bit troubling that…",
+          "The question is whether technology has expanded art or just…"
+        ],
+        vocab: [
+          { w: "democratise", d: "демократизировать" },
+          { w: "creator economy", d: "экономика авторского контента" },
+          { w: "gatekeeping", d: "контроль, кому можно создавать и публиковать" },
+          { w: "noise", d: "информационный шум, избыток контента" },
+          { w: "authentic voice", d: "подлинный авторский голос" }
+        ]
+      },
+      {
+        en: "Is there a film or book you think is overrated? Why?",
+        ru: "Есть ли фильм или книга, которые ты считаешь переоценёнными? Почему?",
+        phrases: [
+          "I know this is controversial, but I think… is overrated because…",
+          "I understand why people love it — the… is genuinely good, but…",
+          "What bothers me is that the praise focuses on… while ignoring…",
+          "I think it's celebrated more for what it represents than for…",
+          "I'd be interested to hear what others think, because I sometimes wonder if I'm missing…"
+        ],
+        vocab: [
+          { w: "overhyped", d: "слишком разрекламированный" },
+          { w: "critical consensus", d: "критический консенсус, общее мнение критиков" },
+          { w: "cult following", d: "культовая аудитория, фанаты" },
+          { w: "contrarian", d: "человек, намеренно занимающий позицию «против»" },
+          { w: "nuanced", d: "нюансированный, тонкий" }
+        ]
+      }
+    ],
+    advanced: [
+      {
+        en: "What does cinema tell us about the fears of its era?",
+        ru: "Что кино рассказывает нам о страхах своей эпохи?",
+        phrases: [
+          "I think cinema acts as a kind of cultural barometer for…",
+          "If you look at the dominant genres of any decade, you can trace…",
+          "What's interesting is that the fears are rarely stated directly — they're displaced onto…",
+          "Contemporary cinema seems preoccupied with… which I read as anxiety about…",
+          "The interesting comparison is between… and…, which reveal very different…"
+        ],
+        vocab: [
+          { w: "zeitgeist", d: "дух времени, Zeitgeist" },
+          { w: "allegory", d: "аллегория, иносказание" },
+          { w: "displacement", d: "перенос — страх переносится на другой объект" },
+          { w: "cultural anxiety", d: "культурная тревога эпохи" },
+          { w: "subtext", d: "подтекст, скрытый смысл" }
+        ]
+      },
+      {
+        en: "How does fiction help us understand realities we've never lived?",
+        ru: "Как художественная литература помогает нам понять реальность, которой мы не жили?",
+        phrases: [
+          "What fiction offers that fact-based media can't is…",
+          "I've felt my understanding of… shift completely after reading/watching…",
+          "The risk, of course, is that fiction can also…",
+          "There's a concept called 'narrative empathy' which suggests…",
+          "What fiction at its best does is not explain but…"
+        ],
+        vocab: [
+          { w: "narrative empathy", d: "нарративная эмпатия — понимание через историю" },
+          { w: "vicarious", d: "опосредованный, прожитый через других" },
+          { w: "representation", d: "репрезентация, изображение" },
+          { w: "lived experience", d: "прожитый опыт" },
+          { w: "imaginative identification", d: "отождествление через воображение" }
+        ]
+      },
+      {
+        en: "Is popular culture trivial or is that a class-based judgement?",
+        ru: "Является ли поп-культура тривиальной или это суждение, основанное на классе?",
+        phrases: [
+          "The dismissal of popular culture has always struck me as…",
+          "What Bourdieu called 'cultural capital' explains a lot about why…",
+          "I think the hierarchy of high vs low culture is less about quality and more about…",
+          "The works that get classified as 'serious' tend to share…",
+          "What I find interesting is that the line keeps moving — things once dismissed as…"
+        ],
+        vocab: [
+          { w: "cultural capital", d: "культурный капитал — знание «высокой» культуры" },
+          { w: "highbrow", d: "высоколобый, интеллектуальный" },
+          { w: "canon", d: "канон, признанный список великих произведений" },
+          { w: "elitism", d: "элитизм" },
+          { w: "legitimacy", d: "легитимность, признание серьёзности" }
+        ]
+      },
+      {
+        en: "What responsibilities do storytellers have?",
+        ru: "Какая ответственность лежит на рассказчиках?",
+        phrases: [
+          "I think storytellers have responsibilities that go beyond just…",
+          "The question of representation is one where I feel…",
+          "There's a tension between artistic freedom and…",
+          "I don't think storytellers have to be moralists, but they do have to be…",
+          "What troubles me is when stories…, because narrative has real power to…"
+        ],
+        vocab: [
+          { w: "representation", d: "репрезентация" },
+          { w: "harmful tropes", d: "вредные клише и стереотипы" },
+          { w: "artistic license", d: "художественная свобода" },
+          { w: "empathy", d: "эмпатия" },
+          { w: "platform", d: "платформа — возможность быть услышанным" }
+        ]
+      },
+      {
+        en: "How do you think AI will change art and creative work?",
+        ru: "Как ты думаешь, как ИИ изменит искусство и творчество?",
+        phrases: [
+          "I think AI will change the economics of creative work before it changes the aesthetics…",
+          "The question that interests me most is not whether AI can create, but…",
+          "What I think is genuinely at risk is…",
+          "At the same time, new tools have always changed art — the question is…",
+          "What I'd want from AI in creative work is… not…"
+        ],
+        vocab: [
+          { w: "generative AI", d: "генеративный ИИ" },
+          { w: "authorship", d: "авторство" },
+          { w: "commodify", d: "превращать в товар, коммодифицировать" },
+          { w: "intent", d: "намерение, замысел автора" },
+          { w: "creative economy", d: "экономика творческого труда" }
+        ]
+      },
+      {
+        en: "Is there such a thing as 'bad art', or does all art have value?",
+        ru: "Существует ли «плохое искусство» или у любого искусства есть ценность?",
+        phrases: [
+          "I think the question depends on what we mean by 'value'…",
+          "There are works I'd call bad by any craft standard, and yet they…",
+          "What makes this complicated is that 'bad' according to whom?",
+          "I'd separate technical quality from cultural or personal value, because…",
+          "The interesting cases are things that are 'so bad they're good', which suggests…"
+        ],
+        vocab: [
+          { w: "aesthetic judgement", d: "эстетическое суждение" },
+          { w: "kitsch", d: "китч — безвкусное, но популярное" },
+          { w: "subjectivity", d: "субъективность" },
+          { w: "craft", d: "мастерство, ремесло" },
+          { w: "camp", d: "кэмп — намеренно преувеличенный, театральный стиль" }
+        ]
+      },
+      {
+        en: "How do you separate nostalgia from genuine quality when revisiting old films or music?",
+        ru: "Как отделить ностальгию от реального качества при пересмотре старых фильмов или музыки?",
+        phrases: [
+          "I think this is genuinely hard because nostalgia is…",
+          "When I revisit something I loved as a child, I try to ask…",
+          "There are things that hold up — and I think what they share is…",
+          "And there are things that clearly don't hold up, where what I'm feeling is…",
+          "The honest test for me is whether I'd recommend it to someone who has no…"
+        ],
+        vocab: [
+          { w: "nostalgia", d: "ностальгия" },
+          { w: "hold up", d: "выдержать испытание временем" },
+          { w: "emotional memory", d: "эмоциональная память" },
+          { w: "revisit", d: "пересмотреть, заново обратиться" },
+          { w: "impartial", d: "беспристрастный" }
+        ]
+      },
+      {
+        en: "What does it mean for a work of art to be 'authentic'?",
+        ru: "Что значит для произведения искусства быть «аутентичным»?",
+        phrases: [
+          "Authenticity in art is one of those concepts that sounds clear until…",
+          "I think what people usually mean when they say 'authentic' is…",
+          "The problem is that 'authentic' can be used to exclude…",
+          "What I'd rather ask than 'is it authentic?' is…",
+          "The most interesting artists I know of play with authenticity itself by…"
+        ],
+        vocab: [
+          { w: "authenticity", d: "аутентичность, подлинность" },
+          { w: "sincerity", d: "искренность" },
+          { w: "artifice", d: "искусственность, намеренная конструкция" },
+          { w: "voice", d: "голос — уникальная авторская манера" },
+          { w: "constructed", d: "сконструированный, намеренно созданный" }
+        ]
+      }
+    ]
+  }
+};
+
+// ── DATA with 3 difficulty layers ──
+const TIMER_SECONDS = 45;
+
+const DATA = {
+  easy:{
+    badge:"Easy", icon:"🌱",
+    prompts: DATA_EASY.prompts
+  },
+  medium:{
+    badge:"Medium", icon:"✦",
+    prompts: DATA_MEDIUM.prompts
+  },
+  spicy:{
+    badge:"Spicy", icon:"🔥",
+    prompts: DATA_SPICY.prompts
+  },
+  travel:{
+    badge:"Travel", icon:"✈️",
+    prompts: DATA_TRAVEL.prompts
+  },
+  deep:{
+    badge:"Deep Talk", icon:"💛",
+    prompts: DATA_DEEP.prompts
+  },
+  cinema:{
+    badge:"Cinema", icon:"🎬",
+    prompts: DATA_CINEMA.prompts
+  }
+};
+
+const RESULTS = [
+  {icon:"🎬",title:"The Natural",sub:"You spoke without overthinking — that's exactly how fluency is built.",quote:"\"Fluency isn't perfect. It's brave.\""},
+  {icon:"✨",title:"The Storyteller",sub:"You turned simple prompts into real moments. Keep that voice going.",quote:"\"Every word out loud is one less fear inside.\""},
+  {icon:"🌿",title:"The Brave One",sub:"You showed up and spoke. That's the whole secret — most people never start.",quote:"\"You don't find your words. You speak them into being.\""}
+];
+
+let session = {level:null,step:0,total:3,prompts:[],totalSpoken:0};
+let phrasesOpen = false;
+
+// ── DEBUTIK BUBBLE (challenge) ──
+const DEBUTIK_MESSAGES = [
+  "Вот несколько фраз, которые помогут тебе начать!",
+  "Не знаешь с чего начать? Эти фразы помогут 🌟",
+  "Попробуй использовать одну из этих фраз!",
+  "Сохрани фразы, которые тебе понравятся ❤"
+];
+
+function togglePhrases(){
+  phrasesOpen = !phrasesOpen;
+  const bubble = document.getElementById('phrasesBubble');
+  bubble.classList.toggle('open', phrasesOpen);
+}
+
+function startSession(topicLevel){
+  const diff = engLevel || 'intermediate';
+  let chosen = [];
+  if(topicLevel === 'random'){
+    const keys = ['easy','medium','spicy','travel','deep','cinema'];
+    const shuffled = [...keys].sort(()=>Math.random()-0.5);
+    for(let i=0;i<4;i++){
+      const pool = [...DATA[shuffled[i]].prompts[diff]];
+      const idx = Math.floor(Math.random()*pool.length);
+      chosen.push({...pool[idx], _topic:shuffled[i], _diff:diff});
+    }
+  } else {
+    const pool = [...DATA[topicLevel].prompts[diff]];
+    for(let i=0;i<3;i++){
+      const idx = Math.floor(Math.random()*pool.length);
+      chosen.push({...pool.splice(idx,1)[0], _topic:topicLevel, _diff:diff});
+    }
+  }
+  const total = topicLevel==='random' ? 4 : 3;
+  const badge = topicLevel==='random' ? 'Random' : DATA[topicLevel].badge;
+  session = {level:topicLevel, step:0, total, prompts:chosen, totalSpoken:0};
+
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('challenge').classList.remove('hidden');
+  const badgeEl = document.getElementById('levelBadge');
+  badgeEl.textContent = badge;
+  badgeEl.className = 'level-badge '+topicLevel;
+
+  const track = document.getElementById('progress-track');
+  track.innerHTML = '';
+  for(let i=0;i<total;i++){
+    const seg = document.createElement('div');
+    seg.className='progress-seg';seg.id='seg'+i;
+    track.appendChild(seg);
+  }
+  phrasesOpen = false;
+  renderStep();
+}
+
+function renderStep(){
+  const p = session.prompts[session.step];
+  document.getElementById('stepLabel').textContent = `Prompt ${session.step+1} of ${session.total}`;
+  document.getElementById('promptText').textContent = p.en;
+  document.getElementById('promptRu').textContent = p.ru;
+
+  // difficulty badge
+  const db = document.getElementById('diffBadge');
+  const diff = p._diff || engLevel || 'intermediate';
+  const diffLabels = {beginner:'Beginner · A2–B1', intermediate:'Intermediate · B1–B2', advanced:'Advanced · B2–C1'};
+  db.textContent = diffLabels[diff] || diff;
+  db.className = 'diff-badge '+diff;
+
+  for(let i=0;i<session.total;i++){
+    const seg = document.getElementById('seg'+i);
+    if(seg) seg.className='progress-seg'+(i<session.step?' done':i===session.step?' active':'');
+  }
+
+  const phrases = p;
+  renderPhrases(phrases);
+  // close bubble
+  phrasesOpen = false;
+  document.getElementById('phrasesBubble').classList.remove('open');
+
+  resetTimer();
+  document.getElementById('nextBtn').textContent = session.step===session.total-1 ? 'Finish →' : 'Next prompt →';
+}
+
+// ── TIMER ──
+let timeLeft=TIMER_SECONDS, timerInt=null, running=false;
+const CIRC = 2*Math.PI*64;
+document.getElementById('timerFg').style.strokeDasharray = CIRC;
+
+function resetTimer(){
+  clearInterval(timerInt); running=false;
+  timeLeft=TIMER_SECONDS;
+  updateTimer();
+  document.getElementById('timerStart').textContent='Start';
+}
+function updateTimer(){
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  document.getElementById('timerNum').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+  const frac=timeLeft/TIMER_SECONDS;
+  document.getElementById('timerFg').style.strokeDashoffset=CIRC*(1-frac);
+}
+document.getElementById('timerStart').addEventListener('click',()=>{
+  const btn=document.getElementById('timerStart');
+  if(running){clearInterval(timerInt);running=false;btn.textContent='Resume';return;}
+  if(timeLeft===0)resetTimer();
+  running=true;btn.textContent='Pause';
+  timerInt=setInterval(()=>{
+    timeLeft--;session.totalSpoken++;updateTimer();
+    if(timeLeft<=0){clearInterval(timerInt);running=false;playBeep();btn.textContent='Done ✓';}
+  },1000);
+});
+document.getElementById('timerReset').addEventListener('click',resetTimer);
+
+function playBeep(){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;const ac=new AC();
+    [0,0.22,0.44].forEach((t,i)=>{
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.connect(g);g.connect(ac.destination);
+      o.frequency.value=600+i*120;o.type='sine';
+      g.gain.setValueAtTime(0.0001,ac.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(0.22,ac.currentTime+t+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+t+0.18);
+      o.start(ac.currentTime+t);o.stop(ac.currentTime+t+0.2);
+    });
+  }catch(e){}
+}
+
+// ── SAVED PHRASES ──
+let savedPhrases = []; // {type:'phrase'|'vocab', en, def?}
+
+function renderPhrases(prompt){
+  const phrases = prompt.phrases || [];
+  const vocab = prompt.vocab || [];
+  const list = document.getElementById('phrasesList');
+  list.innerHTML = '';
+  phrases.forEach((ph,i)=>{
+    const alreadySaved = savedPhrases.some(s=>s.type==='phrase'&&s.en===ph);
+    list.innerHTML += `
+      <div class="phrase-item" id="phrase-item-${i}">
+        <div class="phrase-texts">
+          <div class="phrase-en">"${ph}"</div>
+        </div>
+        <button class="save-phrase-btn ${alreadySaved?'saved':''}" onclick="togglePhrase(${i},'${ph.replace(/'/g,"\\'")}')">
+          ${alreadySaved?'❤ saved':'❤ save'}
+        </button>
+      </div>`;
+  });
+  const vocabList = document.getElementById('vocabList');
+  const vocabSection = document.getElementById('vocabSection');
+  if(vocab.length){
+    vocabSection.style.display='block';
+    vocabList.innerHTML = vocab.map((v,vi)=>{
+      const alreadySaved = savedPhrases.some(s=>s.type==='vocab'&&s.en===v.w);
+      return `
+      <div class="vocab-item" id="vocab-item-${vi}">
+        <div class="vocab-item-left">
+          <span class="vocab-word">${v.w}</span>
+          <span class="vocab-def">— ${v.d}</span>
+        </div>
+        <button class="save-vocab-btn ${alreadySaved?'saved':''}" onclick="toggleVocab(${vi},'${v.w.replace(/'/g,"\\'")}','${v.d.replace(/'/g,"\\'")}')">
+          ${alreadySaved?'❤ saved':'❤ save'}
+        </button>
+      </div>`;
+    }).join('');
+  } else {
+    vocabSection.style.display='none';
+  }
+}
+
+function togglePhrase(i,en){
+  const existing=savedPhrases.findIndex(s=>s.type==='phrase'&&s.en===en);
+  const btn=document.querySelector(`#phrase-item-${i} .save-phrase-btn`);
+  if(existing>=0){
+    savedPhrases.splice(existing,1);
+    if(btn){btn.textContent='❤ save';btn.classList.remove('saved');}
+  } else {
+    savedPhrases.push({type:'phrase',en});
+    if(btn){btn.textContent='❤ saved';btn.classList.add('saved');}
+  }
+}
+
+function toggleVocab(i,word,def){
+  const existing=savedPhrases.findIndex(s=>s.type==='vocab'&&s.en===word);
+  const btn=document.querySelector(`#vocab-item-${i} .save-vocab-btn`);
+  if(existing>=0){
+    savedPhrases.splice(existing,1);
+    if(btn){btn.textContent='❤ save';btn.classList.remove('saved');}
+  } else {
+    savedPhrases.push({type:'vocab',en:word,def});
+    if(btn){btn.textContent='❤ saved';btn.classList.add('saved');}
+  }
+}
+
+function renderSavedPhrases(){
+  const list=document.getElementById('savedList');
+  const empty=document.getElementById('savedEmpty');
+  const copyBtn=document.getElementById('copyAllBtn');
+  const total = savedPhrases.length;
+  document.getElementById('statSaved').textContent=total;
+  if(total===0){
+    list.innerHTML='';copyBtn.classList.add('hidden');empty.classList.remove('hidden');return;
+  }
+  empty.classList.add('hidden');copyBtn.classList.remove('hidden');
+
+  const phrases = savedPhrases.filter(s=>s.type==='phrase');
+  const vocab   = savedPhrases.filter(s=>s.type==='vocab');
+
+  let html = '';
+  if(phrases.length){
+    html += `<div class="saved-section-label">Starter phrases</div>`;
+    phrases.forEach((ph,i)=>{
+      const idx = savedPhrases.indexOf(ph);
+      html+=`
+        <div class="saved-phrase-item">
+          <div class="saved-phrase-text">
+            <div class="saved-phrase-en">"${ph.en}"</div>
+          </div>
+          <button class="unsave-btn" onclick="removeSaved(${idx})">✕</button>
+        </div>`;
+    });
+  }
+  if(vocab.length){
+    html += `<div class="saved-section-label">Vocabulary</div>`;
+    vocab.forEach((v,i)=>{
+      const idx = savedPhrases.indexOf(v);
+      html+=`
+        <div class="saved-vocab-item">
+          <div>
+            <div class="saved-vocab-word">${v.en}</div>
+            <div class="saved-vocab-def">${v.def}</div>
+          </div>
+          <button class="unsave-btn" onclick="removeSaved(${idx})">✕</button>
+        </div>`;
+    });
+  }
+  list.innerHTML = html;
+}
+
+function removeSaved(i){savedPhrases.splice(i,1);renderSavedPhrases();}
+
+document.getElementById('copyAllBtn').addEventListener('click',()=>{
+  const phrases = savedPhrases.filter(s=>s.type==='phrase').map(p=>`"${p.en}"`).join('\n');
+  const vocab   = savedPhrases.filter(s=>s.type==='vocab').map(v=>`${v.en} — ${v.def}`).join('\n');
+  const parts = [];
+  if(phrases) parts.push(`Phrases:\n${phrases}`);
+  if(vocab)   parts.push(`Vocabulary:\n${vocab}`);
+  const full=`My DÉBUT Speaking Studio session:\n\n${parts.join('\n\n')}\n\nPractice more → @debutcommunity`;
+  navigator.clipboard.writeText(full).then(()=>{
+    const btn=document.getElementById('copyAllBtn');
+    const orig=btn.textContent;btn.textContent='Copied ✓';setTimeout(()=>btn.textContent=orig,2000);
+  });
+});
+
+document.getElementById('nextBtn').addEventListener('click',()=>{
+  if(session.step<session.total-1){
+    session.step++;renderStep();window.scrollTo({top:0,behavior:'smooth'});
+  } else {
+    showResult();
+  }
+});
+
+function showResult(){
+  clearInterval(timerInt);running=false;
+  document.getElementById('challenge').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  const r=RESULTS[Math.floor(Math.random()*RESULTS.length)];
+  document.getElementById('resTitle').textContent=r.title;
+  document.getElementById('resSub').textContent=r.sub;
+  document.getElementById('resQuote').textContent=r.quote;
+  document.getElementById('statPrompts').textContent=session.total;
+  document.getElementById('statTime').textContent=session.totalSpoken;
+  // personalised praise
+  const sec = session.totalSpoken;
+  const mins = Math.floor(sec/60);
+  const secs = sec%60;
+  const timeStr = mins>0 ? `${mins} min ${secs} sec` : `${secs} seconds`;
+  const saved = savedPhrases.length;
+  const praises = [
+    `You just spoke for ${timeStr} — that's ${session.total} prompts done out loud, in English. Debutik is proud. 🌟`,
+    `${timeStr} of real speaking. ${saved>0 ? `You saved ${saved} phrase${saved>1?'s':''} to take with you.` : 'Keep showing up and your words will come faster.'} You're moving forward. ✦`,
+    `That's ${timeStr} of English out loud — not reading, not studying, actually speaking. That's the whole game. Keep going. 🎬`,
+    `${session.total} prompts completed. ${saved>0?`${saved} phrase${saved>1?'s':''} saved.`:''} Every session like this builds something real in your brain. Debutik sees it. 💛`
+  ];
+  document.getElementById('resPraise').textContent = praises[Math.floor(Math.random()*praises.length)];
+  renderSavedPhrases();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function shareResult(){
+  const title=document.getElementById('resTitle').textContent;
+  const saved=savedPhrases.length>0?`\n\nI saved ${savedPhrases.length} phrase${savedPhrases.length>1?'s':''} to practice.`:'';
+  const txt=`I just did a speaking session with DÉBUT 🎬\n\nResult: ${title}${saved}\n\nTry it → @debutcommunity`;
+  if(navigator.share){navigator.share({text:txt});}
+  else{navigator.clipboard.writeText(txt).then(()=>{
+    const b=event.target;const o=b.textContent;b.textContent='Copied ✓';setTimeout(()=>b.textContent=o,2000);
+  });}
+}
+
+function goHome(){
+  clearInterval(timerInt);running=false;savedPhrases=[];phrasesOpen=false;
+  document.getElementById('challenge').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
