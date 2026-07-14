@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Find Your English Ecosystem · DÉBUT Community</title>
+<meta name="description" content="Build a personalized English learning ecosystem — not just another personality quiz."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ============================================================
+   DÉBUT · Find Your English Ecosystem — v2
+   Color   --blue #DCEFFF  --white #FFFFFF  --yellow #F8E77C
+           --ink  #16283A  --muted #5C7A99   --line #C9E4FA
+   Type    Display "Cormorant Garamond" · Body "Inter" · Utility "Jost"
+   Signature: a living "ecosystem" network diagram — nodes for every
+   format (movies, reels, articles, podcasts, travel, conversation,
+   shadowing, garden) drawn as one connected constellation, which
+   redraws itself lit up around the person's own result.
+   ============================================================ */
+:root{
+  --blue:#DCEFFF; --blue-deep:#BFE0FB; --white:#FFFFFF;
+  --yellow:#F8E77C; --yellow-deep:#F3D94A;
+  --ink:#16283A; --muted:#5C7A99; --line:#C9E4FA;
+  --shadow:0 20px 60px -20px rgba(22,40,58,.18);
+  --shadow-soft:0 10px 30px -12px rgba(22,40,58,.12);
+  --radius:24px; --radius-sm:14px; --ease:cubic-bezier(.22,1,.36,1);
+  --sidebar-w:240px;
+}
+[data-theme="dark"]{
+  --blue:#0F2233; --blue-deep:#123049; --white:#0B1721;
+  --ink:#EAF3FC; --muted:#8FADC7; --line:#1E3A52;
+  --shadow:0 20px 60px -20px rgba(0,0,0,.5);
+  --shadow-soft:0 10px 30px -12px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:"Inter",sans-serif;background:var(--white);color:var(--ink);min-height:100vh;overflow-x:hidden;transition:background .4s var(--ease),color .4s var(--ease);-webkit-font-smoothing:antialiased;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+a{color:inherit;text-decoration:none;}
+.eyebrow{font-family:"Jost",sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+:focus-visible{outline:2px solid var(--yellow-deep);outline-offset:3px;border-radius:6px;}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+
+.ambient{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;transition:transform .6s ease-out;}
+.blob1{width:46vw;height:46vw;background:radial-gradient(circle,var(--blue-deep),transparent 70%);top:-14vw;right:-10vw;}
+.blob2{width:38vw;height:38vw;background:radial-gradient(circle,var(--yellow),transparent 70%);bottom:-12vw;left:-8vw;opacity:.3;}
+.blob3{width:26vw;height:26vw;background:radial-gradient(circle,var(--blue-deep),transparent 70%);top:40%;left:60%;opacity:.28;}
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:60;}
+
+.topbar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:26px 28px 0;max-width:1180px;margin:0 auto;}
+.brand{font-family:"Cormorant Garamond",serif;font-weight:600;letter-spacing:.08em;font-size:20px;}
+.theme-toggle{width:42px;height:42px;border-radius:50%;background:var(--blue);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .3s var(--ease);box-shadow:var(--shadow-soft);}
+.theme-toggle:hover{transform:scale(1.08) rotate(-8deg);}
+
+.screen{display:none;position:relative;z-index:1;}
+.screen.active{display:block;animation:fadeUp .6s var(--ease);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* ---------------- HERO / INTRO ---------------- */
+.intro{max-width:760px;margin:0 auto;text-align:center;padding:54px 24px 20px;}
+.intro h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:clamp(38px,7vw,66px);letter-spacing:.02em;line-height:1.04;}
+.intro .sub{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:clamp(19px,3vw,26px);color:var(--muted);margin-top:8px;}
+.intro p.desc{max-width:480px;margin:26px auto 0;font-size:16px;line-height:1.75;color:var(--muted);}
+.intro p.desc em{font-style:normal;color:var(--ink);font-weight:600;}
+
+.eco-diagram{margin:46px auto 8px;max-width:640px;}
+.eco-diagram svg{width:100%;height:auto;}
+.eco-node-circle{fill:var(--white);stroke:var(--line);stroke-width:1.4;}
+.eco-node-label{font-family:"Jost",sans-serif;font-size:11.5px;font-weight:500;fill:var(--ink);text-anchor:middle;}
+.eco-link{stroke:var(--line);stroke-width:1.3;}
+.eco-center circle{fill:var(--yellow);}
+.eco-center text{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:13px;fill:var(--ink);text-anchor:middle;}
+
+.cta{margin-top:40px;display:inline-flex;align-items:center;gap:10px;padding:18px 40px;border-radius:100px;background:var(--ink);color:var(--white);font-size:16px;font-weight:600;box-shadow:var(--shadow);transition:transform .35s var(--ease),box-shadow .35s var(--ease);}
+[data-theme="dark"] .cta{background:var(--yellow);color:#16283A;}
+.cta:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 26px 60px -18px rgba(22,40,58,.35);}
+.cta svg{transition:transform .3s var(--ease);}
+.cta:hover svg{transform:translateX(4px);}
+
+/* ---------------- QUIZ ---------------- */
+.quiz-wrap{max-width:640px;margin:0 auto;padding:0 20px 100px;}
+.progress-track{height:6px;border-radius:100px;background:var(--blue);overflow:hidden;margin:34px 0 8px;}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--yellow-deep),var(--yellow));width:0%;transition:width .5s var(--ease);}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-family:"Jost",sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:26px;}
+.q-card{background:var(--blue);border:1px solid var(--line);border-radius:var(--radius);padding:42px 34px;box-shadow:var(--shadow);}
+.q-num{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--muted);font-size:15px;margin-bottom:10px;}
+.q-text{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:clamp(22px,4vw,29px);line-height:1.32;margin-bottom:28px;}
+.options{display:grid;gap:12px;}
+.option{text-align:left;padding:17px 20px;border-radius:var(--radius-sm);background:var(--white);border:1px solid var(--line);font-size:15px;font-weight:500;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s;display:flex;align-items:center;gap:13px;}
+.option:hover{transform:translateX(6px);box-shadow:var(--shadow-soft);}
+.option.picked{background:var(--yellow);border-color:var(--yellow-deep);}
+.option .dot{width:8px;height:8px;border-radius:50%;background:var(--line);flex-shrink:0;transition:background .2s;}
+.option.picked .dot{background:var(--ink);}
+.quiz-nav{display:flex;justify-content:space-between;margin-top:24px;}
+.ghost-btn{padding:12px 22px;border-radius:100px;font-size:14px;font-weight:500;color:var(--muted);border:1px solid var(--line);transition:background .2s,color .2s;}
+.ghost-btn:hover{background:var(--blue);color:var(--ink);}
+.ghost-btn:disabled{opacity:.35;cursor:default;}
+
+/* ---------------- APP SHELL (results) ---------------- */
+.app-shell{display:flex;max-width:1180px;margin:0 auto;position:relative;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;padding:34px 14px 40px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar .side-eyebrow{padding:0 12px;margin-bottom:14px;}
+.side-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:4px;transition:background .2s,color .2s;}
+.side-item .ic{font-size:17px;}
+.side-item:hover{background:var(--blue);color:var(--ink);}
+.side-item.active{background:var(--ink);color:var(--white);}
+[data-theme="dark"] .side-item.active{background:var(--yellow);color:#16283A;}
+.side-divider{height:1px;background:var(--line);margin:14px 12px;}
+.main-col{flex:1;min-width:0;padding:34px 24px 120px;}
+
+.bottom-nav{display:none;}
+
+/* ---------------- results header ---------------- */
+.results-head{text-align:center;padding:6px 0 8px;}
+.results-head h2{font-family:"Cormorant Garamond",serif;font-size:clamp(28px,4.6vw,42px);font-weight:600;margin-top:8px;}
+.why-card{max-width:640px;margin:24px auto 0;background:var(--blue);border:1px solid var(--line);border-radius:var(--radius);padding:26px 30px;box-shadow:var(--shadow-soft);text-align:left;}
+.why-card p{font-size:15px;line-height:1.75;color:var(--ink);}
+.why-card .tag{font-family:"Jost",sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block;}
+
+/* ---------------- recommended order flow ---------------- */
+.order-flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;max-width:640px;margin:0 auto;}
+.order-node{background:var(--white);border:1px solid var(--line);border-radius:100px;padding:10px 18px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow-soft);}
+.order-arrow{color:var(--muted);font-size:16px;}
+
+/* ---------------- radar chart ---------------- */
+.radar-wrap{display:flex;justify-content:center;margin:34px 0;}
+.radar-wrap svg{max-width:400px;width:100%;height:auto;}
+.radar-poly{fill:rgba(248,231,124,.35);stroke:var(--yellow-deep);stroke-width:2;stroke-linejoin:round;transform-origin:center;transform:scale(0);animation:radarIn 1s var(--ease) .3s forwards;}
+@keyframes radarIn{to{transform:scale(1);}}
+.radar-grid{stroke:var(--line);stroke-width:1;fill:none;}
+.radar-axis{stroke:var(--line);stroke-width:1;}
+.radar-label{font-family:"Jost",sans-serif;font-size:11px;fill:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.radar-dot{fill:var(--ink);}
+
+/* ---------------- why modal ---------------- */
+.why-btn{margin:0 auto;}
+.modal-overlay{position:fixed;inset:0;z-index:80;background:rgba(16,28,40,.45);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);}
+.modal-overlay.active{display:flex;}
+.modal-card{background:var(--white);border-radius:var(--radius);max-width:460px;width:100%;padding:34px 30px;box-shadow:var(--shadow);position:relative;animation:fadeUp .35s var(--ease);}
+.modal-card h3{font-family:"Cormorant Garamond",serif;font-size:23px;font-weight:600;margin:6px 0 16px;}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;}
+.why-bullets{display:grid;gap:10px;}
+.why-bullets li{list-style:none;padding:13px 16px;background:var(--blue);border:1px solid var(--line);border-radius:var(--radius-sm);font-size:13.8px;line-height:1.6;display:flex;gap:9px;}
+.why-bullets li::before{content:"✦";color:var(--yellow-deep);flex-shrink:0;}
+
+/* ---------------- ecosystem stars ---------------- */
+.ecosystem-list{max-width:520px;margin:36px auto 0;display:grid;gap:12px;}
+.eco-row{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 18px;box-shadow:var(--shadow-soft);}
+.eco-row .eco-name{flex:1;font-size:14.5px;font-weight:600;}
+.eco-row .stars{font-size:15px;color:var(--yellow-deep);letter-spacing:1px;}
+
+/* ---------------- weekly flow ---------------- */
+.section-title{text-align:center;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:clamp(24px,4vw,32px);margin:56px 0 22px;}
+.week-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;max-width:960px;margin:0 auto;}
+.day-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px 16px;box-shadow:var(--shadow-soft);}
+.day-card .day-name{font-family:"Jost",sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.day-card .day-task{font-size:13.5px;line-height:1.55;font-weight:500;}
+.day-card.sun{background:var(--yellow);border-color:var(--yellow-deep);}
+
+/* ---------------- digital garden (always shown) ---------------- */
+.garden-section{max-width:760px;margin:0 auto;background:var(--blue);border:1px solid var(--line);border-radius:var(--radius);padding:34px 34px 30px;box-shadow:var(--shadow-soft);}
+.garden-section h3{font-family:"Cormorant Garamond",serif;font-size:26px;font-weight:600;margin-bottom:10px;}
+.garden-section p{color:var(--muted);line-height:1.7;font-size:14.5px;}
+.garden-flow{display:flex;flex-direction:column;align-items:center;gap:6px;margin:22px 0;}
+.garden-node{background:var(--white);border:1px solid var(--line);border-radius:100px;padding:10px 22px;font-size:13px;font-weight:600;box-shadow:var(--shadow-soft);}
+.garden-arrow{color:var(--muted);font-size:15px;line-height:1;}
+.garden-tools,.garden-habit{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
+.tool-chip{background:var(--white);border:1px solid var(--line);border-radius:100px;padding:8px 16px;font-size:12.5px;font-weight:600;}
+.habit-chip{background:var(--yellow);border:1px solid var(--yellow-deep);border-radius:100px;padding:9px 16px;font-size:13px;font-weight:600;}
+
+/* ---------------- category resource panel ---------------- */
+.panel-intro{background:var(--blue);border:1px solid var(--line);border-radius:var(--radius);padding:26px 30px;margin-bottom:24px;box-shadow:var(--shadow-soft);}
+.panel-intro h3{font-family:"Cormorant Garamond",serif;font-size:23px;font-weight:600;margin-bottom:8px;}
+.panel-intro p{color:var(--muted);line-height:1.7;font-size:14.5px;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+.res-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;transition:transform .3s var(--ease),box-shadow .3s var(--ease);}
+.res-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+.poster{height:130px;display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:18px;color:var(--ink);text-align:center;padding:12px;position:relative;overflow:hidden;}
+.poster::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.4),transparent 60%);}
+.res-body{padding:15px 17px 17px;display:flex;flex-direction:column;gap:7px;flex:1;}
+.res-title{font-weight:700;font-size:14.5px;}
+.res-desc{font-size:12.8px;color:var(--muted);line-height:1.5;flex:1;}
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;}
+.badge{font-size:10.5px;font-family:"Jost",sans-serif;letter-spacing:.05em;text-transform:uppercase;background:var(--blue);border:1px solid var(--line);padding:4px 9px;border-radius:100px;color:var(--muted);}
+.res-link{margin-top:4px;align-self:flex-start;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:100px;background:var(--ink);color:var(--white);display:inline-flex;align-items:center;gap:6px;transition:transform .2s var(--ease);}
+[data-theme="dark"] .res-link{background:var(--yellow);color:#16283A;}
+.res-link:hover{transform:translateY(-2px);}
+.avatar{width:48px;height:48px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:18px;color:var(--ink);}
+.creator-card{flex-direction:row;align-items:center;gap:13px;padding:14px 16px;}
+.creator-info{flex:1;min-width:0;}
+.creator-info .res-title{font-size:14px;}
+.creator-info .handle{font-size:12px;color:var(--muted);}
+.tips-list{display:grid;gap:9px;margin-top:6px;}
+.tips-list li{list-style:none;padding:13px 17px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius-sm);font-size:13.5px;line-height:1.6;display:flex;gap:9px;box-shadow:var(--shadow-soft);}
+.tips-list li::before{content:"✦";color:var(--yellow-deep);flex-shrink:0;}
+
+/* ---------------- final CTA (always identical) ---------------- */
+.cta-final{max-width:640px;margin:50px auto 0;background:linear-gradient(135deg,var(--ink),#22405C);color:var(--white);border-radius:var(--radius);padding:38px 34px;text-align:center;box-shadow:var(--shadow);}
+[data-theme="dark"] .cta-final{background:linear-gradient(135deg,var(--yellow),var(--yellow-deep));color:#16283A;}
+.cta-final h3{font-family:"Cormorant Garamond",serif;font-size:27px;font-weight:600;margin-bottom:10px;}
+.cta-final p{opacity:.85;line-height:1.7;font-size:14.5px;margin-bottom:8px;}
+.cta-final .msg{font-weight:700;background:rgba(255,255,255,.15);padding:4px 10px;border-radius:8px;}
+[data-theme="dark"] .cta-final .msg{background:rgba(0,0,0,.1);}
+.cta-final .cta{background:var(--yellow);color:#16283A;margin-top:16px;}
+[data-theme="dark"] .cta-final .cta{background:#16283A;color:var(--yellow);}
+.cta-final a.inline-link{color:var(--yellow);text-decoration:underline;font-weight:700;}
+[data-theme="dark"] .cta-final a.inline-link{color:#16283A;}
+.cta-two-line{flex-direction:column;gap:2px;padding:14px 40px;line-height:1.25;}
+.cta-two-line .cta-line1{font-size:13px;font-weight:600;opacity:.8;}
+.cta-two-line .cta-line2{font-size:17px;font-weight:700;}
+.cta-two-line svg{display:none;}
+
+/* ---------------- action bar ---------------- */
+.result-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:34px 0 6px;}
+.action-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:100px;font-size:14px;font-weight:600;background:var(--white);border:1px solid var(--line);box-shadow:var(--shadow-soft);transition:transform .25s var(--ease),background .2s;}
+.action-btn:hover{transform:translateY(-2px);background:var(--blue);}
+.action-btn.primary{background:var(--ink);color:var(--white);}
+[data-theme="dark"] .action-btn.primary{background:var(--yellow);color:#16283A;}
+
+footer{text-align:center;padding:50px 0 30px;color:var(--muted);font-size:12.5px;letter-spacing:.04em;}
+
+@media (max-width:900px){
+  .sidebar{display:none;}
+  .app-shell{display:block;}
+  .main-col{padding:20px 16px 110px;}
+  .bottom-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;
+    background:var(--white);border-top:1px solid var(--line);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    overflow-x:auto;gap:4px;box-shadow:0 -8px 30px -12px rgba(22,40,58,.15);
+  }
+  .bnav-item{flex:1;min-width:64px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border-radius:12px;font-size:9.5px;font-weight:600;color:var(--muted);}
+  .bnav-item .ic{font-size:18px;}
+  .bnav-item.active{color:var(--ink);background:var(--blue);}
+}
+@media (max-width:640px){
+  .q-card{padding:28px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"><div class="blob blob1" id="blob1"></div><div class="blob blob2" id="blob2"></div><div class="blob blob3" id="blob3"></div></div>
+<canvas id="confetti-canvas"></canvas>
+
+<div class="topbar">
+  <div class="brand">DÉBUT COMMUNITY</div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+</div>
+
+<!-- ============ SCREEN 1 : HOME ============ -->
+<section class="screen active" id="screen-intro">
+  <div class="intro">
+    <div class="eyebrow">Stop guessing how to study</div>
+    <h1>Find Your<br>English Ecosystem 🌍</h1>
+    <div class="sub">Build a system, not a study plan.</div>
+    <p class="desc">Stop looking for the perfect study method. Build an English environment you'll actually enjoy coming back to — <em>your</em> mix of movies, reading, sound and conversation.</p>
+    <div class="eco-diagram"><svg viewBox="0 0 640 420" id="ecoIntroSvg"></svg></div>
+    <button class="cta" id="startBtn">
+      Build My Ecosystem
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ============ SCREEN 2 : QUIZ ============ -->
+<section class="screen" id="screen-quiz">
+  <div class="quiz-wrap">
+    <div class="progress-label"><span id="qCounter">Question 1 / 10</span><span id="qPercent">10%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="q-card">
+      <div class="q-num" id="qNum">Question 01</div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="quiz-nav">
+        <button class="ghost-btn" id="backBtn">← Back</button>
+        <button class="ghost-btn" id="skipHint" disabled>Choose an answer to continue</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCREEN 3 : RESULTS (app shell) ============ -->
+<section class="screen" id="screen-results">
+  <div class="app-shell">
+    <nav class="sidebar" id="sidebar">
+      <div class="eyebrow side-eyebrow">Explore all ecosystems</div>
+      <div id="sideItems"></div>
+      <div class="side-divider"></div>
+      <button class="side-item" id="sideGarden"><span class="ic">🌱</span> Digital Garden</button>
+    </nav>
+
+    <div class="main-col">
+      <div id="resultCaptureArea">
+        <div class="results-head">
+          <div class="eyebrow">Your English Ecosystem</div>
+          <h2 id="resultHeadline"></h2>
+        </div>
+        <div class="why-card">
+          <span class="tag">Why this fits you</span><p id="whyText"></p>
+          <button class="action-btn why-btn" id="whyBtn" style="margin-top:16px;">🔍 Why did I get this result?</button>
+        </div>
+
+        <div class="section-title">Your Recommended Path</div>
+        <div class="order-flow" id="orderFlow"></div>
+
+        <div class="radar-wrap"><svg viewBox="0 0 440 440" id="radarSvg"></svg></div>
+
+        <div class="ecosystem-list" id="ecosystemList"></div>
+
+        <div class="section-title">Your Weekly Flow</div>
+        <div class="week-grid" id="weekGrid"></div>
+
+        <div class="section-title">Build Your Digital Garden</div>
+        <div class="garden-section" id="gardenSection"></div>
+      </div>
+
+      <div class="result-actions">
+        <button class="action-btn" id="shareBtn">🔗 Share result</button>
+        <button class="action-btn" id="pdfBtn">📄 Save My English Ecosystem</button>
+        <button class="action-btn primary" id="restartBtn">↻ Retake quiz</button>
+      </div>
+
+      <div class="section-title">Explore Your Resources</div>
+      <div id="categoryPanel"></div>
+
+      <div class="cta-final">
+        <h3>💙 Ready to use your English?</h3>
+        <p>Learning becomes real when you start speaking.</p>
+        <p>Want to warm up on your own first? Try the <a class="inline-link" target="_blank" rel="noopener" href="https://tavrizmilena-ship-it.github.io/debut-apps/debut-speaking-studio-v5.html">Speaking Studio by DÉBUT</a> — pick a category and practice at your own pace, whenever you like.</p>
+        <p>If you'd like to join our online Speaking Clubs, send us a message on Instagram:</p>
+        <p class="msg">"Хочу разговорный клуб"</p>
+        <p>We'll let you know when registration for the next Speaking Club opens.</p>
+        <a class="cta cta-two-line" target="_blank" rel="noopener" href="https://www.instagram.com/debut_community">
+          <span class="cta-line1">@debut_community</span>
+          <span class="cta-line2">Message Us</span>
+        </a>
+      </div>
+
+      <footer>DÉBUT Community · @debut_community · Made for people who learn differently</footer>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" id="bottomNav"></nav>
+</section>
+
+<div class="modal-overlay" id="whyModal">
+  <div class="modal-card">
+    <button class="modal-close" id="whyModalClose" aria-label="Close">✕</button>
+    <div class="eyebrow">The reasoning</div>
+    <h3 id="whyModalTitle">You got "Story Seeker" because...</h3>
+    <ul class="why-bullets" id="whyBullets"></ul>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   1. CATEGORIES (lifestyle ecosystems, not personality types)
+   ============================================================ */
+const CATEGORIES = {
+  story:    { name:"Story Seeker",        emoji:"🎬", short:"Movies",
+    why:"You naturally stay engaged when language arrives inside a story. Plot, character and emotion pull your attention further than rules ever could — which is why film and dialogue-based content will keep your motivation alive far longer than traditional drills." },
+  trend:    { name:"Trend Catcher",       emoji:"📱", short:"Social",
+    why:"Your attention lives in short, fast bursts — and that's not a weakness, it's a learning style. Bite-sized English, repeated often and shared casually, sticks with you more than long study sessions ever do." },
+  deep:     { name:"Deep Thinker",        emoji:"🧠", short:"Reading",
+    why:"You think in ideas, not just words. You retain language best when it's carrying something worth thinking about — an argument, a question, a new perspective — so essays and long-form writing will teach you more than flashcards." },
+  explorer: { name:"Curious Explorer",    emoji:"🌍", short:"Explore",
+    why:"You're motivated by discovery, not repetition. English becomes real for you the moment it opens a door to a new place, culture or story about the world — so travel and discovery content will hold your attention longest." },
+  social:   { name:"Social Communicator", emoji:"💬", short:"Speaking",
+    why:"You learn by doing, not by watching. Real conversation — the friction of actually being understood — teaches you faster than any passive method, so your English grows fastest in dialogue." },
+  audio:    { name:"Audio Explorer",      emoji:"🎧", short:"Podcasts",
+    why:"Your ear does the heavy lifting. You pick up rhythm, tone and pronunciation naturally when you can just listen — which makes audio-first content the most efficient way for you to absorb English." },
+};
+const CAT_KEYS = Object.keys(CATEGORIES);
+const GRAD = ["linear-gradient(135deg,#DCEFFF,#BFE0FB)","linear-gradient(135deg,#F8E77C,#F3D94A)","linear-gradient(135deg,#BFE0FB,#F8E77C)","linear-gradient(135deg,#EAF3FC,#DCEFFF)"];
+
+/* ============================================================
+   2. QUESTIONS — realistic, habit-revealing situations
+   ============================================================ */
+const QUESTIONS = [
+  { dim:"Daily habits", q:"How do you naturally spend unexpected free time — like when a meeting gets cancelled?", options:[
+    { t:"I end up watching something", s:{story:3, trend:1} },
+    { t:"I open a social app without even deciding to", s:{trend:3} },
+    { t:"I reach for something to read", s:{deep:3} },
+    { t:"I put headphones in", s:{audio:3} },
+    { t:"I text or call someone", s:{social:3} },
+  ]},
+  { dim:"Curiosity", q:"What makes you open a new browser tab, mid-thought?", options:[
+    { t:"Wanting to see a scene or clip again", s:{story:3} },
+    { t:"A trend or meme you don't fully get yet", s:{trend:3} },
+    { t:"A word or idea you want to understand properly", s:{deep:3, explorer:1} },
+    { t:"A place you suddenly want to know more about", s:{explorer:3} },
+    { t:"Wanting to check what someone actually said", s:{audio:2, social:1} },
+  ]},
+  { dim:"Memory", q:"How do you usually remember something interesting you came across?", options:[
+    { t:"As a scene — I picture it happening", s:{story:3} },
+    { t:"As a screenshot I meant to look at again", s:{trend:2, deep:1} },
+    { t:"As an idea I can explain to someone", s:{deep:3} },
+    { t:"As a place or feeling I want to go back to", s:{explorer:3} },
+    { t:"As something someone said to me", s:{social:2, audio:1} },
+  ]},
+  { dim:"Motivation", q:"What actually makes you keep going after a genuinely difficult day?", options:[
+    { t:"Getting lost in something for an hour", s:{story:3, audio:1} },
+    { t:"A small, easy win — something quick and satisfying", s:{trend:3} },
+    { t:"Making sense of something that confused you", s:{deep:3} },
+    { t:"Reminding yourself of somewhere you want to be someday", s:{explorer:3} },
+    { t:"Hearing a friendly voice", s:{social:2, audio:2} },
+  ]},
+  { dim:"Attention", q:"Which type of content actually keeps your attention for more than 20 minutes?", options:[
+    { t:"A film or series with a real plot", s:{story:3} },
+    { t:"A fast feed — but you're still there 20 minutes later", s:{trend:3} },
+    { t:"A long, well-argued piece of writing", s:{deep:3} },
+    { t:"A video of somewhere you've never been", s:{explorer:3} },
+    { t:"A conversation you're genuinely part of", s:{social:3} },
+    { t:"A voice talking through an idea, in the background or not", s:{audio:3} },
+  ]},
+  { dim:"Personality", q:"When someone tells an amazing story, what interests you most — the characters, the facts, the emotions, or the ideas behind it?", options:[
+    { t:"The characters — who they are and why they act that way", s:{story:3, social:1} },
+    { t:"The facts — I want the details right", s:{deep:2, trend:1} },
+    { t:"The emotions — how it must have felt", s:{story:2, social:2} },
+    { t:"The ideas — what it says about something bigger", s:{deep:3, explorer:1} },
+  ]},
+  { dim:"Creativity", q:"What usually inspires you — movies, music, travel, people, conversations, or design?", options:[
+    { t:"Movies", s:{story:3} },
+    { t:"Music", s:{audio:3} },
+    { t:"Travel", s:{explorer:3} },
+    { t:"People", s:{social:3} },
+    { t:"Conversations", s:{social:2, deep:1} },
+    { t:"Design and how things are made", s:{deep:2, trend:1} },
+  ]},
+  { dim:"Internet behaviour", q:"When you discover something interesting online, what actually happens next — not what you'd like to happen?", options:[
+    { t:"I keep watching related clips for a while", s:{story:2, trend:2} },
+    { t:"It sits in my saved folder, unopened", s:{trend:1} },
+    { t:"I read everything I can find about it", s:{deep:3} },
+    { t:"I check if it's a real place and how to get there", s:{explorer:3} },
+    { t:"I send it to someone and we talk about it", s:{social:3} },
+  ]},
+  { dim:"Communication", q:"When you're talking to someone new, what part do you actually enjoy most?", options:[
+    { t:"Listening to how they tell things", s:{story:2, social:1} },
+    { t:"Making jokes and keeping it light", s:{trend:2, social:1} },
+    { t:"Asking questions and learning how they think", s:{deep:2, social:1} },
+    { t:"Hearing about places they've been", s:{explorer:3} },
+    { t:"Just the back-and-forth of it", s:{social:3} },
+    { t:"The sound of a good conversation more than the content", s:{audio:2, social:1} },
+  ]},
+  { dim:"Learning style", q:"When you don't understand something, what's your very first instinct?", options:[
+    { t:"Watch a video about it", s:{story:2, trend:1} },
+    { t:"Google it and skim a few results", s:{trend:2, deep:1} },
+    { t:"Read a proper article or explanation", s:{deep:3} },
+    { t:"Look for how it works elsewhere in the world", s:{explorer:2, deep:1} },
+    { t:"Ask someone who'd know", s:{social:3} },
+    { t:"Find someone explaining it out loud", s:{audio:3} },
+  ]},
+  { dim:"Personal growth", q:"If English suddenly became effortless tomorrow, what part of your life would change first — travel, career, friends, entertainment, or confidence?", options:[
+    { t:"Entertainment — I'd finally get everything without effort", s:{story:3} },
+    { t:"Confidence — I'd just post and comment without thinking twice", s:{trend:3} },
+    { t:"Career — I could finally read and write at the level I think at", s:{deep:3} },
+    { t:"Travel — I'd actually go, not just look", s:{explorer:3} },
+    { t:"Friends — I'd speak up in every conversation", s:{social:3} },
+  ]},
+];
+
+const MAX_SCORE = {};
+CAT_KEYS.forEach(k=>{
+  MAX_SCORE[k] = QUESTIONS.reduce((sum,q)=> sum + Math.max(0,...q.options.map(o=>o.s[k]||0)), 0) || 1;
+});
+
+/* ============================================================
+   3. RESOURCE DATA (kept 1:1 from the existing product)
+   ============================================================ */
+const MOVIES = [
+  { t:"Past Lives", d:"A quiet, aching story told mostly through natural dialogue — great for hearing real rhythms of speech.", diff:"Intermediate", conv:3, shad:4 },
+  { t:"The Holdovers", d:"Witty, articulate, old-fashioned dialogue with a huge emotional range — rich vocabulary in every scene.", diff:"Upper-Int", conv:4, shad:4 },
+  { t:"The Intern", d:"Warm, everyday office English — ideal if you want conversational, low-pressure listening.", diff:"Beginner–Int", conv:4, shad:3 },
+  { t:"Palm Springs", d:"Fast, funny, modern slang-heavy dialogue — good for casual, contemporary English.", diff:"Intermediate", conv:4, shad:3 },
+  { t:"About Time", d:"Gentle British English with lots of family conversation — very shadowing-friendly pacing.", diff:"Intermediate", conv:3, shad:5 },
+];
+const SHADOWING_TOOLS = [
+  { t:"Shadowing.tech", d:"Curated movie clips built specifically for shadowing practice, sentence by sentence.", href:"https://shadowing.tech/playlists/all" },
+  { t:"PlayPhrase.me", d:"Search any phrase and watch dozens of film clips using it in context.", href:"https://www.playphrase.me/" },
+  { t:"YouGlish", d:"Hear how real speakers pronounce any word or phrase across thousands of videos.", href:"https://youglish.com/" },
+];
+const CREATORS = [
+  { n:"Daily Native English", h:"@daily.native.english" },
+  { n:"English Central", h:"@englishcentral" },
+  { n:"TED", h:"@ted" },
+  { n:"Speak English With Tiffani", h:"@speakenglishwithtiffani" },
+  { n:"BBC Learning English", h:"@bbclearningenglish" },
+  { n:"English with Lucy", h:"@englishwithlucy" },
+];
+const SCROLL_TIPS = [
+  "Switch your phone's system language to English.",
+  "Spend your first 15 minutes of scrolling on English content only.",
+  "Save expressions, not just single words.",
+  "Watch a Reel twice — first for meaning, then repeating along.",
+  "Curate your algorithm once a month by liking English creators.",
+  "Swap 10 minutes of random scrolling for one English creator's feed.",
+];
+const ARTICLE_SITES = [
+  { n:"The Atlantic", d:"Long, elegant journalism on culture, politics and ideas.", diff:"Advanced", topics:"Culture, society", time:"12–18 min", href:"https://www.theatlantic.com/" },
+  { n:"Aeon", d:"Essays on philosophy, science and the big questions.", diff:"Advanced", topics:"Philosophy, science", time:"10–15 min", href:"https://aeon.co/" },
+  { n:"The Pudding", d:"Visual, data-driven essays that explain ideas through interactive graphics.", diff:"Intermediate", topics:"Data, culture", time:"8–12 min", href:"https://pudding.cool/" },
+  { n:"Big Think", d:"Short, punchy explainers from experts across every field.", diff:"Intermediate", topics:"Ideas, psychology", time:"5–8 min", href:"https://bigthink.com/" },
+  { n:"Wait But Why", d:"Long, funny, deeply explained essays on huge topics.", diff:"Upper-Int", topics:"Big ideas, science", time:"20–30 min", href:"https://waitbutwhy.com/" },
+];
+const PODCASTS = [
+  { n:"TED Talks Daily", d:"Big ideas, clearly explained, in digestible episodes.", diff:"Intermediate", href:"https://www.ted.com/podcasts" },
+  { n:"BBC Learning English", d:"Podcasts built specifically for learners, with clear pacing.", diff:"Beginner–Int", href:"https://www.bbc.co.uk/learningenglish" },
+  { n:"The Diary of a CEO", d:"Long, honest conversations on business, mindset and life.", diff:"Advanced", href:"https://www.thediaryofaceo.com/" },
+  { n:"Huberman Lab", d:"Deep, methodical science conversations about the brain and body.", diff:"Advanced", href:"https://www.hubermanlab.com/" },
+  { n:"NPR Life Kit", d:"Short, practical episodes on everyday life skills.", diff:"Intermediate", href:"https://www.npr.org/series/691250929/life-kit" },
+];
+const EXPLORE_SITES = [
+  { n:"Radio Garden", d:"Spin a globe and listen to live radio from anywhere on Earth.", href:"https://radio.garden/" },
+  { n:"Google Arts & Culture", d:"Explore museums and collections from around the world.", href:"https://artsandculture.google.com/" },
+  { n:"Window Swap", d:"Look out of a stranger's window somewhere else in the world.", href:"https://www.window-swap.com/" },
+  { n:"EarthCam", d:"Live cameras from cities, landmarks and nature around the globe.", href:"https://www.earthcam.com/" },
+  { n:"Atlas Obscura", d:"Discover strange, wonderful, lesser-known places worldwide.", href:"https://www.atlasobscura.com/" },
+];
+const GARDEN_TOOLS = ["Notion","Obsidian","Capacities","Apple Notes"];
+const GARDEN_HABIT = ["🌱 one idea","🌱 one quote","🌱 five useful expressions","🌱 one discussion question"];
+
+/* ============================================================
+   4. WEEKLY FLOW TEMPLATES (one per ecosystem)
+   ============================================================ */
+const WEEKLY = {
+  story: [
+    ["Mon","15 min shadowing a movie scene"],["Tue","Watch one scene twice, note 3 phrases"],
+    ["Wed","20 minutes of a film with subtitles off"],["Thu","Read a short review of a film in English"],
+    ["Fri","Talk about a film you watched — Speaking Club or a friend"],["Sat","Digital Garden: quote + expressions"],
+    ["Sun","Relax — a full episode, just for enjoyment"],
+  ],
+  trend: [
+    ["Mon","15 min English-only scroll session"],["Tue","Save one Reel, rewatch & repeat aloud"],
+    ["Wed","Follow one new English creator"],["Thu","Turn 5 saved captions into your own sentences"],
+    ["Fri","Voice-message a friend using a new phrase"],["Sat","Digital Garden: this week's expressions"],
+    ["Sun","Guilt-free scroll — enjoy it, in English"],
+  ],
+  deep: [
+    ["Mon","Read one short article (10–15 min)"],["Tue","Summarize it out loud in 3 sentences"],
+    ["Wed","Look up 5 new words in context"],["Thu","Listen to a podcast on a related topic"],
+    ["Fri","Write a short opinion paragraph"],["Sat","Digital Garden: one idea worth keeping"],
+    ["Sun","Read something just for pleasure"],
+  ],
+  explorer: [
+    ["Mon","10 min on Radio Garden — pick a new country"],["Tue","Explore Atlas Obscura, learn one place's history"],
+    ["Wed","Watch a travel or culture video in English"],["Thu","Read about a culture or tradition"],
+    ["Fri","Speaking Club: talk about somewhere you'd like to go"],["Sat","Digital Garden: a place + a phrase"],
+    ["Sun","Daydream — plan a trip, in English"],
+  ],
+  social: [
+    ["Mon","10 min speaking practice out loud, alone"],["Tue","Message someone in English"],
+    ["Wed","Schedule or attend a Speaking Club"],["Thu","Describe your day out loud, in detail"],
+    ["Fri","Have one real conversation in English"],["Sat","Digital Garden: a phrase you used well"],
+    ["Sun","Voice-note a reflection on your week"],
+  ],
+  audio: [
+    ["Mon","One podcast episode on a walk or commute"],["Tue","Note 3 expressions you heard"],
+    ["Wed","Listen again, repeat one segment aloud"],["Thu","Read the episode's show notes or article"],
+    ["Fri","Talk with someone about what you learned"],["Sat","Digital Garden: a quote from the episode"],
+    ["Sun","Pick next week's podcast — relax and enjoy"],
+  ],
+};
+
+/* ---- recommended order: each ecosystem gets its own handcrafted sequence ---- */
+const ORDER = {
+  story:    ["🎬 Movie","🗣 Shadowing","❝ Quotes","💬 Speaking"],
+  trend:    ["📱 Instagram","🎞 Reels","🗣 Shadowing","🔤 Save expressions"],
+  deep:     ["📰 Article","📝 Notes","🎧 Podcast","💬 Discussion"],
+  explorer: ["✈️ Travel","📻 Radio Garden","🗺 Atlas Obscura","💬 Speaking"],
+  social:   ["💬 Conversation","🗣 Shadowing","🧠 Reflection","📣 Share"],
+  audio:    ["🎧 Podcast","📝 Notes","💬 Discussion","🗣 Shadowing"],
+};
+
+/* ---- fixed trait bullets used inside "Why did I get this result?" ---- */
+const TRAITS = {
+  story:    ["You naturally remember information through stories and scenes.", "You tend to learn by observing emotion and dialogue rather than rules."],
+  trend:    ["You process information best in short, repeatable bursts.", "You learn through repetition and sharing, not long study sessions."],
+  deep:     ["You retain language best when it's attached to a real idea or argument.", "You like understanding the \"why\" before the \"how\"."],
+  explorer: ["You're driven by discovery more than repetition.", "New places and cultures hold your attention longer than drills do."],
+  social:   ["You learn fastest through direct, real interaction.", "Being understood matters more to you than being technically correct."],
+  audio:    ["You absorb rhythm and pronunciation best by ear.", "Listening, more than reading, is how ideas actually stick for you."],
+};
+
+/* ============================================================
+   5. STATE
+   ============================================================ */
+let current = 0;
+const answers = new Array(QUESTIONS.length).fill(null);
+let pctState = {};
+let sortedState = [];
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ---- intro ecosystem diagram ---- */
+(function buildIntroDiagram(){
+  const svg = document.getElementById("ecoIntroSvg");
+  const nodes = ["🎬 Movies","📚 Books","📰 Articles","📱 Reels","🎧 Podcasts","✈️ Travel","💬 Conversation","🗣 Shadowing","🌱 Digital Garden"];
+  const cx=320, cy=210, R=150;
+  let links="", circles="", labels="";
+  const pts = nodes.map((n,i)=>{
+    const a = (Math.PI*2*i/nodes.length) - Math.PI/2;
+    return [cx+R*Math.cos(a), cy+R*Math.sin(a)];
+  });
+  pts.forEach((p,i)=>{
+    const next = pts[(i+1)%pts.length];
+    links += `<line class="eco-link" x1="${p[0]}" y1="${p[1]}" x2="${next[0]}" y2="${next[1]}"/>`;
+    links += `<line class="eco-link" x1="${p[0]}" y1="${p[1]}" x2="${cx}" y2="${cy}" opacity="0.5"/>`;
+  });
+  pts.forEach((p,i)=>{
+    circles += `<circle class="eco-node-circle" cx="${p[0]}" cy="${p[1]}" r="30"/>`;
+    const parts = nodes[i].split(" ");
+    labels += `<text class="eco-node-label" x="${p[0]}" y="${p[1]-2}" font-size="16">${parts[0]}</text>`;
+    labels += `<text class="eco-node-label" x="${p[0]}" y="${p[1]+13}">${parts.slice(1).join(" ")}</text>`;
+  });
+  svg.innerHTML = links + circles + labels +
+    `<g class="eco-center"><circle cx="${cx}" cy="${cy}" r="42"/><text x="${cx}" y="${cy-6}">DÉBUT</text><text x="${cx}" y="${cy+12}" font-size="10">Ecosystem</text></g>`;
+})();
+
+document.getElementById("startBtn").addEventListener("click", ()=>{ showScreen("screen-quiz"); renderQuestion(); });
+
+/* ============================================================
+   6. QUIZ RENDER + NAV
+   ============================================================ */
+function renderQuestion(){
+  const q = QUESTIONS[current];
+  document.getElementById("qNum").textContent = "Question " + String(current+1).padStart(2,"0");
+  document.getElementById("qText").textContent = q.q;
+  document.getElementById("qCounter").textContent = `Question ${current+1} / ${QUESTIONS.length}`;
+  const pct = Math.round((current/QUESTIONS.length)*100);
+  document.getElementById("qPercent").textContent = pct+"%";
+  document.getElementById("progressFill").style.width = pct+"%";
+
+  const wrap = document.getElementById("qOptions");
+  wrap.innerHTML = "";
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement("button");
+    btn.className = "option"+(answers[current]===i?" picked":"");
+    btn.innerHTML = `<span class="dot"></span><span>${opt.t}</span>`;
+    btn.addEventListener("click", ()=>selectOption(i));
+    wrap.appendChild(btn);
+  });
+  document.getElementById("backBtn").disabled = current===0;
+}
+function selectOption(i){
+  answers[current]=i;
+  if(current<QUESTIONS.length-1){ current++; renderQuestion(); }
+  else{ finishQuiz(); }
+}
+document.getElementById("backBtn").addEventListener("click", ()=>{ if(current>0){current--; renderQuestion();} });
+
+/* ============================================================
+   7. SCORING + RESULT RENDER
+   ============================================================ */
+function finishQuiz(){
+  const raw = {}; CAT_KEYS.forEach(k=>raw[k]=0);
+  answers.forEach((idx,qi)=>{ if(idx===null) return; const chosen=QUESTIONS[qi].options[idx].s;
+    Object.keys(chosen).forEach(k=> raw[k]+=chosen[k]); });
+  pctState = {}; CAT_KEYS.forEach(k=> pctState[k]=Math.min(100,Math.round((raw[k]/MAX_SCORE[k])*100)));
+  sortedState = CAT_KEYS.slice().sort((a,b)=>pctState[b]-pctState[a]);
+
+  showScreen("screen-results");
+  renderResults();
+  launchConfetti();
+}
+
+function starString(pct){
+  const n = Math.max(1, Math.min(5, Math.round(pct/20)));
+  return "★".repeat(n)+"☆".repeat(5-n);
+}
+
+function renderResults(){
+  const primary = sortedState[0];
+  document.getElementById("resultHeadline").textContent = `${CATEGORIES[primary].emoji} You're a ${CATEGORIES[primary].name}`;
+  document.getElementById("whyText").textContent = CATEGORIES[primary].why;
+
+  document.getElementById("orderFlow").innerHTML = ORDER[primary].map((step,i,arr)=>
+    `<div class="order-node">${step}</div>` + (i<arr.length-1? `<span class="order-arrow">→</span>` : "")
+  ).join("");
+
+  renderRadar(pctState);
+
+  const listWrap = document.getElementById("ecosystemList");
+  listWrap.innerHTML = sortedState.map(k=>`
+    <div class="eco-row"><span>${CATEGORIES[k].emoji}</span><span class="eco-name">${CATEGORIES[k].name}</span><span class="stars">${starString(pctState[k])}</span></div>
+  `).join("");
+
+  const weekWrap = document.getElementById("weekGrid");
+  weekWrap.innerHTML = WEEKLY[primary].map(([d,t])=>`
+    <div class="day-card${d==='Sun'?' sun':''}"><div class="day-name">${d}</div><div class="day-task">${t}</div></div>
+  `).join("");
+
+  document.getElementById("gardenSection").innerHTML = gardenHTML();
+
+  buildSidebar(primary);
+  buildBottomNav(primary);
+  showCategoryPanel(primary);
+}
+
+/* ---- radar chart (SVG, animated) ---- */
+function radarPoints(pct, R, cx, cy){
+  const n = CAT_KEYS.length;
+  return CAT_KEYS.map((k,i)=>{
+    const a = (Math.PI*2*i/n) - Math.PI/2;
+    const r = R*(pct[k]/100);
+    return { x: cx+r*Math.cos(a), y: cy+r*Math.sin(a), a };
+  });
+}
+function renderRadar(pct){
+  const svg = document.getElementById("radarSvg");
+  const cx=220, cy=210, R=150, n=CAT_KEYS.length;
+  const angle = i => (Math.PI*2*i/n) - Math.PI/2;
+  let grid="";
+  for(let ring=1; ring<=4; ring++){
+    const r = R*ring/4;
+    let pts=[];
+    for(let i=0;i<n;i++){ const a=angle(i); pts.push((cx+r*Math.cos(a))+","+(cy+r*Math.sin(a))); }
+    grid += `<polygon class="radar-grid" points="${pts.join(" ")}"/>`;
+  }
+  let axes="", labels="";
+  CAT_KEYS.forEach((k,i)=>{
+    const a = angle(i);
+    axes += `<line class="radar-axis" x1="${cx}" y1="${cy}" x2="${cx+R*Math.cos(a)}" y2="${cy+R*Math.sin(a)}"/>`;
+    const lx = cx+(R+28)*Math.cos(a), ly = cy+(R+28)*Math.sin(a);
+    labels += `<text class="radar-label" x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle">${CATEGORIES[k].emoji}</text>`;
+  });
+  const dPts = radarPoints(pct, R, cx, cy);
+  const poly = dPts.map(p=>p.x+","+p.y).join(" ");
+  const dots = dPts.map(p=>`<circle class="radar-dot" cx="${p.x}" cy="${p.y}" r="4"/>`).join("");
+  svg.innerHTML = grid+axes+`<polygon class="radar-poly" points="${poly}"/>`+dots+labels;
+}
+
+/* ---- why-modal: fixed traits + the two answers that actually drove the result ---- */
+function buildWhyBullets(primary){
+  const fixed = TRAITS[primary].slice();
+  const contributions = [];
+  answers.forEach((idx,qi)=>{
+    if(idx===null) return;
+    const opt = QUESTIONS[qi].options[idx];
+    const val = opt.s[primary]||0;
+    if(val>0) contributions.push({ dim:QUESTIONS[qi].dim, text:opt.t, val });
+  });
+  contributions.sort((a,b)=>b.val-a.val);
+  const dynamic = contributions.slice(0,2).map(c=> `In the "${c.dim}" question, you leaned toward: "${c.text}".`);
+  return fixed.concat(dynamic);
+}
+document.getElementById("whyBtn").addEventListener("click", ()=>{
+  const primary = sortedState[0];
+  document.getElementById("whyModalTitle").textContent = `You got "${CATEGORIES[primary].name}" because...`;
+  document.getElementById("whyBullets").innerHTML = buildWhyBullets(primary).map(b=>`<li>${b}</li>`).join("");
+  document.getElementById("whyModal").classList.add("active");
+});
+document.getElementById("whyModalClose").addEventListener("click", ()=> document.getElementById("whyModal").classList.remove("active"));
+document.getElementById("whyModal").addEventListener("click", (e)=>{ if(e.target.id==="whyModal") e.currentTarget.classList.remove("active"); });
+
+function gardenHTML(){
+  return `
+    <h3>🌱 Build Your Digital Garden</h3>
+    <p>A Digital Garden is a connected collection of your ideas, vocabulary and discoveries — not just another folder full of saved links.</p>
+    <div class="garden-flow">
+      <div class="garden-node">🎬 Movie / Article / Podcast</div><div class="garden-arrow">↓</div>
+      <div class="garden-node">❝ Quote</div><div class="garden-arrow">↓</div>
+      <div class="garden-node">🔤 Expressions</div><div class="garden-arrow">↓</div>
+      <div class="garden-node">💡 An idea worth keeping</div><div class="garden-arrow">↓</div>
+      <div class="garden-node">💬 A discussion topic</div>
+    </div>
+    <div class="garden-tools">${GARDEN_TOOLS.map(t=>`<span class="tool-chip">${t}</span>`).join("")}</div>
+    <p style="margin-top:16px;font-weight:600;color:var(--ink);">After every movie, article or podcast, save:</p>
+    <div class="garden-habit">${GARDEN_HABIT.map(h=>`<span class="habit-chip">${h}</span>`).join("")}</div>`;
+}
+
+/* ============================================================
+   8. SIDEBAR / BOTTOM NAV / CATEGORY PANELS
+   ============================================================ */
+function buildSidebar(primary){
+  const wrap = document.getElementById("sideItems");
+  wrap.innerHTML = "";
+  CAT_KEYS.forEach(k=>{
+    const btn = document.createElement("button");
+    btn.className = "side-item"+(k===primary?" active":"");
+    btn.dataset.key = k;
+    btn.innerHTML = `<span class="ic">${CATEGORIES[k].emoji}</span> ${CATEGORIES[k].name}`;
+    btn.addEventListener("click", ()=>showCategoryPanel(k));
+    wrap.appendChild(btn);
+  });
+  document.getElementById("sideGarden").addEventListener("click", ()=>{
+    document.getElementById("gardenSection").scrollIntoView({behavior:"smooth", block:"center"});
+  });
+}
+function buildBottomNav(primary){
+  const wrap = document.getElementById("bottomNav");
+  wrap.innerHTML = "";
+  CAT_KEYS.forEach(k=>{
+    const btn = document.createElement("button");
+    btn.className = "bnav-item"+(k===primary?" active":"");
+    btn.dataset.key = k;
+    btn.innerHTML = `<span class="ic">${CATEGORIES[k].emoji}</span>${CATEGORIES[k].short}`;
+    btn.addEventListener("click", ()=>{ showCategoryPanel(k); document.getElementById("categoryPanel").scrollIntoView({behavior:"smooth",block:"start"}); });
+    wrap.appendChild(btn);
+  });
+  const gardenBtn = document.createElement("button");
+  gardenBtn.className = "bnav-item";
+  gardenBtn.innerHTML = `<span class="ic">🌱</span>Garden`;
+  gardenBtn.addEventListener("click", ()=> document.getElementById("gardenSection").scrollIntoView({behavior:"smooth", block:"center"}));
+  wrap.appendChild(gardenBtn);
+}
+function showCategoryPanel(k){
+  document.querySelectorAll(".side-item[data-key]").forEach(b=>b.classList.toggle("active", b.dataset.key===k));
+  document.querySelectorAll(".bnav-item[data-key]").forEach(b=>b.classList.toggle("active", b.dataset.key===k));
+  document.getElementById("categoryPanel").innerHTML = PANEL_BUILDERS[k]();
+}
+
+const PANEL_BUILDERS = {
+  story: ()=>{
+    const cards = MOVIES.map((m,i)=>`
+      <div class="res-card">
+        <div class="poster" style="background:${GRAD[i%GRAD.length]}">${m.t}</div>
+        <div class="res-body">
+          <div class="res-title">${m.t}</div><div class="res-desc">${m.d}</div>
+          <div class="badge-row"><span class="badge">${m.diff}</span><span class="badge">💬 ${"★".repeat(m.conv)}${"☆".repeat(5-m.conv)}</span><span class="badge">🗣 ${"★".repeat(m.shad)}${"☆".repeat(5-m.shad)}</span></div>
+          <a class="res-link" target="_blank" rel="noopener" href="https://www.imdb.com/find/?q=${encodeURIComponent(m.t)}">IMDb ↗</a>
+        </div>
+      </div>`).join("");
+    const shad = SHADOWING_TOOLS.map((s,i)=>`
+      <div class="res-card"><div class="poster" style="background:${GRAD[(i+1)%GRAD.length]}">${s.t}</div>
+      <div class="res-body"><div class="res-title">${s.t}</div><div class="res-desc">${s.d}</div>
+      <a class="res-link" target="_blank" rel="noopener" href="${s.href}">Open ↗</a></div></div>`).join("");
+    return `<div class="panel-intro"><h3>🎬 Story Seeker</h3><p>${CATEGORIES.story.why}</p></div>
+      <div class="card-grid">${cards}</div>
+      <div class="panel-intro" style="margin-top:22px;"><h3>Shadowing resources</h3><p>Shadow a line right after the actor says it — same pace, same emotion. Repeat each clip 3–5 times.</p></div>
+      <div class="card-grid">${shad}</div>`;
+  },
+  trend: ()=>{
+    const cards = CREATORS.map((c,i)=>`
+      <div class="res-card creator-card"><div class="avatar" style="background:${GRAD[i%GRAD.length]}">${c.n[0]}</div>
+      <div class="creator-info"><div class="res-title">${c.n}</div><div class="handle">${c.h}</div></div>
+      <a class="res-link" target="_blank" rel="noopener" href="https://www.instagram.com/${c.h.replace('@','')}">Follow ↗</a></div>`).join("");
+    return `<div class="panel-intro"><h3>📱 Trend Catcher</h3><p>${CATEGORIES.trend.why}</p></div>
+      <div class="card-grid">${cards}</div>
+      <div class="panel-intro" style="margin-top:22px;"><h3>Smart scrolling tips</h3><p></p></div>
+      <ul class="tips-list">${SCROLL_TIPS.map(t=>`<li>${t}</li>`).join("")}</ul>`;
+  },
+  deep: ()=>{
+    const cards = ARTICLE_SITES.map((s,i)=>`
+      <div class="res-card"><div class="poster" style="background:${GRAD[i%GRAD.length]}">${s.n}</div>
+      <div class="res-body"><div class="res-title">${s.n}</div><div class="res-desc">${s.d}</div>
+      <div class="badge-row"><span class="badge">${s.diff}</span><span class="badge">⏱ ${s.time}</span></div>
+      <div class="res-desc">Best topics: ${s.topics}</div>
+      <a class="res-link" target="_blank" rel="noopener" href="${s.href}">Visit ↗</a></div></div>`).join("");
+    return `<div class="panel-intro"><h3>🧠 Deep Thinker</h3><p>${CATEGORIES.deep.why}</p></div><div class="card-grid">${cards}</div>`;
+  },
+  explorer: ()=>{
+    const cards = EXPLORE_SITES.map((s,i)=>`
+      <div class="res-card"><div class="poster" style="background:${GRAD[i%GRAD.length]}">${s.n}</div>
+      <div class="res-body"><div class="res-title">${s.n}</div><div class="res-desc">${s.d}</div>
+      <a class="res-link" target="_blank" rel="noopener" href="${s.href}">Explore ↗</a></div></div>`).join("");
+    return `<div class="panel-intro"><h3>🌍 Curious Explorer</h3><p>${CATEGORIES.explorer.why}</p></div><div class="card-grid">${cards}</div>`;
+  },
+  social: ()=>{
+    return `<div class="panel-intro"><h3>💬 Social Communicator</h3><p>${CATEGORIES.social.why}</p>
+      <p style="margin-top:10px;">Content helps you understand English. Speaking is what helps you actually use it — that's the muscle that only builds with real conversation. Want to warm up solo first? The <a href="https://tavrizmilena-ship-it.github.io/debut-apps/debut-speaking-studio-v5.html" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:700;color:var(--ink);">Speaking Studio by DÉBUT</a> lets you pick a category and practice at your own pace. You'll find the invitation to join a live Speaking Club at the very bottom of this page.</p></div>`;
+  },
+  audio: ()=>{
+    const cards = PODCASTS.map((p,i)=>`
+      <div class="res-card"><div class="poster" style="background:${GRAD[i%GRAD.length]}">${p.n}</div>
+      <div class="res-body"><div class="res-title">${p.n}</div><div class="res-desc">${p.d}</div>
+      <div class="badge-row"><span class="badge">${p.diff}</span></div>
+      <a class="res-link" target="_blank" rel="noopener" href="${p.href}">Website ↗</a></div></div>`).join("");
+    return `<div class="panel-intro"><h3>🎧 Audio Explorer</h3><p>${CATEGORIES.audio.why}</p></div><div class="card-grid">${cards}</div>`;
+  },
+};
+
+/* ============================================================
+   9. THEME TOGGLE + PARALLAX
+   ============================================================ */
+document.getElementById("themeToggle").addEventListener("click", ()=>{
+  const isDark = document.documentElement.getAttribute("data-theme")==="dark";
+  document.documentElement.setAttribute("data-theme", isDark?"light":"dark");
+  document.getElementById("themeToggle").textContent = isDark?"🌙":"☀️";
+});
+window.addEventListener("mousemove",(e)=>{
+  const x=(e.clientX/window.innerWidth-.5), y=(e.clientY/window.innerHeight-.5);
+  document.getElementById("blob1").style.transform=`translate(${x*30}px, ${y*30}px)`;
+  document.getElementById("blob2").style.transform=`translate(${-x*24}px, ${-y*24}px)`;
+  document.getElementById("blob3").style.transform=`translate(${x*18}px, ${-y*18}px)`;
+});
+
+/* ============================================================
+   10. RESTART / SHARE
+   ============================================================ */
+document.getElementById("restartBtn").addEventListener("click", ()=>{
+  current=0; answers.fill(null); showScreen("screen-intro");
+});
+document.getElementById("shareBtn").addEventListener("click", async ()=>{
+  const primary = sortedState[0];
+  const text = `I just found my English Ecosystem: ${CATEGORIES[primary].emoji} ${CATEGORIES[primary].name}! Find yours with DÉBUT Community.`;
+  if(navigator.share){ try{ await navigator.share({title:"My English Ecosystem", text}); }catch(e){} }
+  else{
+    try{
+      await navigator.clipboard.writeText(text);
+      const btn=document.getElementById("shareBtn"); const old=btn.textContent;
+      btn.textContent="Copied ✓"; setTimeout(()=>btn.textContent=old, 1800);
+    }catch(e){}
+  }
+});
+
+/* ============================================================
+   11. PDF EXPORT — a separate, print-friendly layout.
+   This does NOT snapshot the webpage. jsPDF's built-in fonts only
+   support Latin-1/WinAnsi characters, so emoji, stars, arrows and
+   checkbox glyphs are stripped from every text string (they render
+   as broken glyphs like "Ø", "Ý" otherwise). The one place we need
+   real Cyrillic — the exact club message — is drawn as a small
+   canvas-rendered image instead, since canvas text uses the
+   system font and isn't limited by jsPDF's built-in encoding.
+   ============================================================ */
+function stripDeco(s){
+  return String(s)
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u2B50\u2B55\u2190-\u21FF\u2605\u2606\u2610\uFE0F]/gu, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+function textToImage(text, {fontSize=20, weight="700", color="#16283A", font="Georgia, 'Times New Roman', serif"}={}){
+  const measure = document.createElement("canvas").getContext("2d");
+  measure.font = `${weight} ${fontSize}px ${font}`;
+  const w = Math.ceil(measure.measureText(text).width) + 24;
+  const h = Math.ceil(fontSize*1.7);
+  const canvas = document.createElement("canvas");
+  canvas.width = w*2; canvas.height = h*2; // 2x for crisper embedding
+  const ctx = canvas.getContext("2d");
+  ctx.scale(2,2);
+  ctx.font = `${weight} ${fontSize}px ${font}`;
+  ctx.fillStyle = color; ctx.textBaseline = "middle";
+  ctx.fillText(text, 12, h/2);
+  return { url:canvas.toDataURL("image/png"), w, h };
+}
+
+document.getElementById("pdfBtn").addEventListener("click", ()=>{
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:"pt", format:"a4"});
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  const margin = 58;
+  const contentW = W - margin*2;
+  let y = margin;
+
+  const INK=[22,40,58], BLUE=[47,110,170], MUTED=[100,118,140], LINE=[210,231,248], PALE=[236,246,255];
+
+  function newPage(){ doc.addPage(); y = margin; }
+  function checkPage(need){ if(y+need > H-70){ newPage(); } }
+  function divider(space=14){
+    checkPage(space+8);
+    doc.setDrawColor(...LINE); doc.setLineWidth(1);
+    doc.line(margin, y, W-margin, y);
+    y += space;
+  }
+  function h2(text){
+    checkPage(30);
+    doc.setFont("times","bold"); doc.setFontSize(17); doc.setTextColor(...INK);
+    doc.text(stripDeco(text), margin, y); y += 10;
+    doc.setDrawColor(...BLUE); doc.setLineWidth(1.6);
+    doc.line(margin, y, margin+34, y); y += 20;
+  }
+  function h3(text){
+    checkPage(22);
+    doc.setFont("helvetica","bold"); doc.setFontSize(12.5); doc.setTextColor(...BLUE);
+    doc.text(stripDeco(text).toUpperCase(), margin, y); y += 18;
+  }
+  function p(text, {size=11, color=MUTED, font="helvetica", style="normal", gap=8}={}){
+    doc.setFont(font,style); doc.setFontSize(size); doc.setTextColor(...color);
+    const lines = doc.splitTextToSize(stripDeco(text), contentW);
+    lines.forEach(line=>{ checkPage(size+4); doc.text(line, margin, y); y += size+4; });
+    y += gap;
+  }
+  function bullet(text, {size=11}={}){
+    checkPage(size+6);
+    doc.setFont("helvetica","normal"); doc.setFontSize(size); doc.setTextColor(...MUTED);
+    const lines = doc.splitTextToSize(stripDeco(text), contentW-16);
+    lines.forEach((line,i)=>{
+      checkPage(size+4);
+      if(i===0) doc.text("-", margin, y);
+      doc.text(line, margin+14, y); y += size+4;
+    });
+  }
+  function resourceItem(title, desc, url){
+    checkPage(40);
+    doc.setFont("helvetica","bold"); doc.setFontSize(11.5); doc.setTextColor(...INK);
+    doc.text(stripDeco(title), margin, y); y += 15;
+    if(desc){
+      doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.setTextColor(...MUTED);
+      const lines = doc.splitTextToSize(stripDeco(desc), contentW);
+      lines.forEach(line=>{ checkPage(14); doc.text(line, margin, y); y += 13; });
+    }
+    if(url){
+      checkPage(14);
+      doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.setTextColor(...BLUE);
+      doc.textWithLink(url.replace(/^https?:\/\//,""), margin, y, {url}); y += 16;
+    }
+    y += 8;
+  }
+  function checkboxItem(text){
+    checkPage(24);
+    doc.setDrawColor(...INK); doc.setLineWidth(1.1);
+    doc.rect(margin, y-9, 11, 11);
+    doc.setFont("helvetica","normal"); doc.setFontSize(12); doc.setTextColor(...INK);
+    doc.text(stripDeco(text), margin+22, y);
+    y += 26;
+  }
+
+  const primary = sortedState[0];
+  const others = CAT_KEYS.filter(k=>k!==primary);
+
+  /* ---------------- COVER ---------------- */
+  doc.setFillColor(...PALE); doc.rect(0,0,W,190,"F");
+  doc.setDrawColor(...BLUE); doc.setLineWidth(2); doc.line(margin, 190, margin+60, 190);
+  doc.setFont("helvetica","bold"); doc.setFontSize(11); doc.setTextColor(...MUTED);
+  doc.text("D\u00c9BUT COMMUNITY", margin, 58);
+  doc.setFont("times","bold"); doc.setFontSize(30); doc.setTextColor(...INK);
+  doc.text("My English Ecosystem", margin, 100);
+  doc.setFont("helvetica","normal"); doc.setFontSize(11); doc.setTextColor(...MUTED);
+  doc.text("YOUR RESULT", margin, 130);
+  doc.setFont("times","bold"); doc.setFontSize(20); doc.setTextColor(...BLUE);
+  doc.text(stripDeco(CATEGORIES[primary].name), margin, 155);
+  y = 225;
+  const firstSentence = CATEGORIES[primary].why.split(/(?<=[.!?])\s/)[0];
+  p(firstSentence, {size:12.5, color:INK, style:"italic", font:"times", gap:20});
+
+  /* ---------------- WEEKLY PLAN ---------------- */
+  h2("Your Weekly English Plan");
+  WEEKLY[primary].forEach(([day, task])=>{
+    checkPage(38);
+    doc.setFont("helvetica","bold"); doc.setFontSize(11.5); doc.setTextColor(...INK);
+    doc.text(stripDeco(day), margin, y); y += 15;
+    doc.setFont("helvetica","normal"); doc.setFontSize(11); doc.setTextColor(...MUTED);
+    const lines = doc.splitTextToSize(stripDeco(task), contentW);
+    lines.forEach(line=>{ checkPage(14); doc.text(line, margin, y); y += 14; });
+    y += 8;
+  });
+  divider(18);
+
+  p("Recommended order for you: " + ORDER[primary].map(stripDeco).join("  >  "), {size:11, color:INK, gap:16});
+
+  /* ---------------- RESOURCES ---------------- */
+  h2("Resources For You");
+
+  h3("Reading");
+  ARTICLE_SITES.forEach(s=> resourceItem(s.n, `${s.d} Difficulty: ${s.diff}. Best topics: ${s.topics}. Reading time: ${s.time}.`, s.href));
+
+  h3("Shadowing");
+  SHADOWING_TOOLS.forEach(s=> resourceItem(s.t, s.d, s.href));
+
+  h3("Movies");
+  MOVIES.forEach(m=>{
+    const fit = (m.shad>=4? "Especially good for shadowing practice." : "Good for casual listening practice.");
+    resourceItem(m.t, `${m.d} Difficulty: ${m.diff}. ${fit}`, "https://www.imdb.com/find/?q="+encodeURIComponent(m.t));
+  });
+
+  h3("Podcasts");
+  PODCASTS.forEach(p_=> resourceItem(p_.n, `${p_.d} Difficulty: ${p_.diff}.`, p_.href));
+
+  h3("Speaking");
+  p("Want to warm up on your own first? Try the Speaking Studio by D\u00c9BUT \u2014 pick a category and practice at your own pace.", {size:11, color:MUTED, gap:6});
+  resourceItem("Speaking Studio by D\u00c9BUT", "Pick a category and practice speaking any time, at your own pace.", "https://tavrizmilena-ship-it.github.io/debut-apps/debut-speaking-studio-v5.html");
+  p("Want to practice speaking with real people? Message us on Instagram:", {size:11, color:MUTED, gap:4});
+  { checkPage(16); doc.setFont("helvetica","bold"); doc.setFontSize(11); doc.setTextColor(...BLUE);
+    doc.textWithLink("@debut_community", margin, y, {url:"https://www.instagram.com/debut_community"}); y+=20; }
+  p("Send us this exact message:", {size:10.5, color:MUTED, gap:4});
+  { const img = textToImage('"\u0425\u043e\u0447\u0443 \u0440\u0430\u0437\u0433\u043e\u0432\u043e\u0440\u043d\u044b\u0439 \u043a\u043b\u0443\u0431"', {fontSize:19, weight:"700", color:"#16283A"});
+    const tw = 230, th = tw*(img.h/img.w);
+    checkPage(th+16);
+    doc.setFillColor(...PALE); doc.roundedRect(margin-8, y-th+6, tw+16, th+8, 6, 6, "F");
+    doc.addImage(img.url, "PNG", margin, y-th+10, tw, th);
+    y += 22; }
+
+  h3("Social Media");
+  CREATORS.forEach(c=> resourceItem(c.n, c.h, "https://www.instagram.com/"+c.h.replace("@","")));
+
+  h3("Hidden Internet");
+  EXPLORE_SITES.forEach(s=> resourceItem(s.n, s.d, s.href));
+
+  /* ---------------- DIGITAL GARDEN ---------------- */
+  h2("Digital Garden");
+  h3("Digital Garden Tip");
+  p("Don't save everything. Save only ideas that changed the way you think. One note is more valuable than ten screenshots.", {size:11.5, color:INK, gap:10});
+  p("Suggested apps: " + GARDEN_TOOLS.join(", ") + ".", {size:11, color:MUTED, gap:14});
+
+  /* ---------------- WANT MORE ---------------- */
+  h2("Want More?");
+  p("Explore the other learning paths inside the website. You can always return and open every ecosystem:", {size:11, color:MUTED, gap:8});
+  others.forEach(k=> bullet(CATEGORIES[k].name));
+
+  /* ---------------- YOUR ENGLISH DASHBOARD ---------------- */
+  newPage();
+  doc.setFont("times","bold"); doc.setFontSize(24); doc.setTextColor(...INK);
+  doc.text("Your English Dashboard", margin, y); y += 14;
+  doc.setDrawColor(...BLUE); doc.setLineWidth(1.6); doc.line(margin, y, margin+34, y); y += 26;
+  p("Track your week. Small, consistent actions build the habit.", {size:11.5, color:MUTED, gap:20});
+
+  h3("My English Ecosystem");
+  [
+    "Read 1 article",
+    "Finished one shadowing session",
+    "Watched one movie scene",
+    "Wrote one Digital Garden note",
+    "Learned 10 new expressions",
+    "Had one conversation in English",
+  ].forEach(item=> checkboxItem(item));
+
+  y += 16; divider(24);
+  doc.setFont("helvetica","bold"); doc.setFontSize(12); doc.setTextColor(...INK);
+  doc.text("Current streak:", margin, y); y += 24;
+  doc.setFont("helvetica","normal"); doc.setFontSize(14); doc.setTextColor(...MUTED);
+  doc.text("________________  days", margin, y);
+
+  /* ---------------- footer on every page ---------------- */
+  const pageCount = doc.internal.getNumberOfPages();
+  for(let i=1;i<=pageCount;i++){
+    doc.setPage(i);
+    doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(...MUTED);
+    doc.text("D\u00c9BUT COMMUNITY  \u00b7  @debut_community", margin, H-36);
+    doc.text(String(i)+" / "+pageCount, W-margin-24, H-36);
+  }
+
+  doc.save("my-english-ecosystem.pdf");
+});
+
+/* ============================================================
+   12. CONFETTI
+   ============================================================ */
+function launchConfetti(){
+  const canvas=document.getElementById("confetti-canvas"), ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const colors=["#F8E77C","#F3D94A","#BFE0FB","#DCEFFF","#16283A"];
+  const pieces=Array.from({length:120},()=>({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.4,
+    r:4+Math.random()*5,c:colors[Math.floor(Math.random()*colors.length)],vy:2+Math.random()*3,
+    vx:-1.5+Math.random()*3,rot:Math.random()*360,vr:-6+Math.random()*12}));
+  let frame=0;
+  function tick(){
+    frame++; ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.c; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6); ctx.restore(); });
+    if(frame<150){ requestAnimationFrame(tick); } else { ctx.clearRect(0,0,canvas.width,canvas.height); }
+  }
+  tick();
+}
+window.addEventListener("resize", ()=>{
+  const c=document.getElementById("confetti-canvas"); c.width=window.innerWidth; c.height=window.innerHeight;
+});
+
+})();
+</script>
+</body>
+</html>
