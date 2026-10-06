@@ -1,0 +1,521 @@
+<title>Would You Rather?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&display=swap">
+<style>
+/* Layout: one focused card-game table. Phone = stacked, thumb-reachable controls.
+   Desktop = editorial spread: counter rail left, question centre, actions underneath. */
+:root{
+  --bg:#F5EBDD;          /* warm cream paper */
+  --surface:#FBF4EA;     /* lighter card stock */
+  --ink:#203D57;         /* DÉBUT navy */
+  --ink-soft:#6F5142;    /* warm brown */
+  --accent:#8A3834;      /* burgundy, used sparingly */
+  --line:rgba(32,61,87,.2);
+  --on-ink:#F5EBDD;
+  --grain:.07;
+  --serif:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
+  --sans:"Jost","Futura","Avenir Next",system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#13263A; --surface:#1A3149; --ink:#F3E7D6; --ink-soft:#CDB49E; --accent:#E0978C;
+    --line:rgba(243,231,214,.2); --on-ink:#16293D; --grain:.05; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#13263A; --surface:#1A3149; --ink:#F3E7D6; --ink-soft:#CDB49E; --accent:#E0978C;
+  --line:rgba(243,231,214,.2); --on-ink:#16293D; --grain:.05; color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:17px; line-height:1.5;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+/* barely-there paper grain */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:var(--grain);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .2 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px; border-radius:6px}
+[tabindex="-1"]:focus{outline:none}
+
+.app{position:relative; z-index:1; min-height:100%; display:flex; flex-direction:column;
+  padding-inline:clamp(16px,4.5vw,64px)}
+
+/* ---------- top bar ---------- */
+.bar{display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding-block:14px; border-bottom:1px solid var(--line)}
+.mark{font-family:var(--sans); font-weight:600; letter-spacing:.32em; font-size:.82rem; margin-right:-.32em}
+.bar-title{font-family:var(--serif); font-style:italic; font-weight:600; font-size:1.15rem; color:var(--ink-soft); display:none}
+.nav{display:flex; gap:2px; margin-right:-10px}
+.navbtn{background:none; border:0; min-height:44px; padding:0 10px;
+  font-size:.74rem; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--ink)}
+.navbtn:hover{color:var(--accent)}
+@media (max-width:400px){ .navbtn{padding:0 7px; letter-spacing:.07em; font-size:.7rem} .nav{margin-right:-7px} .mark{letter-spacing:.2em; margin-right:0} }
+@media (min-width:960px){ .bar-title{display:block} .navbtn{font-size:.78rem; padding:0 14px} }
+
+main{flex:1; display:flex; flex-direction:column}
+.screen{flex:1; display:flex; flex-direction:column; padding-block:clamp(28px,6vh,72px) 28px}
+.enter{animation:rise .6s var(--ease) both}
+.enter-2{animation:rise .6s .08s var(--ease) both}
+.enter-3{animation:rise .6s .16s var(--ease) both}
+@keyframes rise{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+
+/* ---------- shared type & controls ---------- */
+.eyebrow{font-size:.74rem; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-soft)}
+.h-display{font-family:var(--serif); font-weight:600; line-height:.96; letter-spacing:-.01em; margin:0; text-wrap:balance}
+.h-display em{font-style:italic; color:var(--accent)}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.6em; min-height:58px; padding:0 30px;
+  border-radius:999px; border:1.5px solid var(--ink); background:var(--ink); color:var(--on-ink);
+  font-weight:600; font-size:.88rem; letter-spacing:.16em; text-transform:uppercase;
+  transition:transform .25s var(--ease), background .25s, color .25s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn .arr{font-family:var(--serif); font-size:1.4rem; letter-spacing:0; line-height:0; transition:transform .25s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+.btn.ghost{background:transparent; color:var(--ink)}
+.btn.ghost:hover{background:var(--surface)}
+.doodle{stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+
+/* ---------- welcome ---------- */
+.welcome{display:grid; gap:clamp(28px,5vw,64px); align-content:center}
+.wyr{font-size:clamp(3.3rem,16.5vw,7.4rem); text-transform:uppercase}
+.wyr span{display:block}
+.wyr .q{position:relative; display:inline-block}
+.wyr .q em{font-style:italic; color:var(--accent); font-weight:500}
+.wyr .star{position:absolute; width:.32em; height:.32em; right:-.42em; top:-.05em; color:var(--accent)}
+.tagline{font-family:var(--serif); font-style:italic; font-weight:500; font-size:clamp(1.45rem,5.2vw,2.1rem); margin:18px 0 0; line-height:1.2}
+.tagline .u{position:relative; white-space:nowrap}
+.tagline .u svg{position:absolute; left:-2%; bottom:-.28em; width:104%; height:.42em; color:var(--accent)}
+.steps-lite{list-style:none; margin:0 0 30px; padding:0; display:grid; gap:4px;
+  font-size:clamp(1.05rem,4vw,1.2rem); color:var(--ink)}
+.steps-lite li{display:flex; gap:12px; align-items:baseline}
+.steps-lite li::before{content:""; flex:none; width:7px; height:7px; border-radius:50%; border:1.5px solid var(--ink-soft); transform:translateY(-2px)}
+.facts{margin:22px 0 0; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); font-variant-numeric:tabular-nums}
+.facts b{font-weight:600; color:var(--accent)}
+@media (min-width:960px){
+  .welcome{grid-template-columns:1.25fr 1fr; align-items:end}
+  .wyr{font-size:clamp(6rem,9.6vw,10.5rem)}
+  .welcome-side{padding-bottom:14px; border-left:1px solid var(--line); padding-left:clamp(28px,4vw,56px)}
+}
+
+/* ---------- rules ---------- */
+.rules{max-width:1100px; width:100%; margin-inline:auto}
+.rules h1{font-size:clamp(3rem,13vw,6.6rem); text-transform:uppercase}
+.rule-list{list-style:none; margin:clamp(28px,5vh,52px) 0 0; padding:0; display:grid; gap:0; border-top:1px solid var(--line)}
+.rule-list li{display:grid; grid-template-columns:3.4rem 1fr; gap:14px; align-items:baseline; padding:18px 0; border-bottom:1px solid var(--line)}
+.rule-n{font-family:var(--serif); font-style:italic; font-weight:600; font-size:2.1rem; color:var(--accent); line-height:1; font-variant-numeric:tabular-nums}
+.rule-t{font-size:clamp(1.12rem,4.3vw,1.4rem); font-weight:500; line-height:1.35}
+.rule-t small{display:block; font-weight:400; font-size:.95rem; color:var(--ink-soft); margin-top:2px}
+.rules-foot{display:flex; flex-wrap:wrap; gap:22px 40px; align-items:center; justify-content:space-between; margin-top:30px}
+.aside{font-family:var(--serif); font-style:italic; font-size:clamp(1.3rem,4.6vw,1.6rem); font-weight:500; margin:0; max-width:30ch; line-height:1.25}
+@media (min-width:960px){
+  .rule-list{grid-template-columns:repeat(4,1fr); border-top:0; gap:28px}
+  .rule-list li{grid-template-columns:1fr; border-bottom:0; border-top:1.5px solid var(--ink); padding:18px 0 0}
+  .rule-n{font-size:3rem}
+}
+
+/* ---------- pick ---------- */
+.pick{max-width:1240px; width:100%; margin-inline:auto; gap:26px}
+.pick-head{display:flex; flex-wrap:wrap; gap:20px 40px; align-items:end; justify-content:space-between}
+.pick h1{font-size:clamp(2.5rem,10.5vw,5.2rem); max-width:12ch}
+.back{align-self:flex-start; background:none; border:0; padding:8px 0; min-height:44px; font-size:.78rem; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--accent)}
+.length{border:0; margin:0; padding:0; display:grid; gap:8px; min-width:0}
+.length legend{padding:0; margin-bottom:8px}
+.seg{display:grid; grid-template-columns:repeat(3,1fr); border:1.5px solid var(--ink); border-radius:999px; padding:4px; gap:4px}
+.seg input{position:absolute; opacity:0; pointer-events:none}
+.seg label{display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:52px; padding:4px 10px; border-radius:999px; text-align:center; cursor:pointer; transition:background .2s, color .2s; line-height:1.15}
+.seg label b{font-weight:600; font-size:.74rem; letter-spacing:.12em; text-transform:uppercase}
+.seg label span{font-family:var(--serif); font-style:italic; font-size:1.05rem; font-weight:600}
+.seg input:checked + label{background:var(--ink); color:var(--on-ink)}
+.seg input:focus-visible + label{outline:2.5px solid var(--accent); outline-offset:2px}
+.cats{display:grid; grid-template-columns:1fr; gap:12px}
+@media (min-width:360px){ .cats{grid-template-columns:1fr 1fr} }
+@media (min-width:960px){ .cats{grid-template-columns:repeat(4,1fr); gap:16px} }
+.cat{position:relative; text-align:left; display:flex; flex-direction:column; gap:6px; min-height:132px; padding:16px 16px 14px;
+  background:var(--surface); border:1.5px solid var(--line); border-radius:20px 16px 22px 14px;
+  transition:transform .25s var(--ease), border-color .25s}
+.cat:hover{transform:translateY(-3px); border-color:var(--ink)}
+.cat:active{transform:scale(.98)}
+.cat-name{font-family:var(--serif); font-weight:600; font-size:clamp(1.6rem,6vw,2.1rem); line-height:1}
+.cat-blurb{font-size:.9rem; line-height:1.35; color:var(--ink-soft); min-width:0}
+.cat-n{margin-top:auto; padding-top:6px; font-size:.68rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); font-variant-numeric:tabular-nums}
+.cat svg{position:absolute; top:16px; right:14px; width:26px; height:26px; color:var(--accent)}
+.cat.surprise{grid-column:1/-1; min-height:auto; flex-direction:row; flex-wrap:wrap; align-items:center; gap:6px 18px;
+  background:var(--ink); color:var(--on-ink); border-color:var(--ink); padding:20px 22px}
+.cat.surprise .cat-name{font-size:clamp(1.8rem,7vw,2.5rem)}
+.cat.surprise .cat-blurb{color:var(--on-ink); opacity:.8; flex:1 1 220px}
+.cat.surprise .go{font-family:var(--serif); font-size:2rem; line-height:1; margin-left:auto}
+@media (min-width:960px){ .cat{min-height:170px; padding:20px} }
+
+/* ---------- play ---------- */
+.play{gap:22px}
+.rail{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap}
+.count{font-family:var(--serif); font-weight:600; font-variant-numeric:tabular-nums lining-nums; line-height:1}
+.count .now{font-style:italic; font-size:2.2rem; color:var(--ink)}
+.count .tot{font-size:1.2rem; color:var(--ink-soft)}
+.label{display:inline-flex; align-items:center; gap:8px; font-size:.74rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--accent)}
+.label::before{content:""; width:8px; height:8px; border-radius:50%; background:currentColor}
+.stage{display:flex; flex-direction:column; gap:clamp(22px,4vh,40px); flex:1}
+.question{font-family:var(--serif); font-weight:600; font-size:clamp(2rem,8.6vw,4.4rem); line-height:1.06; letter-spacing:-.005em; margin:0; text-wrap:balance}
+.question.long{font-size:clamp(1.8rem,7.4vw,3.7rem)}
+.opts{display:grid; grid-template-columns:1fr; gap:10px; position:relative}
+.opt{position:relative; display:flex; align-items:center; gap:16px; text-align:left; min-height:80px; padding:16px 20px;
+  background:var(--surface); color:var(--ink); border:1.5px solid var(--ink);
+  transition:transform .3s var(--ease), background .3s, color .3s, opacity .3s}
+.opt.a{border-radius:22px 18px 26px 16px}
+.opt.b{border-radius:18px 24px 16px 26px}
+.opt:hover{transform:translateY(-2px)}
+.opt-l{font-family:var(--serif); font-style:italic; font-weight:600; font-size:2.2rem; line-height:1; color:var(--accent); width:1.1em; flex:none; transition:color .3s}
+.opt-t{font-weight:600; font-size:clamp(.95rem,3.9vw,1.1rem); letter-spacing:.08em; text-transform:uppercase; line-height:1.3; min-width:0}
+.opt[aria-pressed="true"]{background:var(--ink); color:var(--on-ink); transform:scale(1.015)}
+.opt[aria-pressed="true"] .opt-l{color:var(--on-ink)}
+.opts.chosen .opt[aria-pressed="false"]{opacity:.5}
+.or{justify-self:center; position:relative; width:64px; height:40px; display:grid; place-items:center; margin-block:-4px;
+  font-family:var(--serif); font-style:italic; font-weight:600; font-size:1.45rem; color:var(--ink-soft)}
+.or svg{position:absolute; inset:-4px -6px; width:calc(100% + 12px); height:calc(100% + 8px); color:var(--accent)}
+.after{min-height:2.2em; margin:0; font-family:var(--serif); font-style:italic; font-weight:500; font-size:clamp(1.35rem,5vw,1.7rem); color:var(--ink-soft); line-height:1.2}
+.after.nudge{color:var(--accent); font-weight:600}
+.play-foot{display:flex; flex-direction:column; gap:12px; margin-top:auto; padding-top:8px}
+.play-foot .btn{width:100%}
+@media (min-width:700px){
+  .play-foot{flex-direction:row; align-items:center; justify-content:space-between}
+  .play-foot .btn{width:auto; min-width:260px}
+}
+@media (min-width:960px){
+  .play{display:grid; grid-template-columns:minmax(150px,1fr) minmax(0,920px) minmax(40px,1fr); grid-template-rows:1fr auto; column-gap:clamp(28px,4vw,72px); row-gap:28px}
+  .rail{grid-column:1; flex-direction:column; align-items:flex-start; gap:18px; padding-top:.6rem; border-top:1.5px solid var(--ink)}
+  .count .now{font-size:5.4rem; display:block}
+  .count .tot{font-size:1.4rem}
+  .stage{grid-column:2; justify-content:center}
+  .play-foot{grid-column:2}
+  .opts{grid-template-columns:1fr auto 1fr; align-items:stretch; gap:14px}
+  .opt{min-height:150px; flex-direction:column; align-items:flex-start; justify-content:space-between; padding:20px 24px}
+  .opt-l{font-size:2.8rem}
+  .or{align-self:center; margin:0}
+}
+@media (min-width:1700px){ .question{font-size:4.9rem} .question.long{font-size:4.1rem} }
+
+/* ---------- end ---------- */
+.end{align-items:flex-start; justify-content:center; gap:22px; max-width:1100px; width:100%; margin-inline:auto}
+.end h1{font-size:clamp(3.3rem,15vw,9rem); text-transform:uppercase}
+.end p.sub{font-family:var(--serif); font-style:italic; font-weight:500; font-size:clamp(1.45rem,5vw,2.1rem); margin:0; max-width:24ch; line-height:1.2}
+.end-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:10px; width:100%}
+.end-actions .btn{flex:1 1 240px}
+@media (min-width:700px){ .end-actions .btn{flex:0 0 auto} }
+.colophon{margin-top:auto; padding-block:22px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:6px 18px; justify-content:space-between; font-size:.82rem; color:var(--ink-soft)}
+.colophon a{color:var(--ink); font-weight:500; text-underline-offset:3px; display:inline-flex; align-items:center; min-height:32px}
+.colophon a:hover{color:var(--accent)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important; transition:none!important}
+}
+</style>
+
+<div class="app">
+  <header class="bar">
+    <span class="mark" aria-label="DÉBUT">DÉBUT</span>
+    <span class="bar-title" id="barTitle">Would you rather?</span>
+    <nav class="nav" id="gameNav" aria-label="Game" hidden>
+      <button class="navbtn" type="button" id="navCategory">Category</button>
+      <button class="navbtn" type="button" id="navRandom">Random</button>
+      <button class="navbtn" type="button" id="navRestart">Restart</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- WELCOME -->
+    <section class="screen welcome" id="s-welcome" aria-labelledby="t-welcome">
+      <div class="enter">
+        <h1 class="h-display wyr" id="t-welcome" tabindex="-1">
+          <span>Would</span><span>you</span>
+          <span><span class="q">Rather<em>?</em>
+            <svg class="star doodle" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.7 5.6 3.5 8.6 9.2 9.5-5.7.9-8.5 3.9-9.2 9.5-.8-5.6-3.6-8.6-9.2-9.5 5.6-.9 8.4-3.9 9.2-9.5z"/></svg>
+          </span></span>
+        </h1>
+        <p class="tagline">A little game for your <span class="u">next hangout.<svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" class="doodle"><path d="M2 8c34-5 70 2 104-3 30-4 62 3 92-1"/></svg></span></p>
+      </div>
+      <div class="welcome-side enter-2">
+        <ul class="steps-lite">
+          <li>Grab your friends.</li>
+          <li>Choose a category or go random.</li>
+          <li>Take turns answering.</li>
+          <li>There are no right answers.</li>
+        </ul>
+        <button class="btn" type="button" id="btnStart">Start playing <span class="arr" aria-hidden="true">→</span></button>
+        <p class="facts" id="facts"></p>
+      </div>
+    </section>
+
+    <!-- RULES -->
+    <section class="screen rules" id="s-rules" aria-labelledby="t-rules" hidden>
+      <h1 class="h-display enter" id="t-rules" tabindex="-1">How to <em>play</em></h1>
+      <ol class="rule-list enter-2">
+        <li><span class="rule-n">01</span><span class="rule-t">Choose a category<small>— or let us surprise you.</small></span></li>
+        <li><span class="rule-n">02</span><span class="rule-t">Read the question out loud.</span></li>
+        <li><span class="rule-n">03</span><span class="rule-t">Everyone chooses an answer<small>and explains why.</small></span></li>
+        <li><span class="rule-n">04</span><span class="rule-t">Press next and keep going.</span></li>
+      </ol>
+      <div class="rules-foot enter-3">
+        <p class="aside">No right answers. No wrong answers. Just good conversations.</p>
+        <button class="btn" type="button" id="btnRulesGo">Let's play <span class="arr" aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <!-- PICK -->
+    <section class="screen pick" id="s-pick" aria-labelledby="t-pick" hidden>
+      <button class="back" type="button" id="btnBack" hidden>← Back to the question</button>
+      <div class="pick-head enter">
+        <h1 class="h-display" id="t-pick" tabindex="-1">What are you in the <em>mood</em> for?</h1>
+        <fieldset class="length">
+          <legend class="eyebrow">How long?</legend>
+          <div class="seg">
+            <input type="radio" name="len" id="len5" value="5"><label for="len5"><b>Quick</b><span>5 questions</span></label>
+            <input type="radio" name="len" id="len10" value="10" checked><label for="len10"><b>Standard</b><span>10 questions</span></label>
+            <input type="radio" name="len" id="len20" value="20"><label for="len20"><b>Long night</b><span>20 questions</span></label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="cats enter-2" id="cats"></div>
+    </section>
+
+    <!-- PLAY -->
+    <section class="screen play" id="s-play" aria-labelledby="question" hidden>
+      <div class="rail">
+        <p class="count" id="count" aria-live="polite" style="margin:0"></p>
+        <span class="label" id="qLabel"></span>
+      </div>
+      <div class="stage" id="stage">
+        <h2 class="question" id="question" tabindex="-1"></h2>
+        <div class="opts" id="opts">
+          <button class="opt a" type="button" id="optA" aria-pressed="false"><span class="opt-l" aria-hidden="true">A</span><span class="opt-t" id="optAText"></span></button>
+          <div class="or" aria-hidden="true">or<svg viewBox="0 0 80 50" preserveAspectRatio="none" class="doodle"><path d="M10 29C7 15 27 5 47 6c19 1 30 10 28 22-2 13-25 19-45 16C16 42 5 34 13 21"/></svg></div>
+          <button class="opt b" type="button" id="optB" aria-pressed="false"><span class="opt-l" aria-hidden="true">B</span><span class="opt-t" id="optBText"></span></button>
+        </div>
+        <p class="after" id="after" aria-live="polite"></p>
+      </div>
+      <div class="play-foot">
+        <span class="eyebrow" id="hint">Pick one. Then ask everyone else.</span>
+        <button class="btn" type="button" id="btnNext">Next question <span class="arr" aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <!-- END -->
+    <section class="screen end" id="s-end" aria-labelledby="t-end" hidden>
+      <h1 class="h-display enter" id="t-end" tabindex="-1">That's a <em>wrap.</em></h1>
+      <p class="sub enter-2">Hopefully you know your friends a little better now.</p>
+      <div class="end-actions enter-3">
+        <button class="btn" type="button" id="btnAgain">Play again</button>
+        <button class="btn ghost" type="button" id="btnOther">Try another category</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="colophon" id="colophon">
+    <span>A little game by DÉBUT Community</span>
+    <a href="https://www.instagram.com/debut_community/" target="_blank" rel="noopener">@debut_community</a>
+  </footer>
+</div>
+
+<script src="questions.js"></script>
+<script>
+(function(){
+  "use strict";
+  const CATS = window.DEBUT_CATEGORIES || [];
+  const NUDGES = window.DEBUT_NUDGES || ["Why?"];
+  const Q = (window.DEBUT_QUESTIONS || []).map((q, i) => Object.assign({ id: i }, q));
+  const catName = k => (CATS.find(c => c.key === k) || { name: k }).name;
+
+  const GLYPHS = {
+    all:     '<path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/>',
+    friends: '<circle cx="9" cy="12" r="5.5"/><circle cx="15.5" cy="12" r="5.5"/>',
+    life:    '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2 2M16.7 16.7l2 2M18.7 5.3l-2 2M7.3 16.7l-2 2"/>',
+    travel:  '<path d="M3 18c4-9 10-12 17-12"/><path d="M15.5 3.5 20 6l-3 4"/>',
+    culture: '<path d="M12 2.5c.7 5.6 3.5 8.6 9.2 9.5-5.7.9-8.5 3.9-9.2 9.5-.8-5.6-3.6-8.6-9.2-9.5 5.6-.9 8.4-3.9 9.2-9.5z"/>',
+    dreams:  '<path d="M16 3.5a8.5 8.5 0 1 0 4.5 13.7A7 7 0 0 1 16 3.5z"/>',
+    chaos:   '<path d="M2.5 13c2-5 3.5-5 5 0s3 5 4.5 0 3-5 4.5 0 3 5 5 0"/>',
+    deeper:  '<path d="M12 12.5c0-1 1.5-1.3 2-.3.8 1.6-.8 3.2-2.5 3-2.6-.3-3.4-3.4-1.9-5.3 2-2.6 6.3-1.9 7.4 1.1 1.4 3.8-1.7 7.4-5.4 7.5C7 18.7 4.2 15 5 11 6 6.2 11.6 4 15.8 6"/>'
+  };
+
+  const $ = id => document.getElementById(id);
+  const screens = ["welcome","rules","pick","play","end"];
+
+  let S = {
+    screen: "welcome", category: null, length: 10, seen: [], count: 0,
+    currentId: null, label: "", choice: null, nudge: null, lastNudged: false, inGame: false
+  };
+
+  /* ---------- question logic ---------- */
+  const inCat = (q, cat) => cat === "all" || cat === "surprise" || q.category === cat;
+  const pool = (cat) => Q.filter(q => inCat(q, cat) && !S.seen.includes(q.id));
+  function refill(cat){ // only when a category is fully used up this session
+    S.seen = S.seen.filter(id => id === S.currentId || !inCat(Q[id], cat));
+  }
+  const total = () => Math.max(S.count, Math.min(S.length, S.count + pool(S.category).length));
+  const rand = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  function draw(cat, asRandom){
+    let p = pool(cat);
+    if (!p.length){ refill(cat); p = pool(cat); }
+    if (!p.length) return false;
+    const q = rand(p);
+    S.seen.push(q.id); S.count++; S.currentId = q.id; S.choice = null;
+    S.label = (asRandom || S.category === "surprise") ? "Random" : catName(q.category);
+    const canNudge = S.count > 1 && !S.lastNudged && Math.random() < 0.35;
+    S.nudge = canNudge ? rand(NUDGES) : null;
+    S.lastNudged = !!S.nudge;
+    return true;
+  }
+
+  function startRound(cat){
+    S.category = cat; S.count = 0; S.inGame = true; S.currentId = null;
+    if (!pool(cat).length) refill(cat);
+    draw(cat, false);
+    show("play");
+  }
+
+  function next(asRandom){
+    if (!asRandom && S.count >= total()){ finish(); return; }
+    if (asRandom){
+      // a random question from any category; if this was the last slot, it simply extends the round by one
+      if (S.count >= S.length) S.length = S.count + 1;
+      draw("all", true);
+    } else {
+      draw(S.category, false);
+    }
+    renderPlay(true);
+    persist();
+  }
+
+  function finish(){ S.inGame = false; releaseWake(); show("end"); }
+
+  /* ---------- rendering ---------- */
+  function show(name){
+    S.screen = name;
+    screens.forEach(s => { $("s-" + s).hidden = s !== name; });
+    $("gameNav").hidden = name !== "play";
+    $("colophon").hidden = !(name === "welcome" || name === "end");
+    $("btnBack").hidden = !(name === "pick" && S.inGame && S.currentId !== null);
+    if (name === "play"){ renderPlay(true); requestWake(); }
+    if (name === "pick") renderCats();
+    const head = name === "play" ? $("question") : $("t-" + name);
+    window.scrollTo(0, 0);
+    if (head) head.focus({ preventScroll: true });
+    persist();
+  }
+
+  const pad = n => String(n).padStart(2, "0");
+
+  function renderPlay(animate){
+    const q = Q[S.currentId]; if (!q) return;
+    const t = total();
+    $("count").innerHTML = '<span class="now">' + pad(S.count) + '</span> <span class="tot">/ ' + pad(t) + '</span>';
+    $("count").setAttribute("aria-label", "Question " + S.count + " of " + t);
+    $("qLabel").textContent = S.label;
+    const qe = $("question");
+    qe.textContent = q.question;
+    qe.classList.toggle("long", q.question.length > 105);
+    $("optAText").textContent = q.optionA;
+    $("optBText").textContent = q.optionB;
+    $("optA").setAttribute("aria-label", "A: " + q.optionA);
+    $("optB").setAttribute("aria-label", "B: " + q.optionB);
+    renderChoice();
+    const last = S.count >= t;
+    $("btnNext").innerHTML = (last ? "Finish" : "Next question") + ' <span class="arr" aria-hidden="true">→</span>';
+    if (animate){
+      [qe, $("opts")].forEach((el, i) => {
+        el.classList.remove("enter", "enter-2"); void el.offsetWidth;
+        el.classList.add(i ? "enter-2" : "enter");
+      });
+    }
+  }
+
+  function renderChoice(){
+    $("optA").setAttribute("aria-pressed", String(S.choice === "A"));
+    $("optB").setAttribute("aria-pressed", String(S.choice === "B"));
+    $("opts").classList.toggle("chosen", !!S.choice);
+    const after = $("after");
+    if (!S.choice){ after.textContent = ""; after.classList.remove("nudge"); $("hint").textContent = "Pick one. Then ask everyone else."; return; }
+    $("hint").textContent = "No right answers here.";
+    if (S.nudge){ after.textContent = S.nudge; after.classList.add("nudge"); }
+    else { after.textContent = "Good choice. Now ask everyone else."; after.classList.remove("nudge"); }
+  }
+
+  function choose(c){ S.choice = S.choice === c ? null : c; renderChoice(); persist(); }
+
+  function renderCats(){
+    const counts = {};
+    Q.forEach(q => { counts[q.category] = (counts[q.category] || 0) + 1; });
+    const html = CATS.map(c => {
+      const n = c.key === "all" ? Q.length : (counts[c.key] || 0);
+      return '<button class="cat" type="button" data-cat="' + c.key + '">' +
+        '<svg viewBox="0 0 24 24" class="doodle" aria-hidden="true">' + (GLYPHS[c.key] || "") + '</svg>' +
+        '<span class="cat-name">' + c.name + '</span>' +
+        '<span class="cat-blurb">' + c.blurb + '</span>' +
+        '<span class="cat-n">' + n + ' questions</span></button>';
+    }).join("") +
+      '<button class="cat surprise" type="button" data-cat="surprise">' +
+      '<span class="cat-name">🎲 Surprise me</span>' +
+      '<span class="cat-blurb">Random questions from every category, never the same one twice.</span>' +
+      '<span class="go" aria-hidden="true">→</span></button>';
+    $("cats").innerHTML = html;
+    $("len" + S.length) && ($("len" + S.length).checked = true);
+  }
+
+  /* ---------- keep the screen awake while playing (phone on the table) ---------- */
+  let wake = null;
+  async function requestWake(){
+    try { if ("wakeLock" in navigator && !wake) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } } catch(e){ wake = null; }
+  }
+  function releaseWake(){ try { wake && wake.release(); } catch(e){} wake = null; }
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.screen === "play") requestWake(); });
+
+  /* ---------- events ---------- */
+  $("facts").innerHTML = "<b>" + Q.length + "</b> questions · <b>" + CATS.length + "</b> categories · <b>0</b> correct answers";
+  $("btnStart").addEventListener("click", () => show("rules"));
+  $("btnRulesGo").addEventListener("click", () => show("pick"));
+  $("cats").addEventListener("click", e => {
+    const b = e.target.closest("[data-cat]"); if (b) startRound(b.dataset.cat);
+  });
+  document.querySelectorAll('input[name="len"]').forEach(r => r.addEventListener("change", () => { S.length = +r.value; persist(); }));
+  $("btnBack").addEventListener("click", () => show("play"));
+  $("optA").addEventListener("click", () => choose("A"));
+  $("optB").addEventListener("click", () => choose("B"));
+  $("btnNext").addEventListener("click", () => next(false));
+  $("navRandom").addEventListener("click", () => next(true));
+  $("navCategory").addEventListener("click", () => show("pick"));
+  $("navRestart").addEventListener("click", () => { S.inGame = false; S.currentId = null; releaseWake(); show("pick"); });
+  $("btnAgain").addEventListener("click", () => startRound(S.category || "surprise"));
+  $("btnOther").addEventListener("click", () => { S.currentId = null; show("pick"); });
+
+  document.addEventListener("keydown", e => {
+    if (S.screen !== "play" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (k === "a") choose("A");
+    else if (k === "b") choose("B");
+    else if (k === "arrowright" || k === "n") next(false);
+  });
+
+  /* ---------- survive live updates of the page ---------- */
+  function persist(){}
+  const hot = window.claude && window.claude.hot;
+  if (hot && hot.snapshot) { try { hot.snapshot(() => JSON.parse(JSON.stringify(S))); } catch(e){} }
+  function start(data){
+    if (data && data.screen && Array.isArray(data.seen)) {
+      S = Object.assign(S, data);
+      if (S.screen === "play" && Q[S.currentId] === undefined) S.screen = "pick";
+      show(S.screen);
+    } else {
+      show("welcome");
+    }
+  }
+  if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
+})();
+</script>
