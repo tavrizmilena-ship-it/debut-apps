@@ -1,3 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5EBDD">
+<meta name="description" content="Would You Rather? A little conversation game for your next hangout, by DÉBUT Community.">
+<meta property="og:title" content="Would You Rather? — DÉBUT">
+<meta property="og:description" content="A little game for your next hangout.">
 <title>Would You Rather?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -218,6 +227,10 @@ main{flex:1; display:flex; flex-direction:column}
   *,*::before,*::after{animation:none!important; transition:none!important}
 }
 </style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}</style>
+</head>
+<body>
+
 
 <div class="app">
   <header class="bar">
@@ -324,7 +337,219 @@ main{flex:1; display:flex; flex-direction:column}
   </footer>
 </div>
 
-<script src="questions.js"></script>
+<!-- ===== QUESTIONS: edit this block to change questions, categories and nudges ===== -->
+<script>
+/* ------------------------------------------------------------------
+   DÉBUT · WOULD YOU RATHER? — question database
+   Edit freely. Each question needs: category, question, optionA, optionB.
+   category must match one of the keys in DEBUT_CATEGORIES below.
+------------------------------------------------------------------- */
+
+window.DEBUT_CATEGORIES = [
+  { key: "all",     name: "All",     blurb: "A little bit of everything." },
+  { key: "friends", name: "Friends", blurb: "See how well you actually know each other." },
+  { key: "life",    name: "Life",    blurb: "Choices, habits & everyday dilemmas." },
+  { key: "travel",  name: "Travel",  blurb: "Places you'd go, lives you'd live." },
+  { key: "culture", name: "Culture", blurb: "Movies, books, music & the internet." },
+  { key: "dreams",  name: "Dreams",  blurb: "What if you could…" },
+  { key: "chaos",   name: "Chaos",   blurb: "No context. No logic. Just choose." },
+  { key: "deeper",  name: "Deeper",  blurb: "Questions worth talking about." }
+];
+
+/* Occasional nudges shown after someone picks an answer (not every question). */
+window.DEBUT_NUDGES = [
+  "Why?",
+  "Okay, but why? 👀",
+  "Would you actually do it?",
+  "Everyone agree?",
+  "Anyone want to change their answer?"
+];
+
+window.DEBUT_QUESTIONS = [
+  /* ---------- FRIENDS ---------- */
+  { category: "friends",
+    question: "Would you rather have one best friend you've known forever, or a huge group of close friends?",
+    optionA: "One forever best friend", optionB: "A huge close group" },
+  { category: "friends",
+    question: "Would you rather know your friends' first impression of you, or what they honestly think of you now?",
+    optionA: "Their first impression", optionB: "What they think now" },
+  { category: "friends",
+    question: "Your group chat gets leaked to everyone you know. Would you rather it be the screenshots or the voice messages?",
+    optionA: "The screenshots", optionB: "The voice messages" },
+  { category: "friends",
+    question: "Would you rather be the friend who always plans everything, or the friend who always says yes?",
+    optionA: "The planner", optionB: "The one who says yes" },
+  { category: "friends",
+    question: "Would you rather your friends describe you to a stranger in three words, or with one song?",
+    optionA: "Three words", optionB: "One song" },
+  { category: "friends",
+    question: "Would you rather go on a trip with your funniest friend or your most organised one?",
+    optionA: "The funniest", optionB: "The most organised" },
+  { category: "friends",
+    question: "Would you rather be the person everyone calls in a crisis, or the person everyone calls to celebrate?",
+    optionA: "The crisis call", optionB: "The celebration call" },
+  { category: "friends",
+    question: "Would you rather have a friend who's always brutally honest, or one who's always on your side?",
+    optionA: "Brutally honest", optionB: "Always on my side" },
+
+  /* ---------- LIFE ---------- */
+  { category: "life",
+    question: "Would you rather have more free time or more money?",
+    optionA: "More free time", optionB: "More money" },
+  { category: "life",
+    question: "Would you rather have a routine you could do perfectly, or a life where every day is completely different?",
+    optionA: "A perfect routine", optionB: "Every day different" },
+  { category: "life",
+    question: "Would you rather be brilliant at one thing, or pretty good at everything?",
+    optionA: "Brilliant at one thing", optionB: "Pretty good at everything" },
+  { category: "life",
+    question: "Would you rather have a job you love that pays okay, or a job you feel nothing about that pays brilliantly?",
+    optionA: "Love it, paid okay", optionB: "Meh, paid brilliantly" },
+  { category: "life",
+    question: "You can only choose one for the rest of your life: perfect mornings or perfect evenings?",
+    optionA: "Perfect mornings", optionB: "Perfect evenings" },
+  { category: "life",
+    question: "Would you rather give up your phone for a month, or social media for a year?",
+    optionA: "My phone for a month", optionB: "Social media for a year" },
+  { category: "life",
+    question: "Would you rather live in a tiny flat in the city centre, or a big house an hour from everything?",
+    optionA: "Tiny flat, centre", optionB: "Big house, far away" },
+  { category: "life",
+    question: "Would you rather your weekends were always completely planned, or always completely empty?",
+    optionA: "Fully planned", optionB: "Completely empty" },
+
+  /* ---------- TRAVEL ---------- */
+  { category: "travel",
+    question: "Would you rather live in your dream city for a year, or travel to 10 new countries?",
+    optionA: "Live in my dream city", optionB: "Travel to 10 new countries" },
+  { category: "travel",
+    question: "Would you rather take a spontaneous weekend trip every month, or one huge dream trip every year?",
+    optionA: "A weekend every month", optionB: "One dream trip a year" },
+  { category: "travel",
+    question: "Would you rather move abroad alone, or stay where you are but travel several times a year?",
+    optionA: "Move abroad alone", optionB: "Stay & travel often" },
+  { category: "travel",
+    question: "Would you rather only travel by train for the rest of your life, or only by plane?",
+    optionA: "Only trains", optionB: "Only planes" },
+  { category: "travel",
+    question: "Imagine you get a free one-way ticket leaving tonight. Would you rather choose the destination, or let a stranger at the airport choose for you?",
+    optionA: "I choose", optionB: "The stranger chooses" },
+  { category: "travel",
+    question: "Would you rather explore a new city with a perfect itinerary, or with no plan and no phone?",
+    optionA: "Perfect itinerary", optionB: "No plan, no phone" },
+  { category: "travel",
+    question: "Would you rather spend a month in a busy city where nobody speaks your language, or a month somewhere remote with nobody around at all?",
+    optionA: "The busy city", optionB: "The remote place" },
+  { category: "travel",
+    question: "Would you rather live somewhere it's always summer, or somewhere with four dramatic seasons?",
+    optionA: "Endless summer", optionB: "Four real seasons" },
+
+  /* ---------- CULTURE ---------- */
+  { category: "culture",
+    question: "Would you rather spend a whole day inside your favourite movie, or live in your favourite TV show for a week?",
+    optionA: "A day in my movie", optionB: "A week in my show" },
+  { category: "culture",
+    question: "Would you rather only watch films you've never seen before, or only rewatch your favourites?",
+    optionA: "Only new films", optionB: "Only my favourites" },
+  { category: "culture",
+    question: "Would you rather your life had a soundtrack only you could hear, or a narrator everyone could hear?",
+    optionA: "A private soundtrack", optionB: "A public narrator" },
+  { category: "culture",
+    question: "Would you rather have dinner with your favourite author, or a front-row seat at your favourite artist's last ever concert?",
+    optionA: "Dinner with the author", optionB: "The last concert" },
+  { category: "culture",
+    question: "Would you rather go viral once for something random, or be quietly legendary in a tiny internet community forever?",
+    optionA: "Viral once", optionB: "Niche legend forever" },
+  { category: "culture",
+    question: "You can only keep one for a whole year: music, or films and series?",
+    optionA: "Music", optionB: "Films & series" },
+  { category: "culture",
+    question: "Would you rather be the star of a reality show, or an extra in a cult classic film?",
+    optionA: "Reality show star", optionB: "Cult film extra" },
+  { category: "culture",
+    question: "Would you rather have your home designed by your favourite film director, or your favourite musician?",
+    optionA: "The director", optionB: "The musician" },
+
+  /* ---------- DREAMS ---------- */
+  { category: "dreams",
+    question: "You wake up tomorrow and you can either speak five new languages or play any musical instrument. Which one?",
+    optionA: "Five languages", optionB: "Any instrument" },
+  { category: "dreams",
+    question: "Would you rather know exactly what your life will look like in ten years, or never know what's coming?",
+    optionA: "Show me the ten years", optionB: "Keep it a mystery" },
+  { category: "dreams",
+    question: "Would you rather be able to pause time for one hour a day, or rewind ten minutes once a day?",
+    optionA: "Pause for an hour", optionB: "Rewind ten minutes" },
+  { category: "dreams",
+    question: "Would you rather open a tiny café by the sea, or a bookshop in a big city?",
+    optionA: "Café by the sea", optionB: "Bookshop in the city" },
+  { category: "dreams",
+    question: "Would you rather meet your future self for ten minutes, or your ten-year-old self for a whole afternoon?",
+    optionA: "My future self", optionB: "My ten-year-old self" },
+  { category: "dreams",
+    question: "Imagine success is guaranteed. Would you rather write a book or build a business?",
+    optionA: "Write a book", optionB: "Build a business" },
+  { category: "dreams",
+    question: "Would you rather be able to teleport anywhere, but only once a year, or fly first class for free every month?",
+    optionA: "Teleport once a year", optionB: "First class monthly" },
+  { category: "dreams",
+    question: "Would you rather get one completely free year, with no work and no obligations, at 25 or at 65?",
+    optionA: "At 25", optionB: "At 65" },
+
+  /* ---------- CHAOS ---------- */
+  { category: "chaos",
+    question: "Would you rather sing everything you say for a day, or narrate your whole life out loud in the third person?",
+    optionA: "Sing everything", optionB: "Narrate in third person" },
+  { category: "chaos",
+    question: "Would you rather have a pigeon follow you everywhere for a year, or have every door you open make a dramatic sound effect?",
+    optionA: "The loyal pigeon", optionB: "The dramatic doors" },
+  { category: "chaos",
+    question: "Would you rather have your search history read out at your wedding, or your camera roll shown at a job interview?",
+    optionA: "Search history, wedding", optionB: "Camera roll, interview" },
+  { category: "chaos",
+    question: "Would you rather always have one slightly wet sock, or always have a song stuck in your head that you only half know?",
+    optionA: "The wet sock", optionB: "The half-song" },
+  { category: "chaos",
+    question: "You wake up tomorrow as a cat in your own home. Would you rather your friends work out it's you, or never find out?",
+    optionA: "They work it out", optionB: "They never know" },
+  { category: "chaos",
+    question: "Would you rather be able to fly, but only one metre off the ground, or be invisible, but only when nobody's looking?",
+    optionA: "Fly very low", optionB: "Useless invisibility" },
+  { category: "chaos",
+    question: "Would you rather accidentally send a voice message to your boss, or accidentally like your ex's photo from 2016?",
+    optionA: "Voice note to the boss", optionB: "A like from 2016" },
+  { category: "chaos",
+    question: "Would you rather every meal you eat be a total surprise, or eat the same perfect meal every day forever?",
+    optionA: "Always a surprise", optionB: "The same perfect meal" },
+
+  /* ---------- DEEPER ---------- */
+  { category: "deeper",
+    question: "Would you rather be truly understood by one person, or liked by everyone?",
+    optionA: "Understood by one", optionB: "Liked by everyone" },
+  { category: "deeper",
+    question: "Would you rather always know the truth, even when it hurts, or stay happy without knowing?",
+    optionA: "The truth", optionB: "Happy, not knowing" },
+  { category: "deeper",
+    question: "Would you rather remember everything perfectly, or be able to forget anything you choose?",
+    optionA: "Remember everything", optionB: "Choose what to forget" },
+  { category: "deeper",
+    question: "Would you rather have a life full of big adventures, or a quiet life with the people you love close by?",
+    optionA: "Big adventures", optionB: "A quiet, close life" },
+  { category: "deeper",
+    question: "Would you rather make your younger self proud, or make your older self grateful?",
+    optionA: "Younger me, proud", optionB: "Older me, grateful" },
+  { category: "deeper",
+    question: "Would you rather be remembered for what you made, or for how you made people feel?",
+    optionA: "What I made", optionB: "How I made people feel" },
+  { category: "deeper",
+    question: "Would you rather always say exactly what you think, or always know the right thing to say?",
+    optionA: "Say what I think", optionB: "Know the right thing" },
+  { category: "deeper",
+    question: "Would you rather redo one decision from your past, or get one guaranteed right answer for a decision in your future?",
+    optionA: "Redo one from the past", optionB: "One right answer ahead" }
+];
+
+</script>
 <script>
 (function(){
   "use strict";
@@ -519,3 +744,6 @@ main{flex:1; display:flex; flex-direction:column}
   if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
 })();
 </script>
+
+</body>
+</html>
